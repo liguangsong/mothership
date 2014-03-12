@@ -186,25 +186,34 @@ angular.module('SunLesson.directives', [])
 
                 $scope.pauseLearn = function () {
                     Utils.unregisterLesson();
-
-                    var ids = $rootScope.ids;
-                    activitySandbox.flushUserdata(ids.lid, ids.cid).then(function (msg) {
-                       // console.log('write the lessonUserdata current_activity: ' + DataProvider.lessonUserdata.current_activity + 'current_problem=' + DataProvider.lessonUserdata.activities[$routeParams.aid].current_problem);
-                        window.location = '/webapp/navigator/#/subject/' + $rootScope.sid + '/chapter/' + ids.cid;
-                    }, function (err) {
-                        console.log("pauseLearn write userdata Error!");
-                    })
+                    activitySandbox.flushAllUserdata().then(function(msg) {
+                        console.log('all the mistakes: ');
+                        console.log(angular.toJson(DataProvider.allUserProblemMap));
+                        window.location = '/webapp/navigator/#/subject/' + $rootScope.sid + '/chapter/' + $rootScope.ids.cid;
+                    }, function(err) {
+                          alert('flushAllUserdata Error in pauseLearn');
+                    });
                 }
 
                 $scope.backToChapter = function () {
                     console.log('结束学习，回到chapter');
-                    var ids = $rootScope.ids;
-                    activitySandbox.flushUserdata(ids.lid, ids.cid).then(function () {
-                        window.location = '/webapp/navigator/#/subject/' + $rootScope.sid + '/chapter/' + ids.cid;
-                    }, function (err) {
-                        console.log('backToChapter write userdata Error');
-                    })
+                    activitySandbox.flushAllUserdata().then(function(msg) {
+                        console.log('all the mistakes: ');
+                        console.log(angular.toJson(DataProvider.allUserProblemMap));
+                        window.location = '/webapp/navigator/#/subject/' + $rootScope.sid + '/chapter/' + $rootScope.ids.cid;
+                    }, function(err) {
+                         alert('flushAllUserdata Error in backToChapter');
+                    });
                 }
+
+                $scope.comeInMistakeNote = function() {
+                    activitySandbox.flushAllUserdata().then(function(msg) {
+                        window.location = '/webapp/mistakes/#/chapter/'+$rootScope.ids.cid+'/lesson/'+$routeParams.lid;
+                    }, function(err) {
+                        alert('flushAllUserdata Error in comeInMistakeNote');
+                    });
+                }
+
             }   //end of link
         }         //end of return
     })                  //end of directive
@@ -622,7 +631,7 @@ angular.module('SunLesson.directives', [])
     })
 
     //problem module
-    .directive("problem", function (SandboxProvider, $compile, $http, $templateCache, DataProvider, $routeParams) {
+    .directive("problem", function (SandboxProvider, $compile, $http, $templateCache, DataProvider, $routeParams, $rootScope) {
         var problemSandbox = SandboxProvider.getSandbox();
 
         return {
@@ -797,7 +806,7 @@ angular.module('SunLesson.directives', [])
                         }
                     }
 
-                    //TODO:
+                    //TODO: 
                     if (!($scope.problemIndex == $scope.activityData.problems.length - 1)) {
                         console.log('总的length=' + $scope.activityData.problems.length + '     index=' + $scope.problemIndex + "      $scope.length=" + $scope.problems.length);
                         activityUserdata.current_problem = $scope.activityData.problems[$scope.problemIndex + 1].id;
@@ -850,6 +859,46 @@ angular.module('SunLesson.directives', [])
                                 }
                                 problemUserdata.answer.push($scope.answer[currProblem.id]);
                             }
+                        }
+                    }
+
+                    if(Object.keys(DataProvider.allUserProblemMap).length <= 0) {
+                        alert('The First get mistake');
+                    }
+
+                    //add in the mistake note
+                    if(!DataProvider.allUserProblemMap[$rootScope.ids.cid]) {
+                        DataProvider.allUserProblemMap[$rootScope.ids.cid] = {};
+                    }
+                    if(!DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid]) {
+                        console.log('又一个新的lesson~~~~~~~~~~~~~~~~~~~~lid='+$routeParams.lid);
+                        DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid] = [];
+                    }
+
+                    if(!problemUserdata.is_correct) {
+                        //checkout the problem if exist
+                        var tempIndex = 0;
+                        var exist = DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid].some(function(item, index) {
+                            if(item.id == currProblem.id) {
+                                tempIndex = index;
+                                return true;
+                            }else{
+                                return false;
+                            }
+                        })
+                        if(!exist) {
+                            var time = new Date().toLocaleString();
+                            var mistake = {
+                                id: currProblem.id,
+                                activityId: $routeParams.aid,
+                                lessonId: $routeParams.lid,
+                                count: 1,
+                                create_time: time,
+                                tag: ['wrong']
+                            }
+                            DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid].push(mistake);
+                        }else{
+                            DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid][tempIndex].count += 1;
                         }
                     }
 

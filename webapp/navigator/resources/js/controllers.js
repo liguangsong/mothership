@@ -82,13 +82,13 @@ angular.module('SunNavigator.controllers', [])
         };
 
         $scope.signout = function() {
-            if(!!window.sessionStorage) {
+/*            if(!!window.sessionStorage) {
                 //sessionStorage.setItem('resourceSession', undefined);
                 sessionStorage.clear();
             }
             if(!sessionStorage.getItem('resourceSession')) {
                 console.log('销毁sessionStorage！！！');
-            }
+            }*/
         	$http.get('/signout')
         	    .success(function(data) {
         	        var me = subjectSandbox.loadMe();  
@@ -99,6 +99,10 @@ angular.module('SunNavigator.controllers', [])
         	        console.log('Signout Error:  ' + err);
         	    })
         };
+
+        $scope.goToMistakeNote = function() {
+            window.location = '/webapp/mistakes/';
+        }
    })
 
     .controller('ChapterCtrl', function($scope, $rootScope, $location, $routeParams, $q, $timeout, SandboxProvider, me, rootMaterial, DataProvider) {

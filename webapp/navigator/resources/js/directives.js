@@ -21,7 +21,7 @@ angular.module('SunNavigator.directives', [])
                         lessons[inner] = tmp;
                     }
                 };
-
+ 
                 var data = combSandbox.loadChapterMaterial($routeParams.cid);
                 if (data) {
                     var lessons = data.lessons;

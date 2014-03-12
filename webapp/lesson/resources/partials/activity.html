@@ -65,7 +65,6 @@
         </div>
         <div class="lesson-summary-body">
             <span class="lesson-summary-title font-size-big">你完成了本课学习</span>
-
             <div class="lesson-summary-stat font-size-big">
                 <span ng-show="hasFinalQuiz">最终测试正确率&nbsp;{{ lessonCorrectPercent }}&nbsp;%</span>
                 {{ lessonCup }}<br>
@@ -73,6 +72,7 @@
         </div>
         <div class="lesson-summary-footer">
             <button class="back-button" ng-click="backToChapter()">结束学习</button>
+            <button class="back-button" ng-click="comeInMistakeNote()">看看错题本</button>
         </div>
     </div>
 

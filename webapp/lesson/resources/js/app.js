@@ -16,6 +16,9 @@ angular.module('SunLesson', ['SunLesson.services', 'SunLesson.controllers', 'Sun
                     },
                     userInfo: function(ResourceProvider) {
                         return ResourceProvider.getUserInfo();
+                    },
+                    allUserProblemMap: function(ResourceProvider) {
+                        return ResourceProvider.getAllUserProblem();
                     }
                  }
              })    
@@ -35,7 +38,10 @@ angular.module('SunLesson', ['SunLesson.services', 'SunLesson.controllers', 'Sun
                     },
                     userInfo: function(ResourceProvider) {
                         return ResourceProvider.getUserInfo();
-                    }
+                    },
+                    allUserProblemMap: function(ResourceProvider) {
+                        return ResourceProvider.getAllUserProblem();
+                    }                    
                  }                              
              })       
     })

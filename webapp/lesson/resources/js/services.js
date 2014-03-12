@@ -4,6 +4,7 @@ angular.module('SunLesson.services', [])
         var lessonData = {};
         var lessonUserdata = {};     
         var userInfo = {};
+        var allUserProblemMap = {};
          var achievements = 
             {"ts": "1", "badges": [
                 {"id": "first_golden_cup", "title": "金杯奖", "desc": "你的第一座金杯！", "condition": [80], "scope": "lesson.complete"},
@@ -15,72 +16,13 @@ angular.module('SunLesson.services', [])
                 {"id": "final_quiz_failed", "title": "老师在等你", "desc": "不要气馁，学习最重要的是态度和坚持。加油，我看好你！"}
             ], "awards": {}};  
 
-//--------------------------------------TODO：临时数据-------------------------------------------------------
-        // var videoMaterial =
-        // {
-        //     title: "example_video",
-        //     type: "hypervideo",
-        //     video: {
-        //         url: "main-video.mp4"
-        //     }
-        // };
-
-        // var problemMaterial =
-        //     [
-        //         {
-        //             id: "p1",
-        //             title: "vocab test no.1",
-        //             type: "singlechoice",
-        //             body: "Choose the antonym of 'unswerving'.",
-        //             show_time: 253,
-        //             wrong_video: {
-        //                 url: "wrong1.mp4"
-        //             },
-        //             choices: [
-        //                 {
-        //                     id: "p1c1",
-        //                     body: "tenacious",
-        //                     is_correct: false
-        //                 },
-        //                 {
-        //                     id: "p1c2",
-        //                     body: "indomitable",
-        //                     is_correct: true
-        //                 }
-        //             ]
-        //         },
-        //         {
-        //             id: "p2",
-        //             title: "vocab test no.2",
-        //             type: "binarychoice",
-        //             body: "Choose the synonym of 'impecunious'.",
-        //             show_time: 339,
-        //             wrong_video: {
-        //                 url: "wrong2.mp4",
-        //                 jump: 20
-        //             },
-        //             choices: [
-        //                 {
-        //                     id: "p2c1",
-        //                     body: "generosity",
-        //                     is_correct: false
-        //                 },
-        //                 {
-        //                     id: "p2c2",
-        //                     body: "impoverished",
-        //                     is_correct: true
-        //                 }
-        //             ]
-        //         }
-        //     ];                 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
         return {
             chapterData: chapterData,
             lessonData: lessonData,
             lessonUserdata: lessonUserdata,
             userInfo: userInfo,
-            achievements: achievements
+            achievements: achievements,
+            allUserProblemMap: allUserProblemMap
             //videoMaterial: videoMaterial,
             //problemMaterial: problemMaterial
         }
@@ -121,8 +63,8 @@ angular.module('SunLesson.services', [])
                 case "getLessonUserdata" :
                     return HOST + "/userdata/" + id.chapterId + "/" + id.lessonId;
 
-                case "postLessonUserdata" :
-                    return HOST + "/userdata/" + id.chapterId + "/" + id.lessonId;
+                case "postUserdata" :
+                    return HOST + "/userdata/" + id.appId + "/" + id.entityId;
 
                 case "getUserInfo" :
                     return HOST + "/userdata/navigator/user_info";
@@ -132,6 +74,9 @@ angular.module('SunLesson.services', [])
 
                 case "postUserInfoUserdata" :
                     return HOST + "/userdata/navigator/user_info";
+
+                case "getAllUserProblem" :
+                    return HOST + "/userdata/me/mistake";
             }
             return false;
         }
@@ -142,14 +87,10 @@ angular.module('SunLesson.services', [])
     })
 
     .factory('ResourceProvider', function($q, $http, $route, $routeParams, $rootScope, DataProvider, APIProvider) {
+
         var getIds = function() {
             var deferred = $q.defer();
             var idsPromise = deferred.promise;
-
-/*            if($rootScope.ids) {
-                deferred.resolve($rootScope.ids);
-                return idsPromise;
-            }*/
 
             var ids = {};
             var params = $route.current.params;
@@ -174,18 +115,6 @@ angular.module('SunLesson.services', [])
                 deferred.resolve(DataProvider.lessonData);
                 return lessonDataPromise;
             }
-
-  /*          if(!!window.sessionStorage) {
-                var resourceSession = angular.fromJson(sessionStorage.getItem('resourceSession'));
-                //console.log('getLessonData的时候ids是否ready，lid='+$rootScope.ids.lid);
-                if(resourceSession && resourceSession.materialMap && resourceSession.materialMap[$rootScope.ids.lid]) {
-                    DataProvider.lessonData = resourceSession.materialMap[$rootScope.ids.lid];
-                    deferred.resolve(DataProvider.lessonData);
-                    return lessonDataPromise;
-                }
-            }
- */           
-
             
             var rootUrl = APIProvider.getAPI('getRoot', '', '');
             var ts = '';
@@ -225,23 +154,27 @@ console.log('开始获取lesson json');
                 return lessonUserdataPromise;
             }
 
-     /*      if(!!window.sessionStorage) {
-                var resourceSession = angular.fromJson(sessionStorage.getItem('resourceSession'));
-                if(resourceSession && resourceSession.lessonsUserdataMap) {
-                    DataProvider.lessonUserdata  = resourceSession.lessonsUserdataMap[$rootScope.ids.lid];
-                    if(!DataProvider.lessonUserdata) {
-                        DataProvider.lessonUserdata = {};
-                    }
-                    deferred.resolve(DataProvider.lessonUserdata);
-                    return lessonUserdataPromise;
-                } 
-            }
-            */
-
             var url = APIProvider.getAPI('getLessonUserdata', {"lessonId":$rootScope.ids.lid, "chapterId":$rootScope.ids.cid}, '');
             getResourceFromServer(url, deferred);
             return lessonUserdataPromise;
         };
+
+        var getAllUserProblem = function() {
+            var deferred = $q.defer();
+            var allMistakePromise = deferred.promise;
+
+            var url = APIProvider.getAPI('getAllUserProblem', '', '');
+            $http.get(url)
+                .success(function(allmistake) {
+                    DataProvider.allUserProblemMap = allmistake;
+                    deferred.resolve(allmistake);
+                })
+                .error(function(err) {
+                     alert("getAllUserProblem Error in getAllUserProblem");
+                     deferred.reject('Error');
+                })
+                return allMistakePromise;
+        }
       
         var getUserInfo = function() {
             var deferred = $q.defer();
@@ -251,16 +184,6 @@ console.log('开始获取lesson json');
                 deferred.resolve(DataProvider.userInfo);
                 return userInfoPromise;
             }
-
-       /*     if(!!window.sessionStorage) {
-                var resourceSession = angular.fromJson(sessionStorage.getItem('resourceSession'));
-                if(resourceSession && resourceSession.userInfo) {
-                    DataProvider.userInfo = resourceSession.userInfo;
-                    deferred.resolve(DataProvider.userInfo);
-                    return userInfoPromise;
-                }
-            }
-     */       
 
             var url = APIProvider.getAPI('getUserInfo', '');
             getResourceFromServer(url, deferred);
@@ -294,7 +217,8 @@ console.log('开始获取lesson json');
             getLessonUserdata: getLessonUserdata,
             getUserInfo: getUserInfo,
             getAchievements: getAchievements,
-            loadUserInfo: loadUserInfo
+            loadUserInfo: loadUserInfo,
+            getAllUserProblem: getAllUserProblem
         }
     })
 
@@ -439,15 +363,40 @@ console.log('开始获取lesson json');
             return lessonUserdata.activities[aid].problems[pid];
         }     
 
-        var flushUserdata = function(lessonId, chapterId) {  
+        var flushAllUserdata = function() {
+            //alert('flushUserdata');
+            //var deferred = $q.defer();
+            //var flushAllUserdataPromise = deferred.promise;
+            var ids = $rootScope.ids;
+            var postLessonUserdataPromise = flushUserdata(ids.cid, ids.lid);
+            postLessonUserdataPromise.then(function() {
+                console.log('lessonuserdata success~');
+            }, function(err) {
+                alert('lessonUserdata error');
+            });
+            var postMistakeUserdataPromise = flushUserdata("me", "mistake", DataProvider.allUserProblemMap);
+            postMistakeUserdataPromise.then(function() {
+                console.log('post all mistake: '+angular.toJson(DataProvider.allUserProblemMap));
+                alert('post all the mistake');
+            }, function(err) {
+                alert('mistakeUserdata error');
+            });
+            var allPromise = $q.all([postLessonUserdataPromise, postMistakeUserdataPromise]);
+            return allPromise;
+        }        
+
+        var flushUserdata = function(appId, entityId, content) {  
             var deferred = $q.defer();
             var flushPromise = deferred.promise;
 
+            if(!content) {
+                content = DataProvider.lessonUserdata;
+            }
             var promise = $http({
                 method: 'POST',
-                url: APIProvider.getAPI('postLessonUserdata', {"lessonId": lessonId, "chapterId": chapterId}, ''),
+                url: APIProvider.getAPI('postUserdata', {"appId": appId, "entityId": entityId}, ''),
                 headers: {'Content-Type': 'application/json;charset:UTF-8'},
-                data: JSON.stringify(DataProvider.lessonUserdata)                
+                data: JSON.stringify(content)                
             });
 
             promise.success(function(msg) {
@@ -547,6 +496,7 @@ console.log('开始获取lesson json');
         return {
             getActivityUserdata: getActivityUserdata,
             flushUserdata: flushUserdata,
+            flushAllUserdata: flushAllUserdata,
             resetUserdata: resetUserdata,
             addAchievements: addAchievements,
  //           loadUserdata: loadUserdata,
@@ -706,6 +656,10 @@ console.log('开始获取lesson json');
                 return ResourceProvider.getUserInfo();
             }
 
+            Sandbox.prototype.getAllUserProblem = function() {
+                return ResourceProvider.getAllUserProblem();
+            }
+
             Sandbox.prototype.getAchievements = function() {
                 return ResourceProvider.getAchievements();
             }
@@ -724,6 +678,10 @@ console.log('开始获取lesson json');
 
             Sandbox.prototype.flushUserdata = function(lid, cid) {
                 return UserdataProvider.flushUserdata(lid, cid);
+            }
+
+            Sandbox.prototype.flushAllUserdata = function() {
+                return UserdataProvider.flushAllUserdata();
             }
 
             Sandbox.prototype.resetUserdata = function(moduleName, moduleId) {
@@ -858,12 +816,20 @@ console.log('开始获取lesson json');
 
                 if ((typeof args !== "undefined") && (typeof args.activity !== "undefined")) {               
                     lessonUserdata.current_activity = args.activity;
-                    this.flushUserdata(lessonData.id, $rootScope.ids.cid);
-                    this.continueLesson(lessonData.id, args.activity);
+                    //this.flushUserdata(lessonData.id, $rootScope.ids.cid);
+                    this.flushAllUserdata().then(function() {
+                        this.continueLesson(lessonData.id, args.activity);
+                    }, function(err) {
+                         alert("flushAllUserdata Error in listenToActivityComplete");
+                    })
                 } else if (activityIndex != lessonData.activities.length-1) {
                     lessonUserdata.current_activity = lessonData.activities[activityIndex + 1].id;
-                    this.flushUserdata(lessonData.id, $rootScope.ids.cid);
-                    this.continueLesson(lessonData.id, lessonData.activities[activityIndex + 1].id);
+                    //this.flushUserdata(lessonData.id, $rootScope.ids.cid);
+                    this.flushAllUserdata().then(function() {
+                        this.continueLesson(lessonData.id, lessonData.activities[activityIndex + 1].id);
+                    }, function(err) {
+                        alert('flushAllUserdata Error in listenToActivityComplete');
+                    })
                 } else {
                     lessonUserdata.current_activity = undefined;
                     if ((typeof lessonUserdata.summary.correct_percent == "undefined")) {
@@ -921,7 +887,8 @@ console.log('开始获取lesson json');
                     args.title = lessonData.title;
                     args.lessonCup = scope.lessonCup;
                     this.listenToLessonComplete(args); 
-                    this.flushUserdata(lessonData.id, $rootScope.ids.cid);                  
+                    //this.flushUserdata(lessonData.id, $rootScope.ids.cid);   
+                    this.flushAllUserdata();               
                 }           //end of "else"                                            
             }                  //end of function   
 
@@ -992,7 +959,8 @@ console.log('开始获取lesson json');
                 args.title = scope.title;
                 args.lessonCup = scope.lessonCup;
                 this.listenToLessonComplete(args);
-                this.flushUserdata(lessonData.id, $rootScope.ids.cid);                
+                //this.flushUserdata(lessonData.id, $rootScope.ids.cid);     
+                this.flushAllUserdata();           
             }    
 
             Sandbox.prototype.parseCompleteCondition = function (pass_score, summary) {
