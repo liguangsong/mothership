@@ -68,7 +68,7 @@
 <h3 ng-show="currentProblem.type=='singlefilling' ">你的答案是: 
     <span ng-repeat="a in currentProblemUserdata.answer">{{a}}</span>
 </h3>
-<h3>{{currentProblem.explanation}}</h3>
+<h3 mathjax-bind="currentProblem.explanation"></h3>
 <div class="btn btn-block btn-primary"  ng-click="preProblem()">上一道</div>
 <div class="btn btn-block btn-primary"  ng-click="nextProblem()">下一道</div>                                  
    </div>

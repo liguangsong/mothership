@@ -377,7 +377,6 @@ console.log('开始获取lesson json');
             var postMistakeUserdataPromise = flushUserdata("me", "mistake", DataProvider.allUserProblemMap);
             postMistakeUserdataPromise.then(function() {
                 console.log('post all mistake: '+angular.toJson(DataProvider.allUserProblemMap));
-                alert('post all the mistake');
             }, function(err) {
                 alert('mistakeUserdata error');
             });
@@ -818,7 +817,8 @@ console.log('开始获取lesson json');
                     lessonUserdata.current_activity = args.activity;
                     //this.flushUserdata(lessonData.id, $rootScope.ids.cid);
                     this.flushAllUserdata().then(function() {
-                        this.continueLesson(lessonData.id, args.activity);
+                        //this.continueLesson(lessonData.id, args.activity);
+                        $location.path('/chapter/'+$rootScope.ids.cid+'/lesson/' + lessonData.id + '/activity/' + args.activity);
                     }, function(err) {
                          alert("flushAllUserdata Error in listenToActivityComplete");
                     })
@@ -826,7 +826,8 @@ console.log('开始获取lesson json');
                     lessonUserdata.current_activity = lessonData.activities[activityIndex + 1].id;
                     //this.flushUserdata(lessonData.id, $rootScope.ids.cid);
                     this.flushAllUserdata().then(function() {
-                        this.continueLesson(lessonData.id, lessonData.activities[activityIndex + 1].id);
+                        //this.continueLesson(lessonData.id, lessonData.activities[activityIndex + 1].id);
+                        $location.path('/chapter/'+$rootScope.ids.cid+'/lesson/' + lessonData.id + '/activity/' + lessonData.activities[activityIndex+1].id);
                     }, function(err) {
                         alert('flushAllUserdata Error in listenToActivityComplete');
                     })
