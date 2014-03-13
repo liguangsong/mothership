@@ -98,8 +98,7 @@ angular.module('SunNavigator.controllers', [])
                 .success(function (data) {
                     var me = subjectSandbox.loadMe();
                     me = null;
-                    window.location = '/signout';
-                    //window.location = '/webapp/login';
+                    window.location = '/webapp/login';
                 })
                 .error(function (err) {
                     console.log('Signout Error:  ' + err);
