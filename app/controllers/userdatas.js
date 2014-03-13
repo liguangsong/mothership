@@ -54,7 +54,7 @@ exports.write = function (req, res) {
         });
 };
 
-exports.addFavorite = function(req, res) {
+exports.editFavorite = function(req, res) {
     console.log('come in addFavorite');
     var username = req.user.username,
            appId = req.params.appId,

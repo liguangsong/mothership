@@ -1,0 +1,12 @@
+{
+    "id": "test",
+    "version_code": 1,
+    "name": "test",
+    "type": "web_app",
+    "launchable": 1,
+    "package_name": "org.sunlib.exercise",
+    "url": "/webapp/test",
+    "home": "/index.html",
+    "description": "我的错题本",
+    "local_folder": "/webapp/test"
+}

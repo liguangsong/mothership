@@ -36,7 +36,9 @@ angular.module('Mistakes.controllers', [])
                   //$scope.allProblemsArr和$scope.allProblemUserdataArr                       DONE
 //           7.给问题的显示添加数学符号的编译                                                                   DONE
 //           8.补全home.html里面的链接的点击函数，比如退出登陆，点击人名等                  DONE
-//           9.实现收藏和取消收藏~                                                                                                 
+//           9.实现收藏和取消收藏~                                                                                    DONE
+
+//TODO:修复“添加收藏后不能及时看见”的bug
        $scope.clickOnItem = function(item) {
             if(!item.type || (item.type != 'chapter')) {
                   //maybe is lesson
@@ -118,22 +120,54 @@ angular.module('Mistakes.controllers', [])
        }
 
        $scope.showProblem = function(problem) {
+            $scope.showHintBox = false;
+            $scope.showExplanation = false;   
+
             $scope.isShowProblem = true;
             $scope.currentProblem = problem;
             //TODO:对于userdata的显示，不是一进来就立即显示，而是通过点击触发后才显示
             $scope.currentProblemUserdata = $scope.allLessonProblemsUserdataMap[problem.id];
-            if(!(problem.type=='singlefilling')) {
-                 problem.choices.forEach(function(choice, index) {
-                      if(!choice.is_correct) {
-                        var index = $scope.currentProblemUserdata.answer.indexOf(choice.id);
-                          if($scope.currentProblemUserdata.answer.indexOf(choice.id) >= 0) {
-                               choice.is_wrong = true;
-                          }
-                      }
-                 })
-            }
+
+            if(problem.type != 'singlefilling') {
+                $scope.currentProblem.choices.forEach(function(choice) {
+                    choice.state = "default";
+                })                 
+            }            
+
             $scope.type = problem.type;
+            if ((typeof problem.layout != "undefined") && (problem.layout == "card")) {
+                $scope.layout = "card";
+                $scope.colNum = "6";
+            } else {
+                $scope.layout = "list";
+                $scope.colNum = "12";
+            }      
        }
+
+       $scope.showAnswer = function(problem) {
+            if(problem.type != 'singlefilling') {
+                $scope.currentProblem.choices.forEach(function(choice) {
+                    if(choice.is_correct) {
+                       choice.state = "correct";
+                       console.log('is_correct!!!!!!!!!!!!!!!!!!!!');
+                    }else{
+                        var index = $scope.currentProblemUserdata.answer.indexOf(choice.id);
+                        if(index>=0) {
+                            choice.state = "wrong";
+                        }else{
+                           choice.state = "default";
+                        }
+                    }
+                })                 
+            }else{
+              //show the singlefilling answer
+
+            }            
+       }
+
+      $scope.calcChoiceNum = function (index) {
+           return String.fromCharCode(65 + index) + ".";
+      };       
 
        $scope.preProblem = function() {
             var index = $scope.currentProblems.indexOf($scope.currentProblem);
@@ -165,9 +199,12 @@ angular.module('Mistakes.controllers', [])
             if(problem.is_favorite) {
                 //add tags---some tags
                 content.action = 'add';
+                $scope.favoriteProblemsArr.push(problem);
             }else{
                 //remove
                 content.action = 'remove';
+                var index = $scope.favoriteProblemsArr.indexOf(problem);
+                $scope.favoriteProblemsArr.splice(index, 1);
             }
             var putUrl = '/userdata/me/mistake';
             content.cid = problem.cid;
@@ -186,15 +223,6 @@ angular.module('Mistakes.controllers', [])
             }).error(function(err) {
                 alert('add Favorite Error');
             })            
-       }
-
-       $scope.addFavorite = function(problem) {
-            //use put action: PUT /userdata/me/mistak
-
-       }
-
-       $scope.removeFavorite = function(problem) {
-
        }
 
        $scope.backToNavigator = function() {

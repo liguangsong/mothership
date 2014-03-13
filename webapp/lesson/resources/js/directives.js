@@ -893,8 +893,10 @@ angular.module('SunLesson.directives', [])
                         }
                     }
 
-                    if(Object.keys(DataProvider.allUserProblemMap).length <= 0) {
-                        alert('The First get mistake');
+                    if(DataProvider.allUserProblemMap && Object.keys(DataProvider.allUserProblemMap).length <= 0) {
+                        //alert('The First get mistake');
+                        console.log('Shit !!!!!!!!!!!!!-=-=-=-=--=--------------------------------------------------------=====================');
+                        $('#myModal').modal('toggle');
                     }
 
                     //add in the mistake note

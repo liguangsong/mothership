@@ -131,7 +131,6 @@ angular.module('SunLesson.services', [])
                         }
                     })
 
-console.log('开始获取lesson json');
                     var url = APIProvider.getAPI('getLessonJson', {chapter: DataProvider.chapterData, lessonId: $rootScope.ids.lid}, ts);
                     getResourceFromServer(url, deferred);
                 }).error(function(err) {
@@ -167,7 +166,10 @@ console.log('开始获取lesson json');
             $http.get(url)
                 .success(function(allmistake) {
                     DataProvider.allUserProblemMap = allmistake;
-                    deferred.resolve(allmistake);
+                    if(!DataProvider.allUserProblemMap) {
+                        DataProvider.allUserProblemMap = {};
+                    }
+                    deferred.resolve(DataProvider.allUserProblemMap);
                 })
                 .error(function(err) {
                      alert("getAllUserProblem Error in getAllUserProblem");
