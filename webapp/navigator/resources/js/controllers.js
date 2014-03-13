@@ -16,8 +16,9 @@ angular.module('SunNavigator.controllers', [])
         var subjectSandbox = SandboxProvider.getSandbox();
 
         $scope.subjects = rootMaterial.subjects;
+        //Mixpanel
         $scope.me = me;
-        initMixpanel(me._id);
+        initMixpanelWithSP(me._id,me.username,me.name,me.usergroup)
 
         var params = $route.current.params;
         console.log('routeParams=' + $routeParams.sid);

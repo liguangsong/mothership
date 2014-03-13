@@ -197,8 +197,6 @@ angular.module('SunNavigator.directives', [])
                         $rootScope.isBack = false;
                         $('#lessonModal-' + id).modal('hide');
                         $('.modal-backdrop').remove();
-                        //Mixpanel
-                        LearningRelated.enterLesson($scope.id,$scope.title/*,$scope.parentChapter.id,$scope.parentChapter.title*/);
 
                         var sid = $routeParams.sid;
                         var cid = $routeParams.cid;
