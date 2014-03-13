@@ -28,7 +28,7 @@ module.exports = function (app, passport, auth) {
 
     app.get('/userdata/:appId/:entityId', auth.requiresLogin, userdata.read);
     app.post('/userdata/:appId/:entityId', auth.requiresLogin, userdata.write);
-    app.put('/userdata/:appId/:entityId', auth.requiresLogin, userdata.addFavorite);
+    app.put('/userdata/:appId/:entityId', auth.requiresLogin, userdata.editFavorite);
 
     //route the rooms api
     app.get('/rooms', auth.requiresLogin, rooms.all);

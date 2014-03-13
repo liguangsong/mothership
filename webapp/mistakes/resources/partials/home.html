@@ -24,7 +24,7 @@
     </div>
   </nav>
 
-   <div class="container" ng-hide="isShowProblem">
+   <div class="container">
     <div class="col-lg-9 col-md-9">
       <div class="page-box">
         <h4>错题本</h4>
@@ -34,7 +34,8 @@
         </ul>
         <ul class="list-group cuoti">
           
-             <problem ng-repeat="mproblem in currentProblems"></problem>
+             <problem ng-repeat="mproblem in currentProblems" ></problem>
+ 
           
          </ul>
       </div>
@@ -58,7 +59,7 @@
     </div>
    </div> 
 
-   <div ng-show="isShowProblem">
+<!--    <div ng-show="isShowProblem">
 <h3 ng-click="goBack()">回到首页</h3>
 <h4>已收藏:{{currentProblem.isFavorite}}</h4>
 <div mathjax-bind="currentProblem.body"></div>
@@ -71,5 +72,7 @@
 <h3 mathjax-bind="currentProblem.explanation"></h3>
 <div class="btn btn-block btn-primary"  ng-click="preProblem()">上一道</div>
 <div class="btn btn-block btn-primary"  ng-click="nextProblem()">下一道</div>                                  
-   </div>
+   </div> -->
 </div>
+
+
