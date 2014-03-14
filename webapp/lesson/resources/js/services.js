@@ -1,9 +1,11 @@
 angular.module('SunLesson.services', [])
-    .factory('DataProvider', function() {
+    .factory('DataProvider', function () {
+        var me = {};
         var chapterData = {};
         var lessonData = {};
-        var lessonUserdata = {};     
+        var lessonUserdata = {};
         var userInfo = {};
+
         var allUserProblemMap = {};
          var achievements = 
             {"ts": "1", "badges": [
@@ -17,6 +19,7 @@ angular.module('SunLesson.services', [])
             ], "awards": {}};  
 
         return {
+            me: me,
             chapterData: chapterData,
             lessonData: lessonData,
             lessonUserdata: lessonUserdata,
@@ -29,7 +32,7 @@ angular.module('SunLesson.services', [])
     })
 
 //TODO：这里面的API肯定是要做清理的，用不到的干掉
-    .service('APIProvider', function(DataProvider, $rootScope, $q, $http) {
+    .service('APIProvider', function (DataProvider, $rootScope, $q, $http) {
         var HOST = '';
 
         var getAPI = function (type, id, ts) {
@@ -47,11 +50,11 @@ angular.module('SunLesson.services', [])
                     if (typeof id.chapter === "undefined") {
                     }
                     return HOST + id.chapter.url + "/" + id.lessonId + "/lesson.json";
-                    
+
                 case "getFileResources" :
                     var chapter = DataProvider.chapterData;
                     if (typeof chapter === "undefined") {
-                    }                    
+                    }
                     return HOST + chapter.url + "/" + id.lessonId;
 
                 case "getAchievementsJson" :
@@ -86,15 +89,35 @@ angular.module('SunLesson.services', [])
         }
     })
 
+
     .factory('ResourceProvider', function($q, $http, $route, $routeParams, $rootScope, DataProvider, APIProvider) {
+
+        var getMe = function () {
+            var deferred = $q.defer();
+            var userPromise = deferred.promise;
+
+            if (DataProvider.me && DataProvider.me.username) {
+                deferred.resolve(DataProvider.me);
+                return userPromise;
+            }
+
+            $http.get(APIProvider.getAPI('getMe'))
+                .success(function (user) {
+                    DataProvider.me = user;
+                    deferred.resolve(DataProvider.me);
+                })
+                .error(function (err) {
+                    deferred.reject('Fetch User Error: ' + err);
+                });
+            return userPromise;
+        }
 
         var getIds = function() {
             var deferred = $q.defer();
             var idsPromise = deferred.promise;
-
             var ids = {};
             var params = $route.current.params;
-            if(params.sid) {
+            if (params.sid) {
                 $rootScope.sid = params.sid;
             }
             ids.cid = params.cid;
@@ -106,23 +129,23 @@ angular.module('SunLesson.services', [])
             return idsPromise;
         }
 
-        var getLessonData = function() {
+        var getLessonData = function () {
             var deferred = $q.defer();
             var lessonDataPromise = deferred.promise;
 
-            console.log('DataProvider.lessonData.id='+DataProvider.lessonData.id+'   ids.lid='+$rootScope.ids.lid);
-            if(DataProvider.lessonData && DataProvider.lessonData.id && DataProvider.lessonData.activities && (DataProvider.lessonData.id == $rootScope.ids.lid)) {
+            console.log('DataProvider.lessonData.id=' + DataProvider.lessonData.id + '   ids.lid=' + $rootScope.ids.lid);
+            if (DataProvider.lessonData && DataProvider.lessonData.id && DataProvider.lessonData.activities && (DataProvider.lessonData.id == $rootScope.ids.lid)) {
                 deferred.resolve(DataProvider.lessonData);
                 return lessonDataPromise;
             }
-            
+
             var rootUrl = APIProvider.getAPI('getRoot', '', '');
             var ts = '';
-            console.log('能否拿到ids='+$rootScope.ids.cid);
-            if(!(DataProvider.chapterData && DataProvider.chapterData.url)) {
-                $http.get(rootUrl).success(function(chapters) {
-                    chapters.some(function(chapter, index) {
-                        if(chapter.id === $rootScope.ids.cid) {
+            console.log('能否拿到ids=' + $rootScope.ids.cid);
+            if (!(DataProvider.chapterData && DataProvider.chapterData.url)) {
+                $http.get(rootUrl).success(function (chapters) {
+                    chapters.some(function (chapter, index) {
+                        if (chapter.id === $rootScope.ids.cid) {
                             DataProvider.chapterData = chapter;
                             console.log('找到，赋值');
                             return true;
@@ -133,9 +156,9 @@ angular.module('SunLesson.services', [])
 
                     var url = APIProvider.getAPI('getLessonJson', {chapter: DataProvider.chapterData, lessonId: $rootScope.ids.lid}, ts);
                     getResourceFromServer(url, deferred);
-                }).error(function(err) {
-                    console.log('Get chapterData Error...');
-                })
+                }).error(function (err) {
+                        console.log('Get chapterData Error...');
+                    })
             } else {
                 var url = APIProvider.getAPI('getLessonJson', {chapter: DataProvider.chapterData, lessonId: $rootScope.ids.lid}, ts);
                 getResourceFromServer(url, deferred);
@@ -144,14 +167,15 @@ angular.module('SunLesson.services', [])
             return lessonDataPromise;
         };
 
-         var getLessonUserdata = function() {
+        var getLessonUserdata = function () {
             var deferred = $q.defer();
             var lessonUserdataPromise = deferred.promise;
 
-            if(DataProvider.lessonUserdata && DataProvider.lessonUserdata.summary) {
+            if (DataProvider.lessonUserdata && DataProvider.lessonUserdata.summary) {
                 deferred.resolve(DataProvider.lessonUserdata);
                 return lessonUserdataPromise;
             }
+
 
             var url = APIProvider.getAPI('getLessonUserdata', {"lessonId":$rootScope.ids.lid, "chapterId":$rootScope.ids.cid}, '');
             getResourceFromServer(url, deferred);
@@ -182,7 +206,7 @@ angular.module('SunLesson.services', [])
             var deferred = $q.defer();
             var userInfoPromise = deferred.promise;
 
-            if(DataProvider.userInfo && DataProvider.userInfo.achievements) {
+            if (DataProvider.userInfo && DataProvider.userInfo.achievements) {
                 deferred.resolve(DataProvider.userInfo);
                 return userInfoPromise;
             }
@@ -190,7 +214,7 @@ angular.module('SunLesson.services', [])
             var url = APIProvider.getAPI('getUserInfo', '');
             getResourceFromServer(url, deferred);
             return userInfoPromise;
-        };     
+        };
 
         var getAchievements = function () {
             var deferred = $q.defer();
@@ -199,18 +223,18 @@ angular.module('SunLesson.services', [])
             deferred.resolve(DataProvider.achievements);
 
             return achievementsPromise;
-        }          
+        }
 
-        var loadUserInfo = function() {
+        var loadUserInfo = function () {
             return DataProvider.userInfo;
-        }        
+        }
 
-        var getResourceFromServer = function (url, deferred) { 
-            $http.get(url).success(function(resource) {
+        var getResourceFromServer = function (url, deferred) {
+            $http.get(url).success(function (resource) {
                 deferred.resolve(resource);
-            }).error(function(err) {
-                deferred.reject('getResourceFromServer Error!...');
-            })
+            }).error(function (err) {
+                    deferred.reject('getResourceFromServer Error!...');
+                })
         }
 
         return {
@@ -220,41 +244,42 @@ angular.module('SunLesson.services', [])
             getUserInfo: getUserInfo,
             getAchievements: getAchievements,
             loadUserInfo: loadUserInfo,
+            getMe: getMe,
             getAllUserProblem: getAllUserProblem
         }
     })
 
-    .factory('InitResourceProvider', function(DataProvider) {
-         var initResource = function(ids, lessonData, lessonUserdata, userInfo) {
-           // console.log('initResource.lessonData: '+angular.toJson(lessonData));
-             (function initLessonData() {
+    .factory('InitResourceProvider', function (DataProvider) {
+        var initResource = function (ids, lessonData, lessonUserdata, userInfo, me) {
+            // console.log('initResource.lessonData: '+angular.toJson(lessonData));
+            (function initLessonData() {
                 DataProvider.lessonData = lessonData;
                 console.log('init LessonData');
-             })();
+            })();
 
             (function initLessonUserdata() {
-                 if(!lessonUserdata || !lessonUserdata.summary) {
-                     lessonUserdata = {
-                         is_complete : false,
-                         activities: {},
-                         summary: {badges:[]}
-                     };
+                if (!lessonUserdata || !lessonUserdata.summary) {
+                    lessonUserdata = {
+                        is_complete: false,
+                        activities: {},
+                        summary: {badges: []}
+                    };
 
-                     for(var i=0;i<lessonData.activities.length;i++) {   
-                         var activityItem = lessonData.activities[i];            
-                         if(activityItem.type == 'quiz') { 
-                            lessonUserdata.activities[activityItem.id]= {
+                    for (var i = 0; i < lessonData.activities.length; i++) {
+                        var activityItem = lessonData.activities[i];
+                        if (activityItem.type == 'quiz') {
+                            lessonUserdata.activities[activityItem.id] = {
                                 is_complete: false,
                                 problems: {},
                                 summary: {}
                             };
 
-                            if(activityItem.pool_count) {    
+                            if (activityItem.pool_count) {
                                 lessonUserdata.activities[activityItem.id].seed = [];
                             }
                         } else {
                             lessonUserdata.activities[activityItem.id] = {
-                                is_complete: false,   
+                                is_complete: false,
                                 summary: {}
                             };
                         }
@@ -264,106 +289,111 @@ angular.module('SunLesson.services', [])
             })();
 
             (function initUserInfo() {
-                if(!userInfo.achievements) {
+                if (!userInfo.achievements) {
                     userInfo = {
                         achievements: {
                             badges: {},
                             awards: {}
                         }
                     }
-                } else if(!userInfo.achievements.badges) {
+                } else if (!userInfo.achievements.badges) {
                     userInfoData.achievements = {
                         badges: {},
                         awards: {}
                     }
                 }
                 DataProvider.userInfo = userInfo;
-            })();            
-         }   
+            })();
 
-         return {
+            (function initMe() {
+                DataProvider.me = me;
+            })();
+        }
+
+        return {
             initResource: initResource
-         }     
+        }
     })
 
-    .factory('UserdataProvider', function($q, $http, $rootScope, APIProvider, DataProvider, ResourceProvider, MaterialProvider) {
-        var getActivityUserdata = function (activityId) { 
-           var activityData = {};
+    .factory('UserdataProvider', function ($q, $http, $rootScope, APIProvider, DataProvider, ResourceProvider, MaterialProvider) {
+        var getActivityUserdata = function (activityId) {
+            var activityData = {};
 
-           var lessonDataPromise = ResourceProvider.getLessonData();
-           DataProvider.lessonData.activities.some(function(activity, index) {
-                if(activity.id == activityId) {
+            var lessonDataPromise = ResourceProvider.getLessonData();
+            DataProvider.lessonData.activities.some(function (activity, index) {
+                if (activity.id == activityId) {
                     activityData = activity;
                     return true;
-                }else{
+                } else {
                     return false;
                 }
-           })
-
-      /*      DataProvider.lessonData.activities.forEach(function(activity, index) {
-                if(activity.id == activityId) {
-                    console.log('找到activity data');
-                    activityData = activity;
-                }
             })
-      */
 
-            if(!DataProvider.lessonUserdata.activities) {
+            /*      DataProvider.lessonData.activities.forEach(function(activity, index) {
+             if(activity.id == activityId) {
+             console.log('找到activity data');
+             activityData = activity;
+             }
+             })
+             */
+
+            if (!DataProvider.lessonUserdata.activities) {
                 DataProvider.lessonUserdata = {
                     is_complete: false,
                     activities: {},
-                    summary: {} 
+                    summary: {}
                 }
-            }    
+            }
 
-            if(!DataProvider.lessonUserdata.activities[activityId]) {
-                 if(activityData.type == 'quiz') {
+            if (!DataProvider.lessonUserdata.activities[activityId]) {
+                if (activityData.type == 'quiz') {
                     DataProvider.lessonUserdata.activities[activityId] = {
                         is_complete: false,
-                        summary:{},
+                        summary: {},
                         problems: {}
-                    }                    
-                }else {
+                    }
+                } else {
                     DataProvider.lessonUserdata.activities[activityId] = {
                         is_complete: false,
                         summary: {}
                     }
-                }               
+                }
             }
 
-            var activityUserdata = DataProvider.lessonUserdata.activities[activityId];  
+            var activityUserdata = DataProvider.lessonUserdata.activities[activityId];
             //console.log('the activityUserdata='+activityId+'     content='+angular.toJson(activityUserdata));
-            if (activityData.pool_count) { 
+            if (activityData.pool_count) {
                 if (activityUserdata.seed && (activityUserdata.seed.length == 0)) {
                     activityData = MaterialProvider.getActivityMaterial(activityId);
-                    activityUserdata.seed = activityData.seed;                  
+                    activityUserdata.seed = activityData.seed;
                     for (var i = 0; i < activityData.problems.length; i++) {
-                        activityUserdata.problems[activityData.problems[i].id] ={
+                        activityUserdata.problems[activityData.problems[i].id] = {
                             is_correct: false,
                             answer: []
                         };
                     }
-                } 
-            }else if ((activityData.type == "quiz") && ((!activityUserdata.problems) || (Object.keys(activityUserdata.problems).length <= 0))) {
-                if(!activityUserdata.problems) {
+                }
+            } else if ((activityData.type == "quiz") && ((!activityUserdata.problems) || (Object.keys(activityUserdata.problems).length <= 0))) {
+                if (!activityUserdata.problems) {
                     activityUserdata.problems = {};
                 }
-                for (var i = 0; i < activityData.problems.length; i++) {          
+                for (var i = 0; i < activityData.problems.length; i++) {
                     activityUserdata.problems[activityData.problems[i].id] = {
                         is_correct: false,
                         answer: []
                     };
                 }
-            }else{
+            } else {
                 console.log('直接返回');
-            } 
+            }
             return activityUserdata;
-        }   
+        }
 
-        var loadProblemUserdata = function(aid, pid) {
+        var loadProblemUserdata = function (aid, pid) {
             var lessonUserdata = DataProvider.lessonUserdata;
             return lessonUserdata.activities[aid].problems[pid];
-        }     
+        }
+
 
         var flushAllUserdata = function() {
             //alert('flushUserdata');
@@ -397,19 +427,20 @@ angular.module('SunLesson.services', [])
                 method: 'POST',
                 url: APIProvider.getAPI('postUserdata', {"appId": appId, "entityId": entityId}, ''),
                 headers: {'Content-Type': 'application/json;charset:UTF-8'},
+
                 data: JSON.stringify(content)                
             });
 
-            promise.success(function(msg) {
+            promise.success(function (msg) {
                 deferred.resolve('Success flush userdata...');
-            }).error(function(err) {
-                deferred.reject('Flush userdata error...');
-            })
+            }).error(function (err) {
+                    deferred.reject('Flush userdata error...');
+                })
 
             return flushPromise;
         }
 
-        var resetUserdata = function (moduleName, moduleId) {  
+        var resetUserdata = function (moduleName, moduleId) {
             var lessonUserdata = DataProvider.lessonUserdata;
             if (moduleName === "lesson") {
                 var promise = ResourceProvider.getLessonUserdata();
@@ -420,7 +451,7 @@ angular.module('SunLesson.services', [])
                 var activityData = MaterialProvider.loadMaterial(moduleId, DataProvider.lessonData.activities);
                 DataProvider.lessonUserdata.activities[moduleId] = {
                     is_complete: true,
-                    summary: {}   
+                    summary: {}
                 };
 
                 if (activityData.type === 'quiz') {
@@ -464,7 +495,7 @@ angular.module('SunLesson.services', [])
             })
 
             return globalBadgesPromise;
-        }        
+        }
 
         var addAchievements = function (achievementType, achievementContent) {
             var userInfo = ResourceProvider.loadUserInfo();
@@ -482,7 +513,7 @@ angular.module('SunLesson.services', [])
         var flushUserInfo = function () {
             var userInfo = ResourceProvider.loadUserInfo();
             $http.post(APIProvider.getAPI("postUserInfoUserdata", "", ""), JSON.stringify());
-        }        
+        }
 
         var showNotification = function (notifyType, notifyContent) {
             toastr.options.positionClass = "toast-top-full-width";
@@ -492,7 +523,7 @@ angular.module('SunLesson.services', [])
             } else if (notifyType == "error") {
                 toastr.error("错误：" + notifyContent);
             }
-        };     
+        };
 //TODO:return 
         return {
             getActivityUserdata: getActivityUserdata,
@@ -500,17 +531,17 @@ angular.module('SunLesson.services', [])
             flushAllUserdata: flushAllUserdata,
             resetUserdata: resetUserdata,
             addAchievements: addAchievements,
- //           loadUserdata: loadUserdata,
+            //           loadUserdata: loadUserdata,
             loadProblemUserdata: loadProblemUserdata,
             getIncompleteGlobalBadges: getIncompleteGlobalBadges
         }
     })
 
-    .factory('MaterialProvider', function(DataProvider) {
-        var loadMaterial = function(id, arr) {
-            if(arr) {
-                for(var i=0;i<arr.length;i++) {
-                    if(arr[i].id == id) {
+    .factory('MaterialProvider', function (DataProvider) {
+        var loadMaterial = function (id, arr) {
+            if (arr) {
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i].id == id) {
                         return arr[i];
                     }
                 }
@@ -518,7 +549,7 @@ angular.module('SunLesson.services', [])
         }
 
 //randomize_choices
-        var getActivityMaterial = function (activityId, seed) {  
+        var getActivityMaterial = function (activityId, seed) {
             var originalActivityData = loadMaterial(activityId, DataProvider.lessonData.activities);
             if (originalActivityData.pool_count) {
                 var activityData = _.clone(originalActivityData);
@@ -533,17 +564,17 @@ angular.module('SunLesson.services', [])
                     }
                     var shuffledProblems = getShuffledProblems(activityData, newSeed);
                     activityData.problems = shuffledProblems;
-                    activityData.seed = newSeed.slice();  
+                    activityData.seed = newSeed.slice();
                 }
-                if(activityData.randomize_choices) {  
+                if (activityData.randomize_choices) {
                     shuffleChoices(activityData.problems);
                 }
                 return activityData;
-            } else if(!originalActivityData.pool_count) {
-                if(originalActivityData.randomize_questions) {
+            } else if (!originalActivityData.pool_count) {
+                if (originalActivityData.randomize_questions) {
                     originalActivityData.problems = _.shuffle(originalActivityData.problems);
                 }
-                if(originalActivityData.randomize_choices) {
+                if (originalActivityData.randomize_choices) {
                     shuffleChoices(originalActivityData.problems);
                 }
                 return originalActivityData;
@@ -551,8 +582,8 @@ angular.module('SunLesson.services', [])
             return originalActivityData;
         }
 
-        var shuffleChoices = function(problems) {
-            for(var i=0;i<problems.length;i++) {
+        var shuffleChoices = function (problems) {
+            for (var i = 0; i < problems.length; i++) {
                 var problem = problems[i];
                 problem.choices = _.shuffle(problem.choices);
             }
@@ -571,7 +602,7 @@ angular.module('SunLesson.services', [])
             }
             return problemsShuffled;
         }
-        
+
         return {
             loadMaterial: loadMaterial,
             getActivityMaterial: getActivityMaterial
@@ -622,7 +653,7 @@ angular.module('SunLesson.services', [])
         };
 
         var getGrader = function (grader_id, condition) {
-            return graderCollection[grader_id](condition);   
+            return graderCollection[grader_id](condition);
         }
 
         var graderFactory = function (graderFunc, userData) {
@@ -635,27 +666,32 @@ angular.module('SunLesson.services', [])
         }
     })
 
-    .factory('SandboxProvider', function($rootScope, $location, DataProvider, APIProvider, ResourceProvider, UserdataProvider, MaterialProvider, GraderProvider, InitResourceProvider) {
+    .factory('SandboxProvider', function ($rootScope, $location, DataProvider, APIProvider, ResourceProvider, UserdataProvider, MaterialProvider, GraderProvider, InitResourceProvider) {
         function Sandbox() {
-            Sandbox.prototype.initResource = function(ids, lessonData, lessonUserdata, userInfo) {
-                return InitResourceProvider.initResource(ids, lessonData, lessonUserdata, userInfo);
+            Sandbox.prototype.initResource = function (ids, lessonData, lessonUserdata, userInfo,me) {
+                return InitResourceProvider.initResource(ids, lessonData, lessonUserdata, userInfo,me);
             }
 
-            Sandbox.prototype.getIds = function() {
+            Sandbox.prototype.getMe = function () {
+                return ResourceProvider.getMe();
+            }
+
+            Sandbox.prototype.getIds = function () {
                 return ResourceProvider.getIds();
             }
 
-            Sandbox.prototype.getLessonData = function() {
+            Sandbox.prototype.getLessonData = function () {
                 return ResourceProvider.getLessonData();
             }
 
-            Sandbox.prototype.getLessonUserdata = function() {
+            Sandbox.prototype.getLessonUserdata = function () {
                 return ResourceProvider.getLessonUserdata();
             }
 
-            Sandbox.prototype.getUserInfo = function() {
+            Sandbox.prototype.getUserInfo = function () {
                 return ResourceProvider.getUserInfo();
             }
+
 
             Sandbox.prototype.getAllUserProblem = function() {
                 return ResourceProvider.getAllUserProblem();
@@ -665,21 +701,22 @@ angular.module('SunLesson.services', [])
                 return ResourceProvider.getAchievements();
             }
 
-            Sandbox.prototype.loadUserInfo = function() {
+            Sandbox.prototype.loadUserInfo = function () {
                 return ResourceProvider.loadUserInfo();
             }
 
-            Sandbox.prototype.getActivityUserdata = function(aid) {
+            Sandbox.prototype.getActivityUserdata = function (aid) {
                 return UserdataProvider.getActivityUserdata(aid);
             }
 
-            Sandbox.prototype.loadProblemUserdata = function(aid, pid) {
+            Sandbox.prototype.loadProblemUserdata = function (aid, pid) {
                 return UserdataProvider.loadProblemUserdata(aid, pid);
             }
 
-            Sandbox.prototype.flushUserdata = function(lid, cid) {
+            Sandbox.prototype.flushUserdata = function (lid, cid) {
                 return UserdataProvider.flushUserdata(lid, cid);
             }
+
 
             Sandbox.prototype.flushAllUserdata = function() {
                 return UserdataProvider.flushAllUserdata();
@@ -689,50 +726,50 @@ angular.module('SunLesson.services', [])
                 return UserdataProvider.resetUserdata(moduleName, moduleId);
             }
 
-            Sandbox.prototype.addAchievements = function(achievementType, achievementContent) {
+            Sandbox.prototype.addAchievements = function (achievementType, achievementContent) {
                 return UserdataProvider.addAchievements(achievementType, achievementContent);
             }
 
-            Sandbox.prototype.getIncompleteGlobalBadges = function(event) {
+            Sandbox.prototype.getIncompleteGlobalBadges = function (event) {
                 return UserdataProvider.getIncompleteGlobalBadges(event);
             }
 
-            Sandbox.prototype.loadMaterial = function(id, arr) {
+            Sandbox.prototype.loadMaterial = function (id, arr) {
                 return MaterialProvider.loadMaterial(id, arr);
             }
 
-            Sandbox.prototype.getActivityMaterial = function(activityId, seed) {
+            Sandbox.prototype.getActivityMaterial = function (activityId, seed) {
                 return MaterialProvider.getActivityMaterial(activityId, seed);
             }
 
-            Sandbox.prototype.graderFactory = function(graderFunc, userData) {
+            Sandbox.prototype.graderFactory = function (graderFunc, userData) {
                 return GraderProvider.graderFactory(graderFunc, userData);
             }
 
-            Sandbox.prototype.getGrader = function(grader_id, condition) {
+            Sandbox.prototype.getGrader = function (grader_id, condition) {
                 return GraderProvider.getGrader(grader_id, condition);
             }
 
-            Sandbox.prototype.sendEvent = function(eventName, scope, args) {
+            Sandbox.prototype.sendEvent = function (eventName, scope, args) {
                 scope.$emit(eventName, args);
-            } 
+            }
 
             Sandbox.prototype.playSoundEffects = function (soundName) {
                 var soundEffect = new Audio("resources/sound/" + soundName + ".mp3");
                 soundEffect.play();
-            }      
+            }
 
-            Sandbox.prototype.continueLesson = function(lid, aid) {
-                $location.path('/chapter/'+$rootScope.ids.cid+'/lesson/' + lid + '/activity/' + aid);
-            }   
+            Sandbox.prototype.continueLesson = function (lid, aid) {
+                $location.path('/chapter/' + $rootScope.ids.cid + '/lesson/' + lid + '/activity/' + aid);
+            }
 
             Sandbox.prototype.createGrader = function (graderFunc, userData) {
                 return GraderProvider.graderFactory(graderFunc, userData);
-            }   
-            
+            }
+
             Sandbox.prototype.getParentActivityData = function (parentId) {
                 return MaterialProvider.loadMaterial(parentId, DataProvider.lessonData.activities);
-            }                                      
+            }
 
             Sandbox.prototype.completeQuizActivity = function (activityData, $scope, correctCount, lessonSummary) {
                 var jump = [];
@@ -742,18 +779,18 @@ angular.module('SunLesson.services', [])
                     if (((jump[0] === "end_of_lesson_if_correctness") && (this.conditionParser(jump[1], correctCount, correctPercent))) ||
                         ((jump[0] === "to_activity_if_correctness") && (this.conditionParser(jump[2], correctCount, correctPercent))) ||
                         (jump[0] === "force_to_activity")) {
-                            break;
+                        break;
                     }
-                }                
+                }
 
                 if (i < activityData.jump.length) {
                     if (jump[0] != "end_of_lesson_if_correctness") {
-                       this.listenToActivityComplete($scope, {activity: jump[1], summary: lessonSummary});
+                        this.listenToActivityComplete($scope, {activity: jump[1], summary: lessonSummary});
                     } else {
                         this.listenToEndOfLesson($scope, {summary: lessonSummary});
                     }
                 } else {
-                   this.listenToActivityComplete($scope, {summary: lessonSummary});
+                    this.listenToActivityComplete($scope, {summary: lessonSummary});
                 }
             }
 
@@ -795,15 +832,15 @@ angular.module('SunLesson.services', [])
                             (!is_percent && (correctCount == targetNum)));
                     }
                 }
-            }         
+            }
 
-            Sandbox.prototype.listenToActivityComplete =  function(scope, args) {
+            Sandbox.prototype.listenToActivityComplete = function (scope, args) {
                 var lessonUserdata = DataProvider.lessonUserdata;
                 var lessonData = DataProvider.lessonData;
                 var activityIndex = 0;
-                for(var i=0;i<lessonData.activities.length;i++) {
+                for (var i = 0; i < lessonData.activities.length; i++) {
                     var item = lessonData.activities[i];
-                    if(item.id == lessonUserdata.current_activity) {
+                    if (item.id == lessonUserdata.current_activity) {
                         activityIndex = i;
                         break;
                     }
@@ -811,12 +848,13 @@ angular.module('SunLesson.services', [])
 
                 if ((typeof args !== "undefined") && (typeof args.summary !== "undefined") &&
                     (typeof args.summary.correct_count !== "undefined")) {
-                        lessonUserdata.summary.correct_count = args.summary.correct_count;
-                        lessonUserdata.summary.correct_percent = args.summary.correct_percent;
+                    lessonUserdata.summary.correct_count = args.summary.correct_count;
+                    lessonUserdata.summary.correct_percent = args.summary.correct_percent;
                 }
 
-                if ((typeof args !== "undefined") && (typeof args.activity !== "undefined")) {               
+                if ((typeof args !== "undefined") && (typeof args.activity !== "undefined")) {
                     lessonUserdata.current_activity = args.activity;
+
                     //this.flushUserdata(lessonData.id, $rootScope.ids.cid);
                     this.flushAllUserdata().then(function() {
                         //this.continueLesson(lessonData.id, args.activity);
@@ -842,14 +880,14 @@ angular.module('SunLesson.services', [])
                         if (typeof lessonData.pass_score != "undefined") {
                             if (this.parseCompleteCondition(lessonData.pass_score, lessonUserdata.summary)) {
                                 lessonUserdata.is_complete = true;
-                            }else{
+                            } else {
                                 //TODO:
                                 lessonUserdata.ever_failed = true;
                             }
                         } else {
                             lessonUserdata.is_complete = true;
-                        }                                        
-                    } 
+                        }
+                    }
 
                     if (typeof lessonUserdata.summary.correct_percent != "undefined" && lessonUserdata.is_complete) {
                         if ((typeof lessonData.star3 == "undefined") || (lessonUserdata.summary.correct_percent >= lessonData.star3)) {
@@ -868,13 +906,13 @@ angular.module('SunLesson.services', [])
                                     if ((typeof lessonUserdata.summary.correct_count == "undefined") ?
                                         (this.conditionParser(lessonData.achievements[i].condition, Infinity, 100)) :
                                         (this.conditionParser(lessonData.achievements[i].condition,
-                                        lessonUserdata.summary.correct_count, lessonUserdata.summary.correct_percent))) {
-                                            this.addAchievements("awards", lessonData.achievements[i]);
+                                            lessonUserdata.summary.correct_count, lessonUserdata.summary.correct_percent))) {
+                                        this.addAchievements("awards", lessonData.achievements[i]);
                                     }
                                 }
                             }
                         }
-                    }  
+                    }
 
                     scope.showLessonSummary = true;
                     scope.hasFinalQuiz = (typeof lessonUserdata.summary.correct_percent != "undefined");
@@ -883,20 +921,21 @@ angular.module('SunLesson.services', [])
                         lessonUserdata.summary.star : 0;
                     scope.lessonCup = (lessonUserdata.summary.star == 1) ? " 获得 铜杯" :
                         ((lessonUserdata.summary.star == 2) ? " 获得 银杯" :
-                        ((lessonUserdata.summary.star == 3) ? " 获得 金杯" : null));
+                            ((lessonUserdata.summary.star == 3) ? " 获得 金杯" : null));
 
                     var args = {};
                     args.id = lessonData.id;
                     args.title = lessonData.title;
                     args.lessonCup = scope.lessonCup;
+
                     this.listenToLessonComplete(args); 
                     //this.flushUserdata(lessonData.id, $rootScope.ids.cid);   
                     this.flushAllUserdata();               
-                }           //end of "else"                                            
+                }           //end of "else"
             }                  //end of function   
 
 
-            Sandbox.prototype.listenToEndOfLesson = function(scope, args) {            
+            Sandbox.prototype.listenToEndOfLesson = function (scope, args) {
                 var lessonUserdata = DataProvider.lessonUserdata;
                 var lessonData = DataProvider.lessonData;
                 if ((typeof args !== "undefined") && (typeof args.summary !== "undefined") &&
@@ -916,9 +955,9 @@ angular.module('SunLesson.services', [])
                         } else {
                             //TODO:
                             lessonUserdata.ever_failed = true;
-                        }  
+                        }
                     } else {
-                        lessonUserdata.is_complete = true;   
+                        lessonUserdata.is_complete = true;
                     }
                 }
 
@@ -940,8 +979,8 @@ angular.module('SunLesson.services', [])
                                 if ((typeof lessonUserdata.summary.correct_count == "undefined") ?
                                     (this.conditionParser(lessonData.achievements[i].condition, Infinity, 100)) :
                                     (this.conditionParser(lessonData.achievements[i].condition,
-                                    lessonUserdata.summary.correct_count, lessonUserdata.summary.correct_percent))) {
-                                        this.addAchievements("awards", lessonData.achievements[i]);
+                                        lessonUserdata.summary.correct_count, lessonUserdata.summary.correct_percent))) {
+                                    this.addAchievements("awards", lessonData.achievements[i]);
                                 }
                             }
                         }
@@ -955,13 +994,14 @@ angular.module('SunLesson.services', [])
                 scope.lessonCup = (lessonUserdata.summary.star == 1) ? " 获得 铜杯" :
                     ((lessonUserdata.summary.star == 2) ? " 获得 银杯" :
                         ((lessonUserdata.summary.star == 3) ? " 获得 金杯" : null));
-                    scope.showLessonSummary = true;
+                scope.showLessonSummary = true;
 
                 var args = {};
                 args.id = scope.id;
                 args.title = scope.title;
                 args.lessonCup = scope.lessonCup;
                 this.listenToLessonComplete(args);
+
                 //this.flushUserdata(lessonData.id, $rootScope.ids.cid);     
                 this.flushAllUserdata();           
             }    
@@ -978,9 +1018,9 @@ angular.module('SunLesson.services', [])
                 }
             }
 
-            Sandbox.prototype.listenToLessonComplete = function(args) {
+            Sandbox.prototype.listenToLessonComplete = function (args) {
                 var lessonUserdata = DataProvider.lessonUserdata;
-               LearningRelated.finishLesson(args.id, args.title, args.lessonCup, lessonUserdata.summary.correct_count, lessonUserdata.summary.correct_percent, lessonUserdata.is_complete);
+                LearningRelated.finishLesson(args.id, args.title, args.lessonCup, lessonUserdata.summary.correct_count, lessonUserdata.summary.correct_percent, lessonUserdata.is_complete);
                 var incompleteBadgesPromise = this.getIncompleteGlobalBadges(event);
                 incompleteBadgesPromise.then(function (globalBadges) {
                     var userDataToGrade = {
@@ -998,7 +1038,7 @@ angular.module('SunLesson.services', [])
                         }
                     }
                 })
-            }       
+            }
 
             Sandbox.prototype.problemGrader = function (currProblem, userAnswer) {
                 if (currProblem.type === "singlechoice") {//单选题
@@ -1013,7 +1053,7 @@ angular.module('SunLesson.services', [])
                 } else if (currProblem.type === "singlefilling") {
                     return ((typeof userAnswer[currProblem.id] !== "undefined") &&
                         (userAnswer[currProblem.id] === currProblem.correct_answer));
-                } else {  
+                } else {
                     var isCorrect = true;
                     for (var i = 0; i < currProblem.choices.length; i++) {
                         if (currProblem.choices[i].is_correct) {
@@ -1026,10 +1066,10 @@ angular.module('SunLesson.services', [])
                     }
                     return isCorrect;
                 }
-            }            
+            }
         }
 
-        var getSandbox = function() {
+        var getSandbox = function () {
             return new Sandbox();
         }
 

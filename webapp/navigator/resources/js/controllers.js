@@ -16,8 +16,9 @@ angular.module('SunNavigator.controllers', [])
         var subjectSandbox = SandboxProvider.getSandbox();
 
         $scope.subjects = rootMaterial.subjects;
+        //Mixpanel
         $scope.me = me;
-        initMixpanel(me._id);
+        initMixpanelWithSP(me._id,me.username,me.name,me.usergroup)
 
         var params = $route.current.params;
         console.log('routeParams=' + $routeParams.sid);
@@ -84,12 +85,13 @@ angular.module('SunNavigator.controllers', [])
             $location.path('/achievements');
         };
 
+
         $scope.signout = function() {
         	$http.get('/signout')
         	    .success(function(data) {
         	        var me = subjectSandbox.loadMe();  
         	        me = null;  
-                     window.location = '/webapp/login';
+                    window.location = '/webapp/login';
         	    })
         	    .error(function(err) {
         	        console.log('Signout Error:  ' + err);

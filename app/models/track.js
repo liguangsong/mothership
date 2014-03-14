@@ -12,10 +12,10 @@ var TrackSchema = new Schema({
             type: String,
             required: true
         },
-        ip: {
+        /*ip: {
             type: String,
             required: true
-        },
+        },*/
         token: {
             type: String,
             default: config.token
