@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--
+        For demonstration purposes, the `title` is dynamically set here based on
+        your `sails.config.appName` to show that you can inject data into layouts
+        exactly the same way as with your other view templates.
+    -->
+    <title>数学提高班</title>
+
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
+    <link rel="stylesheet" type="text/css" href="resources/css/main.css">
+<link rel="stylesheet" type="text/css" href="resources/css/lesson.css">
+<link rel="stylesheet" type="text/css" href="resources/css/activity.css"/>
+<link rel="stylesheet" type="text/css" href="resources/css/problem.css"/>
+    <!-- Viewport mobile tag for sensible mobile support -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+       <!-- bootstrap stylesheet -->
+    <link rel="stylesheet" media="screen" href="resources/css/bootstrap.min.css"/>
+
+    <!-- <link rel="stylesheet" href="web/cuotilist.css"> -->
+    <script src="resources/js/libs/angular.min.js"></script>
+    <script src="resources/js/libs/angular-route.min.js"></script>
+    <script src="resources/js/libs/jquery-1.10.2.min.js"></script>
+    <script src="resources/js/libs/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script>
+        var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+        vendorName = window.navigator.vendor;
+        if (is_chrome === true && vendorName === "Google Inc.") {
+            // is Google chrome
+        } else {
+            // not Google chrome
+            window.open("../login/chrome.html", "_self");
+        }
+    </script>   
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+    jax: ["input/AsciiMath", "output/HTML-CSS"],
+    extensions: ["asciimath2jax.js"]
+    });
+    </script>
+    <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body ng-app="Mistakes">
+<ng-view></ng-view>
+<script src="resources/js/app.js"></script>
+<script src="resources/js/services/services.js"></script>
+<script src="resources/js/controllers/controllers.js"></script>
+<script src="resources/js/directives/directives.js"></script>
+<script src="resources/js/models/models.js"></script>
+
+</body>
+</html>

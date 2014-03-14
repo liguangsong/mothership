@@ -1,0 +1,10 @@
+<h3>回到首页</h3>
+<h4>已收藏:{{currentProblem.isFavorite}}</h4>
+<div mathjax-bind="currentProblem.body"></div>
+<div ng-repeat="choice in currentProblem.choices"><span mathjax-bind="choice.body"><span ng-show="choice.is_correct">正确答案</span><span ng-show="choice.is_wrong">错误答案</span></span></div>
+
+<h3 ng-show="currentProblem.type=='singlefilling' ">正确答案是：{{currentProblem.correct_answer}}</h3>
+<h3 ng-show="currentProblem.type=='singlefilling' ">你的答案是：</h3>
+<h3>{{currentProblem.explanation}}</h3>
+<div class="btn btn-block btn-primary"  ng-click="preProblem()">上一道</div>
+<div class="btn btn-block btn-primary"  ng-click="nextProblem()">下一道</div>                   

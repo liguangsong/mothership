@@ -8,12 +8,12 @@
                 <img ng-src="resources/img/subjects-icon/subject-{{ subject.subject }}.png"/>
                 <span class="subject-title font-size-small">{{ subject.title }}</span>
             </div>
-        </div>
-
-        <div class="btn btn-block btn-danger" style="position:absolute;bottom: 0; width: 90%;margin:5%; font-size:20px"
-             ng-click="signout()">登出
-        </div>
-    </nav>
+			
+            <div class="btn btn-block btn-danger" style="position:absolute;bottom: 0; width: 90%;margin:5%; font-size:20px" 
+                 ng-click="signout()">登出</div>
+            <div class="btn btn-block btn-primary" style="position:absolute;bottom: 50px; width: 90%;margin:5%; font-size:20px" 
+                 ng-click="goToMistakeNote()">错题本</div>                 
+        </nav>
 
     <div class="page-wrap" style="width:100%; left:{{ offsetWidth }}">
         <header class="main-header" style="width:100%; left:{{ offsetWidth }}">

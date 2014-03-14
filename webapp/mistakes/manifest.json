@@ -1,0 +1,12 @@
+{
+    "id": "mistakes",
+    "version_code": 1,
+    "name": "mistakes",
+    "type": "web_app",
+    "launchable": 1,
+    "package_name": "org.sunlib.exercise",
+    "url": "/webapp/mistakes",
+    "home": "/index.html",
+    "description": "我的错题本",
+    "local_folder": "/webapp/mistakes"
+}
