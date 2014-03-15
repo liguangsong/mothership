@@ -17,6 +17,11 @@ angular.module('SunLesson', ['SunLesson.services', 'SunLesson.controllers', 'Sun
                     userInfo: function(ResourceProvider) {
                         return ResourceProvider.getUserInfo();
                     },
+
+                    me: function(ResourceProvider) {
+                        return ResourceProvider.getMe();
+                    },
+
                     allUserProblemMap: function(ResourceProvider) {
                         return ResourceProvider.getAllUserProblem();
                     }
