@@ -34,31 +34,15 @@ angular.module('Mistakes.directives', [])
                   console.log('显示problem directive!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
             }
         }
+    })  
+    .directive("ximage", function (APIProvider, $compile, $routeParams, $rootScope) {
+        return {
+            restrict: "E",
+            link: function ($scope, $element, $attrs) {
+                var template = "<img class='ximage' src='" + APIProvider.getAPI("getFileResources", {chapterId: $rootScope.ids.cid, lessonId: $routeParams.lid}, "")
+                    + "/" + $attrs.src + "' />";
+                $element.html(template);
+                $compile($element.contents())($scope);
+            }
+        }
     })    
-    .directive('singleChoiceProblem', function() {
-        return {
-            restrict: 'E',
-            templateUrl: 'resources/partials/single_choice.html',
-            link: function($scope, $element, $attrs) {
-                
-            }
-        }
-    })
-    .directive('singleFillingProblem', function() {
-        return {
-            restrict: 'E',
-            templateUrl: 'resources/partials/single_filling.html',
-            link: function($scope, $element, $attrs) {
-
-            }
-        }
-    })
-    .directive('multiChocieProblem', function() {
-        return {
-            restrict: 'E',
-            templateUrl: 'resources/partials/multichoice.html',
-            link: function($scope, $element, $attrs) {
-
-            }
-        }
-    })
