@@ -893,11 +893,11 @@ angular.module('SunLesson.directives', [])
                         }
                     }
 
-                    if(DataProvider.allUserProblemMap && Object.keys(DataProvider.allUserProblemMap).length <= 0) {
-                        //alert('The First get mistake');
+                if(!problemUserdata.is_correct && DataProvider.allUserProblemMap && Object.keys(DataProvider.allUserProblemMap).length <= 0) {
+                        //alert('The First get mistake');   
                         console.log('Shit !!!!!!!!!!!!!-=-=-=-=--=--------------------------------------------------------=====================');
                         $('#myModal').modal('toggle');
-                    }
+                }
 
                     //add in the mistake note
                     if(!DataProvider.allUserProblemMap[$rootScope.ids.cid]) {
@@ -927,7 +927,7 @@ angular.module('SunLesson.directives', [])
                                 lessonId: $routeParams.lid,
                                 count: 1,
                                 create_time: time,
-                                tag: ['wrong']
+                                tags: ['wrong']
                             }
                             DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid].push(mistake);
                         }else{

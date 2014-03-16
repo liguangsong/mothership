@@ -76,17 +76,19 @@ exports.editFavorite = function(req, res) {
             if(item.id == data.pid) {
                 //data.action=='add'  
                 if(data.action == 'add') {
-                    item.tag.concat(data.tags);  
-                    console.log('add the favorite done');                    
+                    //item.tag.concat(data.tags);  
+                    item.tags = data.tags;
+                    console.log('add--> item.tag='+JSON.stringify(item.tags));                    
                 }
                 //data.action == 'remove'
                 if(data.action == 'remove') {
-                    console.log('remove the tags');
-                    data.tags.forEach(function(mtag, index) {
+                    item.tags = data.tags;
+                    console.log('remove-->item.tag='+JSON.stringify(item.tags));
+/*                    data.tags.forEach(function(mtag, index) {
                         //TODO: splice the tag---absloutely delete
                         var tagIndex = item.tag.indexOf(mtag);
                         item.tag.splice(tagIndex, 1);
-                    })
+                    })*/
                 }
             }
         })

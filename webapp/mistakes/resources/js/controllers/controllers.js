@@ -1,5 +1,5 @@
 angular.module('Mistakes.controllers', [])
-    .controller('RootCtrl', function($scope, DataCache, $routeParams, MaterialProvider, $q, APIProvider, $http) {
+    .controller('RootCtrl', function($scope, DataCache, $routeParams, MaterialProvider, $q, APIProvider, $http, $compile) {
       console.log('Come in RootCtrl');
        var allChapterArr = $scope.allChapterArr = DataCache.allChapterArr;
        var allChapterMap = DataCache.allChapterMap;
@@ -10,13 +10,13 @@ angular.module('Mistakes.controllers', [])
        //$scope.lessonProblemCountMap = {};
        for(var cid in DataCache.allUserProblemMap) {
            if(DataCache.allUserProblemMap.hasOwnProperty(cid)) {
-               console.log('cid='+cid);
+               //console.log('cid='+cid);
                var chapterProblemsMap =  DataCache.allUserProblemMap[cid];
                var tempCount = 0;
                for(var lid in chapterProblemsMap) {
-                  console.log('lid='+lid);
+                 // console.log('lid='+lid);
                   var lessonProblemArr = chapterProblemsMap[lid];
-                  console.log('-=-=-=-=-=-=-=-=-=-=-=-===-=-lessonProblemArr.length='+lessonProblemArr.length);
+                //  console.log('-=-=-=-=-=-=-=-=-=-=-=-===-=-lessonProblemArr.length='+lessonProblemArr.length);
                   $scope.problemCountMap[lid] = lessonProblemArr.length;
                   tempCount += lessonProblemArr.length;
                }
@@ -82,20 +82,31 @@ angular.module('Mistakes.controllers', [])
                    tempAllProblemsArr = DataCache.allUserProblemMap[lesson.parent_id][lesson.id];  //全部
                    tempAllProblemsArr.forEach(function(item, index) {
                         var target = allLessonProblemsMap[item.id];
+                        target.tags = item.tags;
+                        target.chapterId = lesson.parent_id;
+                        target.lessonId = lesson.id;
                        $scope.allProblemsArr.push(target);
                    })
                }
 
                if(tempAllProblemsArr) {
                    tempAllProblemsArr.forEach(function(problem, index) {
+                    //console.log('tags>>>>>>>>>>>>'+angular.toJson(problem.tags));
                        if(problem.tags) {
-                           problem.tags.forEach(function(tag, index) {
-                                if(tag == DataCache.TAGS.favorite) {
-                                     var favoriteProblem = allLessonProblemsMap[problem.id];
-                                     favoriteProblem.is_favorite = true;
-                                     $scope.favoriteProblemsArr.push(favoriteProblem);   
+                           var result = problem.tags.some(function(tag, index) {
+                                if('favorite' == tag) {
+                                     return true;
+                                }else{
+                                     return false;
                                 }
                            })
+                           if(result) {
+                       //     console.log('----------------------------------------------------One---------------------------------------------------------');
+                              var favoriteProblem = allLessonProblemsMap[problem.id];
+                               favoriteProblem.tags = problem.tags;
+                               favoriteProblem.is_favorite = true;
+                               $scope.favoriteProblemsArr.push(favoriteProblem);                                 
+                           }
                        }
                    })
                } 
@@ -120,13 +131,29 @@ angular.module('Mistakes.controllers', [])
        }
 
        $scope.showProblem = function(problem) {
+            var index = $scope.currentProblems.indexOf(problem);
+            if(index == 0) {
+                 $scope.isFirst = true;
+                 $scope.isLast = false;
+            }else if(index == $scope.currentProblems.length-1) {
+                 $scope.isLast = true;
+                 $scope.isFirst = false;
+            }else{
+                 $scope.isFirst = false;
+                 $scope.isLast = false;
+            }
+
+            $scope.currentProblem = problem;
+            $scope.currentProblemUserdata = $scope.allLessonProblemsUserdataMap[problem.id];            
             $scope.showHintBox = false;
             $scope.showExplanation = false;   
 
+            // $scope.mathContent = $scope.currentProblem.body;
+            // var tempBody= "<span mathjax-bind='mathContent'></span>"
+            // $scope.body =  $compile(tempBody)($scope);
+          $scope.body= "<span>"+$scope.currentProblem.body+"</span>";
+//console.log('body='+$scope.body);//title.commit = new Commit();
             $scope.isShowProblem = true;
-            $scope.currentProblem = problem;
-            //TODO:对于userdata的显示，不是一进来就立即显示，而是通过点击触发后才显示
-            $scope.currentProblemUserdata = $scope.allLessonProblemsUserdataMap[problem.id];
 
             if(problem.type != 'singlefilling') {
                 $scope.currentProblem.choices.forEach(function(choice) {
@@ -149,7 +176,7 @@ angular.module('Mistakes.controllers', [])
                 $scope.currentProblem.choices.forEach(function(choice) {
                     if(choice.is_correct) {
                        choice.state = "correct";
-                       console.log('is_correct!!!!!!!!!!!!!!!!!!!!');
+                      // console.log('is_correct!!!!!!!!!!!!!!!!!!!!');
                     }else{
                         var index = $scope.currentProblemUserdata.answer.indexOf(choice.id);
                         if(index>=0) {
@@ -171,7 +198,7 @@ angular.module('Mistakes.controllers', [])
 
        $scope.preProblem = function() {
             var index = $scope.currentProblems.indexOf($scope.currentProblem);
-            console.log('preProblem.index='+index);
+            //console.log('preProblem.index='+index);
             if((index-1) >= 0) {
                var problem = $scope.currentProblems[index-1];
                $scope.showProblem(problem);                              
@@ -180,7 +207,7 @@ angular.module('Mistakes.controllers', [])
 
        $scope.nextProblem = function() {
            var index = $scope.currentProblems.indexOf($scope.currentProblem);
-           console.log('nextProblem.index='+index);
+           //console.log('nextProblem.index='+index);
            if((index+1) < $scope.currentProblems.length) {
                 var problem = $scope.currentProblems[index+1];
                 $scope.showProblem(problem);
@@ -195,14 +222,18 @@ angular.module('Mistakes.controllers', [])
        $scope.editFavorite = function(problem) {
             //修改内存中的favorite，然后再update服务端存储的problem数据
             var content = {};
+
             problem.is_favorite = !problem.is_favorite;
             if(problem.is_favorite) {
                 //add tags---some tags
                 content.action = 'add';
+                problem.tags = problem.tags.concat(["favorite"]);
                 $scope.favoriteProblemsArr.push(problem);
             }else{
                 //remove
                 content.action = 'remove';
+                var tagIndex = problem.tags.indexOf("favorite");
+                problem.tags.splice(tagIndex, 1);
                 var index = $scope.favoriteProblemsArr.indexOf(problem);
                 $scope.favoriteProblemsArr.splice(index, 1);
             }
@@ -210,8 +241,8 @@ angular.module('Mistakes.controllers', [])
             content.cid = problem.cid;
             content.lid = problem.lid;
             content.pid = problem.id;
-            content.tags = ["favorite"]; 
-            console.log('cid='+content.cid+'    lid='+content.lid+'   pid='+content.pid);
+            content.tags = problem.tags; 
+            //console.log('problem.tags='+angular.toJson(problem.tags));
             var promise = $http({
                 method: 'PUT',
                 url: APIProvider.getAPI('putFavoriteUserdata', {"appId": "me", "entityId": "mistake"}),
@@ -219,7 +250,7 @@ angular.module('Mistakes.controllers', [])
                 data: JSON.stringify(content)                
             });
             promise.success(function() {
-                  console.log('add favorite success!');
+                  //console.log('add favorite success!');
             }).error(function(err) {
                 alert('add Favorite Error');
             })            

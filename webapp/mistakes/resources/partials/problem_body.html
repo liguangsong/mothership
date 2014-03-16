@@ -1,14 +1,11 @@
-
-
-<a href="" class="quiz-text" data-toggle="modal" data-target="#myModal" ng-click="showProblem(mproblem)">
-
-  <span mathjax-bind="mproblem.body"></span>
-</a>
+<div>{{currentProblems[$index].body}}</div>
+<div href="" class="quiz-text" ng-click="showProblem(mproblem)" data-toggle="modal" data-target="#myModal">
+  <span mathjax-bind="currentProblems[$index].body"></span>   <!--  -->
+</div>
 
 <a href="" ng-class="{'fav':(!mproblem.is_favorite), 'fav fav-faved':(mproblem.is_favorite)}" ng-click="editFavorite(mproblem)">
   <span class="glyphicon glyphicon-star"></span>
 </a>
-
 
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -17,19 +14,19 @@
       
       <div class="modal-header">
         <button type="button" class="close fui-cross" data-dismiss="modal" aria-hidden="true"> </button>
-        <button type="button" class="btn btn-default" disabled="disabled"><span class="fui-arrow-left"></span> 前一题</button>
-        <button type="button" class="btn btn-default">后一题 <span class="fui-arrow-right"></span></button>
+        <button type="button" class="btn btn-default" ng-class="{'disabled':isFirst}" ng-click="preProblem()"><span class="fui-arrow-left"></span> 前一题 {{isFirst}}</button>
+        <button type="button" class="btn btn-default" ng-class="{'disabled':isLast}" ng-click="nextProblem()">后一题 {{isLast}}<span class="fui-arrow-right"></span></button>
       </div>
 
       <div class="modal-body">
   	    <div id='problem{{$index}}' class="clearfix">   
           <div class="col-sm-10 col-md-10 question-container">
               <div class="question-content">
-                <span mathjax-bind="currentProblem.body"></span> 
+                <div mathjax-bind="body" ></div> 
               </div>
               <br>
               <div ng-repeat='choice in currentProblem.choices' class="col-md-{{ colNum }}">
-  	            <div id='problem{{$parent.$index}}_choice{{$index}}' class="choice-layout-{{ layout }}-state-{{ choice.state }}">
+                <div id='problem{{$parent.$index}}_choice{{$index}}' class="choice-layout-{{ layout }}-state-{{ choice.state }}">
                   {{ calcChoiceNum($index) }}&nbsp;&nbsp;
                   <div class="choice-content" mathjax-bind="choice.body"></div>
                 </div>
@@ -43,19 +40,20 @@
 
                 <div ng-show='showExplanation'>
                     <div class="explanation-title" ng-show="hasExplanation()">
-               	       <img src="resources/img/explanation.png"/>&nbsp;&nbsp;&nbsp;题目解析
+                       <img src="resources/img/explanation.png"/>&nbsp;&nbsp;&nbsp;题目解析
                     </div>
                     <div class="explanation-content" mathjax-bind="explanation"></div>
                 </div>
             </div>
           </div>
-
           <div class="col-sm-2 col-md-2">
             <!--           <a href="" class="fav" ng-click="editFavorite(currentProblem)">
               <span class="glyphicon glyphicon-star"></span>
             </a> -->
-            <a href="" ng-class="{'fav':(!mproblem.is_favorite), 'fav fav-faved':(mproblem.is_favorite)}" ng-click="editFavorite(mproblem)">
-              <span class="glyphicon glyphicon-star"></span> 收藏此题
+            <a href="" ng-class="{'fav':(!currentProblem.is_favorite), 'fav fav-faved':(currentProblem.is_favorite)}" ng-click="editFavorite(mproblem)">
+              <span class="glyphicon glyphicon-star" ng-click="editFavorite(currentProblem)"></span> 
+              <span ng-show="!currentProblem.is_favorite">收藏此题</span>
+              <span ng-show="currentProblem.is_favorite">取消收藏</span>
             </a>
             <br>
             <button type="button" class="btn btn-primary" ng-click="showAnswer(currentProblem)">显示答案</button>

@@ -1,4 +1,7 @@
 angular.module('Mistakes', ['Mistakes.services', 'Mistakes.controllers', 'Mistakes.directives', 'ngRoute'])
+    .config(function($sceProvider){
+        $sceProvider.enabled(false);
+    })
     .config(function($routeProvider) {
     	$routeProvider
     	    .when('/', {

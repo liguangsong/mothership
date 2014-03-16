@@ -15,7 +15,8 @@ angular.module('Mistakes.services', [])
             navigatorMap: navigatorMap,
             allChapterArr: allChapterArr,
             allChapterMap: allChapterMap,
-            allUserProblemMap: allUserProblemMap
+            allUserProblemMap: allUserProblemMap,
+            TAGS: TAGS
         }
     })
 
@@ -65,7 +66,7 @@ angular.module('Mistakes.services', [])
                         }
                     })
                     DataCache.allChapterArr = allChapterArr;
-                    console.log('最初拿到allChapteArr.length='+allChapterArr.length);
+                   // console.log('最初拿到allChapteArr.length='+allChapterArr.length);
                     //DataCache.materialMap = generateMaterialMap(allChapterArr);
                     allChapterArr.forEach(function(chapter, index) {
                         DataCache.allChapterMap[chapter.id] = chapter;
@@ -145,8 +146,8 @@ angular.module('Mistakes.services', [])
             allLessons.forEach(function(lessons, index) {
                 result = result.concat(lessons);
             })
-            console.log('allLessons.length='+allLessons.length);
-            console.log('result.length='+result.length);
+        //    console.log('allLessons.length='+allLessons.length);
+          //  console.log('result.length='+result.length);
             return result;
         }  
 
@@ -165,6 +166,7 @@ angular.module('Mistakes.services', [])
                 lessons[inner] = tmp;
             }
         };              
+
 
         var getChapterData = function(cid) {
             var deferred = $q.defer();
@@ -189,7 +191,7 @@ angular.module('Mistakes.services', [])
     	var deferred = $q.defer();
     	var lessonPromise = deferred.promise;
              var cid = lesson.parent_id;
-console.log('lesson.parent_id='+cid);
+//console.log('lesson.parent_id='+cid);
             if(DataCache.allChapterMap[cid]) {
                 var chapterUrl = DataCache.allChapterMap[cid].url;
                 var url = APIProvider.getAPI('getLessonData', {chapterUrl: chapterUrl, lessonId: lesson.id});
@@ -223,7 +225,7 @@ console.log('lesson.parent_id='+cid);
             var cid = lesson.parent_id;
 
             var url = APIProvider.getAPI('getLessonUserdata', {appId: cid, entityId: lesson.id});
-            console.log('getLessonUserdata.url = '+url);
+           // console.log('getLessonUserdata.url = '+url);
             $http.get(url)
                 .success(function(lessonUserdata) {
                     deferred.resolve(lessonUserdata);
@@ -248,9 +250,9 @@ console.log('lesson.parent_id='+cid);
             var url = APIProvider.getAPI('getAllUserProblemMap');
             $http.get(url)
                  .success(function(allUserProblemMap) {
-                    console.log('getAllUserProblemMap.length='+Object.keys(allUserProblemMap).length);
+                   // console.log('getAllUserProblemMap.length='+Object.keys(allUserProblemMap).length);
                     DataCache.allUserProblemMap = allUserProblemMap;
-                    console.log('allmistake: '+angular.toJson(allUserProblemMap));
+                    //console.log('allmistake: '+angular.toJson(allUserProblemMap));
                     deferred.resolve(allUserProblemMap);
                  })
                  .error(function(err) {
@@ -266,7 +268,7 @@ console.log('lesson.parent_id='+cid);
             var lessonProblemsMap = {};
 
             getLessonData(lesson).then(function(lessonData) {
-                console.log('activities.length='+lessonData.activities.length);
+               // console.log('activities.length='+lessonData.activities.length);
                 lessonData.activities.forEach(function(activity, index) {
                     if(activity.type == 'quiz') {
                         activity.problems.forEach(function(problem, index) {
