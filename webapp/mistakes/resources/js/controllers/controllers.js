@@ -291,7 +291,17 @@ angular.module('Mistakes.controllers', [])
             console.log('展开全部章节');
        }
 
-      $scope.selectLesson();
+       console.log('chapterId='+$routeParams.cid+'    lessonId='+$routeParams.lid);
+      if($routeParams.cid && $routeParams.lid) {
+          DataCache.allChapterMap[$routeParams.cid].lessons.forEach(function(item, index) {
+               if(item.id == $routeParams.lid) {
+                    $scope.selectLesson(item);
+                    return;
+               }
+          })
+      } else {
+            $scope.selectLesson();
+      }
 
     })
 
