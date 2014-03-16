@@ -889,6 +889,7 @@ angular.module('SunLesson.directives', [])
                                     problemSandbox.playSoundEffects("wrong");
                                 }
                                 problemUserdata.answer.push($scope.answer[currProblem.id]);
+                                console.log('>>>>>>>>>>>>>>>>>>answer='+angular.toJson(problemUserdata.answer));
                             }
                         }
                     }
