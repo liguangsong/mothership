@@ -98,6 +98,10 @@ angular.module('SunNavigator.directives', [])
         return {
             restrict: 'E',
             link: function($scope, $element) {
+                $scope.enterMistake = function(chapterId, lessonId) {
+                    window.location = "/webapp/mistakes/#/chapter/" + chapterId + '/lesson/' + lessonId;
+                }
+
                 $scope.parentChapter = chapterData;
                 var lessonMaterialPromise, lessonUserdataPromise;
 
@@ -218,7 +222,7 @@ angular.module('SunNavigator.directives', [])
              //-=-=-=-==-=-=-=-=-=-==--=-=-=-=-=-=-TEMP-=-=-=-==-=-=-=-=-=-==--=-=-=-=-=-=-
                         var resourceSession = {};
                         resourceSession.chapterUrl = DataProvider.materialMap[cid].url;
-                        console.log('write the chapterUrl = '+resourceSession.chapterUrl);
+                        //console.log('write the chapterUrl = '+resourceSession.chapterUrl);
                         sessionStorage.setItem('resourceSession', angular.toJson(resourceSession));
 
                         if (typeof lessonUserdata.current_activity === "undefined") {

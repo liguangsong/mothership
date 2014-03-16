@@ -85,6 +85,9 @@ angular.module('Mistakes.controllers', [])
                         target.tags = item.tags;
                         target.chapterId = lesson.parent_id;
                         target.lessonId = lesson.id;
+
+                        var pbody = getPbody(target.body);
+                        target.pbody = pbody;
                        $scope.allProblemsArr.push(target);
                    })
                }
@@ -116,6 +119,24 @@ angular.module('Mistakes.controllers', [])
                 alert('get lessonProblemsMap Error in selectLesson');
            })
       }  
+
+      var getPbody = function(originBody){
+        console.log('originBody='+originBody);
+          var tagIndex = originBody.indexOf("<ximage");
+          if(tagIndex < 0) {
+              console.log('不包含图片，直接返回');
+              return originBody;
+          }
+          //var bodyEndIndex = tagIndex+1;
+          var bodyString = originBody.substring(0, tagIndex);
+
+          var endIndex = originBody.indexOf("</ximage>", tagIndex);
+          var imageString = originBody.substring(tagIndex, (endIndex+"</ximage>".length+1));
+
+          var result = imageString + bodyString;
+          console.log("result="+result);     
+          return result;
+      }
 
        $scope.showCurrentProblems = function(tag) {
             switch(tag) {
@@ -188,7 +209,11 @@ angular.module('Mistakes.controllers', [])
                 })                 
             }else{
               //show the singlefilling answer
+                $scope.isSingleFilling = true;
+                var answer = '';
+                $scope.currentProblemUserdata.answer.forEach(function(item, index) {
 
+                })
             }            
        }
 
