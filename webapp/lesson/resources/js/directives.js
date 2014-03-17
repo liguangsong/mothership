@@ -6,7 +6,6 @@ angular.module('SunLesson.directives', [])
                 var activitySandbox = SandboxProvider.getSandbox();
 
                 var activityUserdata = activitySandbox.getActivityUserdata($routeParams.aid);
-                console.log('activity.aid=' + $routeParams.aid);
                 DataProvider.lessonUserdata.activities[$routeParams.aid] = activityUserdata;
                 var activityData = activitySandbox.getActivityMaterial($routeParams.aid, activityUserdata.seed);
                 $scope.activityData = activityData;
@@ -54,7 +53,6 @@ angular.module('SunLesson.directives', [])
                         $scope.$on("problemComplete_" + problem.id, function (event, args) {
                             if (index != activityData.problems.length - 1) {
                                 $scope.problemIndex = $scope.problemIndex + 1;
-                                console.log('problemIndex + 1 =' + $scope.problemIndex);
                                 PageTransitions.nextPage(1, $("#buttonContainer"));
                                 activityUserdata.problems[activityData.problems[index + 1].id].enter_time = Date.now();
                                 $scope.progressWidth = (index + 2) * 100 / activityData.problems.length;
@@ -215,22 +213,17 @@ angular.module('SunLesson.directives', [])
                 $scope.pauseLearn = function () {
                     Utils.unregisterLesson();
                     activitySandbox.flushAllUserdata().then(function(msg) {
-                        console.log('all the mistakes: ');
-                        console.log(angular.toJson(DataProvider.allUserProblemMap));
                         window.location = '/webapp/navigator/#/subject/' + $rootScope.sid + '/chapter/' + $rootScope.ids.cid;
                     }, function(err) {
-                          alert('flushAllUserdata Error in pauseLearn');
+                          console.log('flushAllUserdata Error in pauseLearn');
                     });
                 }
 
                 $scope.backToChapter = function () {
-                    console.log('结束学习，回到chapter');
                     activitySandbox.flushAllUserdata().then(function(msg) {
-                        console.log('all the mistakes: ');
-                        console.log(angular.toJson(DataProvider.allUserProblemMap));
                         window.location = '/webapp/navigator/#/subject/' + $rootScope.sid + '/chapter/' + $rootScope.ids.cid;
                     }, function(err) {
-                         alert('flushAllUserdata Error in backToChapter');
+                         console.log('flushAllUserdata Error in backToChapter');
                     });
                 }
 
@@ -238,7 +231,7 @@ angular.module('SunLesson.directives', [])
                     activitySandbox.flushAllUserdata().then(function(msg) {
                         window.location = '/webapp/mistakes/#/chapter/'+$rootScope.ids.cid+'/lesson/'+$routeParams.lid;
                     }, function(err) {
-                        alert('flushAllUserdata Error in comeInMistakeNote');
+                        console.log('flushAllUserdata Error in comeInMistakeNote');
                     });
                 }
 
@@ -315,7 +308,6 @@ angular.module('SunLesson.directives', [])
                 //get video element and control bar elements
                 var video = $element.contents()[0].childNodes[0];
                 video.addEventListener("webkitfullscreenchange", function () {
-                    //console.log('add listener')
                     if (!document.webkitIsFullScreen) {
                         currentTime = video.currentTime;
                         //Mixpanel
@@ -651,8 +643,6 @@ angular.module('SunLesson.directives', [])
             link: function(scope, element, attrs) {
                 scope.$watch(attrs.focusMe, function(value) {
                     if(value === true) { 
-                        console.log('value=',value);
-                        //$timeout(function() {
                         element[0].focus();
                         scope[attrs.focusMe] = false;
                     }
@@ -670,11 +660,7 @@ angular.module('SunLesson.directives', [])
             link: function ($scope, $element) {
                 var currProblem = $scope.problem;
                 var current_activity = $scope.current_activity;
-                //var parentActivityData = problemSandbox.getParentActivityData(currProblem.parent_id);
-                console.log('parentActivityData.id=' + currProblem.parent_id);
                 var activityUserdata = problemSandbox.getActivityUserdata($routeParams.aid);
-                //DataProvider.lessonUserdata.activities[current_activity] = activityUserdata;
-
                 var current_activity = $scope.current_activity;
                 var problemUserdata = DataProvider.lessonUserdata.activities[current_activity].problems[currProblem.id];
 
@@ -792,7 +778,7 @@ angular.module('SunLesson.directives', [])
                     } else if (currProblem.type == "multichoice") {
                         $scope.chooseOption = multiChoice;
                     } else if (currProblem.type == "singlefilling") {
-                        console.log("hit");
+                       // console.log("hit");
                     }
 
                 } else {
@@ -829,7 +815,6 @@ angular.module('SunLesson.directives', [])
                 }
 
                 $scope.submitAnswer = function () {
-                    console.log('answer=' + $scope.answer[currProblem.id]);
                     if ((currProblem.type != 'singlefilling' && !$scope.madeChoice) || (currProblem.type == 'singlefilling' && (!$scope.answer[currProblem.id] || ($scope.answer[currProblem.id].length == 0)))) {
                         var answer = confirm('还没有做出选择，继续下一道题？');
                         if (!answer) {
@@ -837,11 +822,8 @@ angular.module('SunLesson.directives', [])
                         }
                     }
 
-                    //TODO: 
                     if (!($scope.problemIndex == $scope.activityData.problems.length - 1)) {
-                        console.log('总的length=' + $scope.activityData.problems.length + '     index=' + $scope.problemIndex + "      $scope.length=" + $scope.problems.length);
                         activityUserdata.current_problem = $scope.activityData.problems[$scope.problemIndex + 1].id;
-                        console.log('write in current_problem='+DataProvider.lessonUserdata.activities[current_activity].current_problem);
                     }
 
                     var ids = [];
@@ -853,7 +835,7 @@ angular.module('SunLesson.directives', [])
                     } else if (currProblem.type == 'multichoice') {
                         ids = Object.keys($scope.answer);
                         if (ids.length == $scope.chosenNum) {
-                            console.log('应该是正确的！！！');
+                            //console.log('');
                         }
                         $scope.user_answer_body = getChoiceBody(ids, currProblem.choices);
                     }
@@ -889,23 +871,32 @@ angular.module('SunLesson.directives', [])
                                     problemSandbox.playSoundEffects("wrong");
                                 }
                                 problemUserdata.answer.push($scope.answer[currProblem.id]);
-                                console.log('>>>>>>>>>>>>>>>>>>answer='+angular.toJson(problemUserdata.answer));
                             }
                         }
                     }
 
-                if(!problemUserdata.is_correct && DataProvider.allUserProblemMap && Object.keys(DataProvider.allUserProblemMap).length <= 0) {
-                        //alert('The First get mistake');   
-                        console.log('Shit !!!!!!!!!!!!!-=-=-=-=--=--------------------------------------------------------=====================');
-                        $('#myModal').modal('toggle');
-                }
+
+                    if(!problemUserdata.is_correct) {
+                        if(!DataProvider.allUserProblemMap || Object.keys(DataProvider.allUserProblemMap).length <= 0) {
+                            $('#myModal').modal('toggle');
+                        }else{
+                            var chapterUserProblems = DataProvider.allUserProblemMap[$routeParams.cid];
+                            if(!chapterUserProblems || Object.keys(chapterUserProblems).length<=0) {
+                                $('#myModal').modal('toggle');
+                            }else{
+                                var lessonUserdataProblems = chapterUserProblems[$routeParams.lid];
+                                if(!lessonUserdataProblems || lessonUserdataProblems.length<=0) {
+                                    $('#myModal').modal('toggle');
+                                }
+                            }
+                        }                        
+                    }
 
                     //add in the mistake note
                     if(!DataProvider.allUserProblemMap[$rootScope.ids.cid]) {
                         DataProvider.allUserProblemMap[$rootScope.ids.cid] = {};
                     }
                     if(!DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid]) {
-                        console.log('又一个新的lesson~~~~~~~~~~~~~~~~~~~~lid='+$routeParams.lid);
                         DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid] = [];
                     }
 
