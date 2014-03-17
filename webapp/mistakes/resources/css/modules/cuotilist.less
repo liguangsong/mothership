@@ -26,12 +26,20 @@
 			text-overflow: ellipsis;
 			font-size: ceil((@font-size-base * 1.14));
 		}
-
-		img{
-			height: @line-height-computed * 2 + 24px;
-			width: @line-height-computed * 2 + 24px;
+		div.quiz-image{
 			margin: -12px -20px -12px -(@line-height-computed * 2 + 40px);
+			float: left;
+
+			ximage{
+				margin: 0;
+
+				img{
+					height: @line-height-computed * 2 + 24px;
+					width: @line-height-computed * 2 + 24px;
+				}
+			}
 		}
+
 	}
 
 	&:hover{
