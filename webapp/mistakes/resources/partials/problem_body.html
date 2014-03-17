@@ -1,6 +1,6 @@
 <a href="" class="quiz-text" ng-click="showProblem(mproblem)" data-toggle="modal" data-target="#myModal">
 <!--   <h1>imageSrc={{imageSrc}}</h1>style="background-image: url(/webapp/d251e404-cd3c-456f-863a-fefdc5db633d/10471303-4190-458e-9172-2be19fabb012/d45cb065-29b9-4b3e-816a-017c5493ee4f)" -->
-  <div mathjax-bind="currentProblems[$index].imgbody" ng-show="currentProblems[$index].haveImg"></div>
+  <div mathjax-bind="currentProblems[$index].imgbody" ng-show="currentProblems[$index].haveImg" class="quiz-image"></div>
   <span mathjax-bind="currentProblems[$index].pbody"></span>
 </a>
 <a href="" ng-class="{'fav':(!mproblem.is_favorite), 'fav fav-faved':(mproblem.is_favorite)}" ng-click="editFavorite(mproblem)">
