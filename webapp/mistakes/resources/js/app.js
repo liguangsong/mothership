@@ -17,7 +17,7 @@ angular.module('Mistakes', ['Mistakes.services', 'Mistakes.controllers', 'Mistak
     	        }
     	    })
     	    .when('/chapter/:cid/lesson/:lid', {
-    	        controller: 'RootCtrl',
+    	        controller: 'HomeCtrl',
     	        templateUrl: 'resources/partials/home.html',
                      resolve: {
                         navigatorMap: function(MaterialProvider) {
@@ -28,17 +28,6 @@ angular.module('Mistakes', ['Mistakes.services', 'Mistakes.controllers', 'Mistak
                         }
                     }
     	    })   
-/*                .when('/problem/:pid', {
-                    controller: 'ProblemCtrl',
-                    templateUrl: 'resources/partials/problem.html',
-                     resolve: {
-                        navigatorMap: function(MaterialProvider) {
-                            return MaterialProvider.getNavigatorMap();
-                        },
-                        allUserProblemMap: function(MaterialProvider) {
-                            return MaterialProvider.getAllUserProblemMap();
-                        }
-                    }
-                }) */	    
+                 .otherwise({redirectTo: '/'})
     })
 

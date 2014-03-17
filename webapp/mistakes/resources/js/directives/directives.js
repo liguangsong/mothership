@@ -15,7 +15,6 @@ angular.module('Mistakes.directives', [])
                     setTimeout(function () {
                         $scope.$apply(function () {
                             $scope.$watch($attrs.mathjaxBind, function (value) {
-                                //var str = "sldfsljdf<ximage src='hahahha'></ximage><ximage src='hahahha'></ximage>sldkjf";
                                 $element.html(value == undefined ? "" : value);
                                 $compile($element.contents())($scope);
                                 console.log('value='+value);

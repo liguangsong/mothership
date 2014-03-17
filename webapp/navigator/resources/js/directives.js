@@ -160,8 +160,10 @@ angular.module('SunNavigator.directives', [])
 
                      if (typeof lessonUserdata.current_activity === "undefined") {
                         $scope.buttonMsg = "开始学习";
+                        $scope.showMistake = false;
                     } else {
                         $scope.buttonMsg = "继续学习";
+                        $scope.showMistake = true;
                     }                
                     
                     $scope.showLessonDialogue = function () {

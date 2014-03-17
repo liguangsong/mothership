@@ -3,7 +3,7 @@
   <nav class="navbar navbar-inverse navbar-static-top">
     <div class="container">
       <div class="navbar-header">
-        <a href="#" class="navbar-brand">洋葱数学</a>
+        <a href="#" class="navbar-brand" ng-click="backToNavigator()">洋葱数学</a>
       </div>
       <div class="collapse navbar-collapse">
         <p class="navbar-text"> 光合新知出品</p>
@@ -64,20 +64,5 @@
     </div>
    </div> 
 
-<!--    <div ng-show="isShowProblem">
-<h3 ng-click="goBack()">回到首页</h3>
-<h4>已收藏:{{currentProblem.isFavorite}}</h4>
-<div mathjax-bind="currentProblem.body"></div>
-<div ng-repeat="choice in currentProblem.choices"><span mathjax-bind="choice.body"></span><span ng-show="choice.is_correct">正确答案</span><span ng-show="choice.is_wrong">错误答案</span></div>
-
-<h3 ng-show="currentProblem.type=='singlefilling' ">正确答案是：{{currentProblem.correct_answer}}</h3>
-<h3 ng-show="currentProblem.type=='singlefilling' ">你的答案是: 
-    <span ng-repeat="a in currentProblemUserdata.answer">{{a}}</span>
-</h3>
-<h3 mathjax-bind="currentProblem.explanation"></h3>
-<div class="btn btn-block btn-primary"  ng-click="preProblem()">上一道</div>
-<div class="btn btn-block btn-primary"  ng-click="nextProblem()">下一道</div>                                  
-   </div> -->
-</div>
 
 

@@ -1,5 +1,11 @@
 angular.module('Mistakes.controllers', [])
-    .controller('RootCtrl', function($scope, DataCache, $routeParams, MaterialProvider, $q, APIProvider, $http, $compile) {
+    .controller('RootCtrl', function($scope, $location, DataCache) {
+        var cid = DataCache.allChapterArr[0].id;
+        var lid = DataCache.allChapterArr[0].lessons[0].id;
+        $location.path('/chapter/'+cid+'/lesson/'+lid);
+    })
+
+    .controller('HomeCtrl', function($scope, DataCache, $routeParams, MaterialProvider, $q, APIProvider, $http, $compile) {
       console.log('Come in RootCtrl');
        var allChapterArr = $scope.allChapterArr = DataCache.allChapterArr;
        var allChapterMap = DataCache.allChapterMap;
@@ -23,7 +29,6 @@ angular.module('Mistakes.controllers', [])
 
        $scope.clickOnItem = function(item) {
             if(!item.type || (item.type != 'chapter')) {
-                  //maybe is lesson
                   $scope.selectLesson(item);
                   $scope.selectedLessonId = item.id;
             }else{
@@ -100,10 +105,8 @@ angular.module('Mistakes.controllers', [])
 
       var getPbody = function(target){
         var originBody = target.body;
-        console.log('originBody='+originBody);
           var tagIndex = originBody.indexOf("<ximage");
           if(tagIndex < 0) {
-              console.log('不包含图片，直接返回');
               target.pbody = originBody;
               target.haveImg = false;
               return;
@@ -211,10 +214,6 @@ angular.module('Mistakes.controllers', [])
            }
        }
 
-       $scope.goBack = function() {
-            $scope.isShowProblem = false;
-       }
-
        $scope.editFavorite = function(problem) {
             var content = {};
             problem.is_favorite = !problem.is_favorite;
@@ -233,9 +232,9 @@ angular.module('Mistakes.controllers', [])
             content.cid = problem.cid;
             content.lid = problem.lid;
             content.pid = problem.id;
-            content.tags = problem.tags; 
+            content.tags = problem.tags;
             var promise = $http({
-                method: 'PUT',
+                method: 'Put', 
                 url: APIProvider.getAPI('putFavoriteUserdata', {"appId": "me", "entityId": "mistake"}),
                 headers: {'Content-Type': 'application/json;charset:UTF-8'},
                 data: JSON.stringify(content)                
@@ -256,7 +255,6 @@ angular.module('Mistakes.controllers', [])
             console.log('Show All The Chapters');
        }
 
-       console.log('chapterId='+$routeParams.cid+'    lessonId='+$routeParams.lid);
       if($routeParams.cid && $routeParams.lid) {
           DataCache.allChapterMap[$routeParams.cid].lessons.forEach(function(item, index) {
                if(item.id == $routeParams.lid) {
@@ -265,12 +263,9 @@ angular.module('Mistakes.controllers', [])
                }
           })
       } else {
+             console.log('Never Come In！！！');
             $scope.selectLesson();
       }
 
-    })
-
-    .controller('TestCtrl', function($scope) {
-        $scope.title = "HellMagic";
     })
 
