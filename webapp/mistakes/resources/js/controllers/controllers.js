@@ -86,8 +86,9 @@ angular.module('Mistakes.controllers', [])
                         target.chapterId = lesson.parent_id;
                         target.lessonId = lesson.id;
 
-                        var pbody = getPbody(target.body);
-                        target.pbody = pbody;
+                        getPbody(target);
+                        console.log('<<<<<<<<<<<<<<target.imgbody='+target.imgbody);
+                        console.log('<<<<<<<<<<<<<<target.pbody='+target.pbody);
                        $scope.allProblemsArr.push(target);
                    })
                }
@@ -120,22 +121,30 @@ angular.module('Mistakes.controllers', [])
            })
       }  
 
-      var getPbody = function(originBody){
+      var getPbody = function(target){
+        var originBody = target.body;
         console.log('originBody='+originBody);
           var tagIndex = originBody.indexOf("<ximage");
           if(tagIndex < 0) {
               console.log('不包含图片，直接返回');
-              return originBody;
+              target.pbody = originBody;
+              target.haveImg = false;
+              return;
           }
           //var bodyEndIndex = tagIndex+1;
+          target.haveImg = true;
           var bodyString = originBody.substring(0, tagIndex);
 
           var endIndex = originBody.indexOf("</ximage>", tagIndex);
           var imageString = originBody.substring(tagIndex, (endIndex+"</ximage>".length+1));
 
-          var result = imageString + bodyString;
+          target.imgbody = imageString;
+          target.pbody = bodyString;          
+
+          //return target;
+          /*var result = imageString + bodyString;
           console.log("result="+result);     
-          return result;
+          return result;*/
       }
 
        $scope.showCurrentProblems = function(tag) {
