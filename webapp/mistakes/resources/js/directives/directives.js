@@ -26,17 +26,6 @@ angular.module('Mistakes.directives', [])
                 }]
         };
     })
-
-/*    .directive('CurrentProblem', function() {
-        return {
-            restrict: 'E',
-            templateUrl: 'resources/partials/current_problem.html',
-            link: function($scope, $element, $attrs) {
-                //TODO:整理出正确和错误的答案
-                  //console.log('显示problem directive!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-            }
-        }
-    })  */
     .directive("ximage", function (APIProvider, $compile, $routeParams, $rootScope, DataCache) {
         return {
             restrict: "E",
@@ -45,8 +34,9 @@ angular.module('Mistakes.directives', [])
                 var chapterUrl = DataCache.allChapterMap[cid].url;
                 var lessonId = $scope.mproblem.lessonId;
                 var tempSrc = APIProvider.getAPI("getFileResource", {chapterUrl: chapterUrl, lessonId: lessonId}, "");
-                var template = "<img class='ximage' src='" + tempSrc
-                    + "/" + $attrs.src + "' />";
+                var resultSrc = tempSrc + "/" + $attrs.src;
+                var template = "<img class='ximage' src='" + resultSrc + "' />";
+                $scope.imageSrc = resultSrc;
                 $element.html(template);
                 $compile($element.contents())($scope);
             }
