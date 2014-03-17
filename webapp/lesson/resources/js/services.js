@@ -5,76 +5,18 @@ angular.module('SunLesson.services', [])
         var lessonData = {};
         var lessonUserdata = {};
         var userInfo = {};
-        var achievements =
-        {"ts": "1", "badges": [
-            {"id": "first_golden_cup", "title": "金杯奖", "desc": "你的第一座金杯！", "condition": [80], "scope": "lesson.complete"},
-            {"id": "lecture_finish", "title": "认真听讲", "desc": "认真听讲可以让你更高效地掌握所学知识。"},
-            {"id": "practice_finish", "title": "边学边练", "desc": "看完视频马上练习有助于巩固知识，继续加油哦~"},
-            {"id": "practice_all_correct", "title": "一听就懂", "desc": "好厉害！第一次学就全对了！保持这个状态哦~"},
-            {"id": "practice_fast_and_correct", "title": "又快又准", "desc": "不仅全对，还完成得这么快！你真是太厉害了。"},
-            {"id": "golden_cup", "title": "独孤求败", "desc": "让难题来得更猛烈些吧！"},
-            {"id": "final_quiz_failed", "title": "老师在等你", "desc": "不要气馁，学习最重要的是态度和坚持。加油，我看好你！"}
-        ], "awards": {}};
 
-//--------------------------------------TODO：临时数据-------------------------------------------------------
-        // var videoMaterial =
-        // {
-        //     title: "example_video",
-        //     type: "hypervideo",
-        //     video: {
-        //         url: "main-video.mp4"
-        //     }
-        // };
-
-        // var problemMaterial =
-        //     [
-        //         {
-        //             id: "p1",
-        //             title: "vocab test no.1",
-        //             type: "singlechoice",
-        //             body: "Choose the antonym of 'unswerving'.",
-        //             show_time: 253,
-        //             wrong_video: {
-        //                 url: "wrong1.mp4"
-        //             },
-        //             choices: [
-        //                 {
-        //                     id: "p1c1",
-        //                     body: "tenacious",
-        //                     is_correct: false
-        //                 },
-        //                 {
-        //                     id: "p1c2",
-        //                     body: "indomitable",
-        //                     is_correct: true
-        //                 }
-        //             ]
-        //         },
-        //         {
-        //             id: "p2",
-        //             title: "vocab test no.2",
-        //             type: "binarychoice",
-        //             body: "Choose the synonym of 'impecunious'.",
-        //             show_time: 339,
-        //             wrong_video: {
-        //                 url: "wrong2.mp4",
-        //                 jump: 20
-        //             },
-        //             choices: [
-        //                 {
-        //                     id: "p2c1",
-        //                     body: "generosity",
-        //                     is_correct: false
-        //                 },
-        //                 {
-        //                     id: "p2c2",
-        //                     body: "impoverished",
-        //                     is_correct: true
-        //                 }
-        //             ]
-        //         }
-        //     ];                 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        var allUserProblemMap = {};
+         var achievements = 
+            {"ts": "1", "badges": [
+                {"id": "first_golden_cup", "title": "金杯奖", "desc": "你的第一座金杯！", "condition": [80], "scope": "lesson.complete"},
+                {"id": "lecture_finish", "title": "认真听讲", "desc": "认真听讲可以让你更高效地掌握所学知识。"},
+                {"id": "practice_finish", "title": "边学边练", "desc": "看完视频马上练习有助于巩固知识，继续加油哦~"},
+                {"id": "practice_all_correct", "title": "一听就懂", "desc": "好厉害！第一次学就全对了！保持这个状态哦~"},
+                {"id": "practice_fast_and_correct", "title": "又快又准", "desc": "不仅全对，还完成得这么快！你真是太厉害了。"},
+                {"id": "golden_cup", "title": "独孤求败", "desc": "让难题来得更猛烈些吧！"},
+                {"id": "final_quiz_failed", "title": "老师在等你", "desc": "不要气馁，学习最重要的是态度和坚持。加油，我看好你！"}
+            ], "awards": {}};  
 
         return {
             me: me,
@@ -82,7 +24,8 @@ angular.module('SunLesson.services', [])
             lessonData: lessonData,
             lessonUserdata: lessonUserdata,
             userInfo: userInfo,
-            achievements: achievements
+            achievements: achievements,
+            allUserProblemMap: allUserProblemMap
             //videoMaterial: videoMaterial,
             //problemMaterial: problemMaterial
         }
@@ -123,8 +66,8 @@ angular.module('SunLesson.services', [])
                 case "getLessonUserdata" :
                     return HOST + "/userdata/" + id.chapterId + "/" + id.lessonId;
 
-                case "postLessonUserdata" :
-                    return HOST + "/userdata/" + id.chapterId + "/" + id.lessonId;
+                case "postUserdata" :
+                    return HOST + "/userdata/" + id.appId + "/" + id.entityId;
 
                 case "getUserInfo" :
                     return HOST + "/userdata/navigator/user_info";
@@ -134,6 +77,9 @@ angular.module('SunLesson.services', [])
 
                 case "postUserInfoUserdata" :
                     return HOST + "/userdata/navigator/user_info";
+
+                case "getAllUserProblem" :
+                    return HOST + "/userdata/me/mistake";
             }
             return false;
         }
@@ -143,7 +89,8 @@ angular.module('SunLesson.services', [])
         }
     })
 
-    .factory('ResourceProvider', function ($q, $http, $route, $routeParams, $rootScope, DataProvider, APIProvider) {
+
+    .factory('ResourceProvider', function($q, $http, $route, $routeParams, $rootScope, DataProvider, APIProvider) {
 
         var getMe = function () {
             var deferred = $q.defer();
@@ -165,15 +112,9 @@ angular.module('SunLesson.services', [])
             return userPromise;
         }
 
-        var getIds = function () {
+        var getIds = function() {
             var deferred = $q.defer();
             var idsPromise = deferred.promise;
-
-            /*            if($rootScope.ids) {
-             deferred.resolve($rootScope.ids);
-             return idsPromise;
-             }*/
-
             var ids = {};
             var params = $route.current.params;
             if (params.sid) {
@@ -198,18 +139,6 @@ angular.module('SunLesson.services', [])
                 return lessonDataPromise;
             }
 
-            /*          if(!!window.sessionStorage) {
-             var resourceSession = angular.fromJson(sessionStorage.getItem('resourceSession'));
-             //console.log('getLessonData的时候ids是否ready，lid='+$rootScope.ids.lid);
-             if(resourceSession && resourceSession.materialMap && resourceSession.materialMap[$rootScope.ids.lid]) {
-             DataProvider.lessonData = resourceSession.materialMap[$rootScope.ids.lid];
-             deferred.resolve(DataProvider.lessonData);
-             return lessonDataPromise;
-             }
-             }
-             */
-
-
             var rootUrl = APIProvider.getAPI('getRoot', '', '');
             var ts = '';
             console.log('能否拿到ids=' + $rootScope.ids.cid);
@@ -225,7 +154,6 @@ angular.module('SunLesson.services', [])
                         }
                     })
 
-                    console.log('开始获取lesson json');
                     var url = APIProvider.getAPI('getLessonJson', {chapter: DataProvider.chapterData, lessonId: $rootScope.ids.lid}, ts);
                     getResourceFromServer(url, deferred);
                 }).error(function (err) {
@@ -248,25 +176,33 @@ angular.module('SunLesson.services', [])
                 return lessonUserdataPromise;
             }
 
-            /*      if(!!window.sessionStorage) {
-             var resourceSession = angular.fromJson(sessionStorage.getItem('resourceSession'));
-             if(resourceSession && resourceSession.lessonsUserdataMap) {
-             DataProvider.lessonUserdata  = resourceSession.lessonsUserdataMap[$rootScope.ids.lid];
-             if(!DataProvider.lessonUserdata) {
-             DataProvider.lessonUserdata = {};
-             }
-             deferred.resolve(DataProvider.lessonUserdata);
-             return lessonUserdataPromise;
-             }
-             }
-             */
 
-            var url = APIProvider.getAPI('getLessonUserdata', {"lessonId": $rootScope.ids.lid, "chapterId": $rootScope.ids.cid}, '');
+            var url = APIProvider.getAPI('getLessonUserdata', {"lessonId":$rootScope.ids.lid, "chapterId":$rootScope.ids.cid}, '');
             getResourceFromServer(url, deferred);
             return lessonUserdataPromise;
         };
 
-        var getUserInfo = function () {
+        var getAllUserProblem = function() {
+            var deferred = $q.defer();
+            var allMistakePromise = deferred.promise;
+
+            var url = APIProvider.getAPI('getAllUserProblem', '', '');
+            $http.get(url)
+                .success(function(allmistake) {
+                    DataProvider.allUserProblemMap = allmistake;
+                    if(!DataProvider.allUserProblemMap) {
+                        DataProvider.allUserProblemMap = {};
+                    }
+                    deferred.resolve(DataProvider.allUserProblemMap);
+                })
+                .error(function(err) {
+                     alert("getAllUserProblem Error in getAllUserProblem");
+                     deferred.reject('Error');
+                })
+                return allMistakePromise;
+        }
+      
+        var getUserInfo = function() {
             var deferred = $q.defer();
             var userInfoPromise = deferred.promise;
 
@@ -274,16 +210,6 @@ angular.module('SunLesson.services', [])
                 deferred.resolve(DataProvider.userInfo);
                 return userInfoPromise;
             }
-
-            /*     if(!!window.sessionStorage) {
-             var resourceSession = angular.fromJson(sessionStorage.getItem('resourceSession'));
-             if(resourceSession && resourceSession.userInfo) {
-             DataProvider.userInfo = resourceSession.userInfo;
-             deferred.resolve(DataProvider.userInfo);
-             return userInfoPromise;
-             }
-             }
-             */
 
             var url = APIProvider.getAPI('getUserInfo', '');
             getResourceFromServer(url, deferred);
@@ -318,7 +244,8 @@ angular.module('SunLesson.services', [])
             getUserInfo: getUserInfo,
             getAchievements: getAchievements,
             loadUserInfo: loadUserInfo,
-            getMe: getMe
+            getMe: getMe,
+            getAllUserProblem: getAllUserProblem
         }
     })
 
@@ -467,15 +394,41 @@ angular.module('SunLesson.services', [])
             return lessonUserdata.activities[aid].problems[pid];
         }
 
-        var flushUserdata = function (lessonId, chapterId) {
+
+        var flushAllUserdata = function() {
+            //alert('flushUserdata');
+            //var deferred = $q.defer();
+            //var flushAllUserdataPromise = deferred.promise;
+            var ids = $rootScope.ids;
+            var postLessonUserdataPromise = flushUserdata(ids.cid, ids.lid);
+            postLessonUserdataPromise.then(function() {
+                console.log('lessonuserdata success~');
+            }, function(err) {
+                alert('lessonUserdata error');
+            });
+            var postMistakeUserdataPromise = flushUserdata("me", "mistake", DataProvider.allUserProblemMap);
+            postMistakeUserdataPromise.then(function() {
+                console.log('post all mistake: '+angular.toJson(DataProvider.allUserProblemMap));
+            }, function(err) {
+                alert('mistakeUserdata error');
+            });
+            var allPromise = $q.all([postLessonUserdataPromise, postMistakeUserdataPromise]);
+            return allPromise;
+        }        
+
+        var flushUserdata = function(appId, entityId, content) {  
             var deferred = $q.defer();
             var flushPromise = deferred.promise;
 
+            if(!content) {
+                content = DataProvider.lessonUserdata;
+            }
             var promise = $http({
                 method: 'POST',
-                url: APIProvider.getAPI('postLessonUserdata', {"lessonId": lessonId, "chapterId": chapterId}, ''),
+                url: APIProvider.getAPI('postUserdata', {"appId": appId, "entityId": entityId}, ''),
                 headers: {'Content-Type': 'application/json;charset:UTF-8'},
-                data: JSON.stringify(DataProvider.lessonUserdata)
+
+                data: JSON.stringify(content)                
             });
 
             promise.success(function (msg) {
@@ -575,6 +528,7 @@ angular.module('SunLesson.services', [])
         return {
             getActivityUserdata: getActivityUserdata,
             flushUserdata: flushUserdata,
+            flushAllUserdata: flushAllUserdata,
             resetUserdata: resetUserdata,
             addAchievements: addAchievements,
             //           loadUserdata: loadUserdata,
@@ -738,7 +692,12 @@ angular.module('SunLesson.services', [])
                 return ResourceProvider.getUserInfo();
             }
 
-            Sandbox.prototype.getAchievements = function () {
+
+            Sandbox.prototype.getAllUserProblem = function() {
+                return ResourceProvider.getAllUserProblem();
+            }
+
+            Sandbox.prototype.getAchievements = function() {
                 return ResourceProvider.getAchievements();
             }
 
@@ -758,7 +717,12 @@ angular.module('SunLesson.services', [])
                 return UserdataProvider.flushUserdata(lid, cid);
             }
 
-            Sandbox.prototype.resetUserdata = function (moduleName, moduleId) {
+
+            Sandbox.prototype.flushAllUserdata = function() {
+                return UserdataProvider.flushAllUserdata();
+            }
+
+            Sandbox.prototype.resetUserdata = function(moduleName, moduleId) {
                 return UserdataProvider.resetUserdata(moduleName, moduleId);
             }
 
@@ -890,12 +854,23 @@ angular.module('SunLesson.services', [])
 
                 if ((typeof args !== "undefined") && (typeof args.activity !== "undefined")) {
                     lessonUserdata.current_activity = args.activity;
-                    this.flushUserdata(lessonData.id, $rootScope.ids.cid);
-                    this.continueLesson(lessonData.id, args.activity);
-                } else if (activityIndex != lessonData.activities.length - 1) {
+
+                    //this.flushUserdata(lessonData.id, $rootScope.ids.cid);
+                    this.flushAllUserdata().then(function() {
+                        //this.continueLesson(lessonData.id, args.activity);
+                        $location.path('/chapter/'+$rootScope.ids.cid+'/lesson/' + lessonData.id + '/activity/' + args.activity);
+                    }, function(err) {
+                         alert("flushAllUserdata Error in listenToActivityComplete");
+                    })
+                } else if (activityIndex != lessonData.activities.length-1) {
                     lessonUserdata.current_activity = lessonData.activities[activityIndex + 1].id;
-                    this.flushUserdata(lessonData.id, $rootScope.ids.cid);
-                    this.continueLesson(lessonData.id, lessonData.activities[activityIndex + 1].id);
+                    //this.flushUserdata(lessonData.id, $rootScope.ids.cid);
+                    this.flushAllUserdata().then(function() {
+                        //this.continueLesson(lessonData.id, lessonData.activities[activityIndex + 1].id);
+                        $location.path('/chapter/'+$rootScope.ids.cid+'/lesson/' + lessonData.id + '/activity/' + lessonData.activities[activityIndex+1].id);
+                    }, function(err) {
+                        alert('flushAllUserdata Error in listenToActivityComplete');
+                    })
                 } else {
                     lessonUserdata.current_activity = undefined;
                     if ((typeof lessonUserdata.summary.correct_percent == "undefined")) {
@@ -952,9 +927,11 @@ angular.module('SunLesson.services', [])
                     args.id = lessonData.id;
                     args.title = lessonData.title;
                     args.lessonCup = scope.lessonCup;
-                    this.listenToLessonComplete(args);
-                    this.flushUserdata(lessonData.id, $rootScope.ids.cid);
-                }           //end of "else"                                            
+
+                    this.listenToLessonComplete(args); 
+                    //this.flushUserdata(lessonData.id, $rootScope.ids.cid);   
+                    this.flushAllUserdata();               
+                }           //end of "else"
             }                  //end of function   
 
 
@@ -1024,8 +1001,10 @@ angular.module('SunLesson.services', [])
                 args.title = scope.title;
                 args.lessonCup = scope.lessonCup;
                 this.listenToLessonComplete(args);
-                this.flushUserdata(lessonData.id, $rootScope.ids.cid);
-            }
+
+                //this.flushUserdata(lessonData.id, $rootScope.ids.cid);     
+                this.flushAllUserdata();           
+            }    
 
             Sandbox.prototype.parseCompleteCondition = function (pass_score, summary) {
                 var target_score = 0;

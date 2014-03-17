@@ -21,7 +21,7 @@ angular.module('SunNavigator.directives', [])
                         lessons[inner] = tmp;
                     }
                 };
-
+ 
                 var data = combSandbox.loadChapterMaterial($routeParams.cid);
                 if (data) {
                     var lessons = data.lessons;
@@ -98,6 +98,10 @@ angular.module('SunNavigator.directives', [])
         return {
             restrict: 'E',
             link: function($scope, $element) {
+                $scope.enterMistake = function(chapterId, lessonId) {
+                    window.location = "/webapp/mistakes/#/chapter/" + chapterId + '/lesson/' + lessonId;
+                }
+
                 $scope.parentChapter = chapterData;
                 var lessonMaterialPromise, lessonUserdataPromise;
 
@@ -156,8 +160,10 @@ angular.module('SunNavigator.directives', [])
 
                      if (typeof lessonUserdata.current_activity === "undefined") {
                         $scope.buttonMsg = "开始学习";
+                        $scope.showMistake = false;
                     } else {
                         $scope.buttonMsg = "继续学习";
+                        $scope.showMistake = true;
                     }                
                     
                     $scope.showLessonDialogue = function () {
@@ -218,7 +224,7 @@ angular.module('SunNavigator.directives', [])
              //-=-=-=-==-=-=-=-=-=-==--=-=-=-=-=-=-TEMP-=-=-=-==-=-=-=-=-=-==--=-=-=-=-=-=-
                         var resourceSession = {};
                         resourceSession.chapterUrl = DataProvider.materialMap[cid].url;
-                        console.log('write the chapterUrl = '+resourceSession.chapterUrl);
+                        //console.log('write the chapterUrl = '+resourceSession.chapterUrl);
                         sessionStorage.setItem('resourceSession', angular.toJson(resourceSession));
 
                         if (typeof lessonUserdata.current_activity === "undefined") {

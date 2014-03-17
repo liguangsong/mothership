@@ -65,7 +65,6 @@
         </div>
         <div class="lesson-summary-body">
             <span class="lesson-summary-title font-size-big">你完成了本课学习</span>
-
             <div class="lesson-summary-stat font-size-big">
                 <span ng-show="hasFinalQuiz">最终测试正确率&nbsp;{{ lessonCorrectPercent }}&nbsp;%</span>
                 {{ lessonCup }}<br>
@@ -73,9 +72,35 @@
         </div>
         <div class="lesson-summary-footer">
             <button class="back-button" ng-click="backToChapter()">结束学习</button>
+            <button class="back-button" ng-click="comeInMistakeNote()">看看错题本</button>
         </div>
     </div>
 
 
-<div class="modal fade"></div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <div class="text-center" style="font-size:36px;"><span class="glyphicon glyphicon-book"></span></div>
+        <h4 class="modal-title" id="myModalLabel">你有错题本啦！</h4>
+      </div>
+      <div class="modal-body">
+        从现在开始，你的所有错题都将被打入错题本，记得常去看他们。
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+        <button type="button" class="btn btn-primary" data-dismiss="modal">我知道了</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--For testing Modal -->
+<!-- <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button> -->
+</body>
+</html>
 
