@@ -38,16 +38,5 @@ class Mixpanel{
       });
   }
 
-/*  Future fetchJson(){
-    return new Future((){
-      context['callback'] = (response) {
-        _dartJson = context['JSON'].callMethod('stringify',[response]);
-      };
-      ScriptElement script = new Element.tag("script");
-      script.src = Uri.encodeFull(_apiUri)+"&callback=callback";
-      document.body.children.add(script);
-    });
-  }*/
-
   Map get result => _dartJson;
 }
