@@ -2,9 +2,8 @@ angular.module('Mistakes.services', [])
     .factory('DataCache', function() {
         var navigatorMap = {};
         var allChapterArr = [];
-        var allChapterMap = {};   //两个最好能只留一个
+        var allChapterMap = {};   
         var allUserProblemMap = {};
-        //var materialMap = {};
 
         var TAGS = {
             wrong: "wrong",
@@ -66,8 +65,6 @@ angular.module('Mistakes.services', [])
                         }
                     })
                     DataCache.allChapterArr = allChapterArr;
-                   // console.log('最初拿到allChapteArr.length='+allChapterArr.length);
-                    //DataCache.materialMap = generateMaterialMap(allChapterArr);
                     allChapterArr.forEach(function(chapter, index) {
                         DataCache.allChapterMap[chapter.id] = chapter;
                         var orderedChapterArr = generateOrderedChapter(chapter);
@@ -76,7 +73,7 @@ angular.module('Mistakes.services', [])
                     deferred.resolve(DataCache.navigatorMap);
                 })
                 .error(function(err) {
-                    alert('getAllChapter Error!');
+                    console.log('getAllChapter Error!');
                     deferred.reject('Error');
                 })
 
@@ -118,7 +115,6 @@ angular.module('Mistakes.services', [])
                 }
             });
 
-//主视频和副视频就位，那么就形成一维数组，返回此数组
             var header = mainLessonMap.header;
             var totalLength = Object.keys(mainLessonMap).length;
             var count = 0;
@@ -142,12 +138,9 @@ angular.module('Mistakes.services', [])
             })
 
             var result = [];
-            //result.push(chapter);
             allLessons.forEach(function(lessons, index) {
                 result = result.concat(lessons);
             })
-        //    console.log('allLessons.length='+allLessons.length);
-          //  console.log('result.length='+result.length);
             return result;
         }  
 
@@ -181,7 +174,7 @@ angular.module('Mistakes.services', [])
                 deferred.resolve(DataCache.allChapterMap[cid]);
             }, function(err) {
                 deferred.reject('Error');
-                alert('get a chapter from all chapters error');
+                console.log('get a chapter from all chapters error');
             })
 
             return chapterPromise;
@@ -191,7 +184,6 @@ angular.module('Mistakes.services', [])
     	var deferred = $q.defer();
     	var lessonPromise = deferred.promise;
              var cid = lesson.parent_id;
-//console.log('lesson.parent_id='+cid);
             if(DataCache.allChapterMap[cid]) {
                 var chapterUrl = DataCache.allChapterMap[cid].url;
                 var url = APIProvider.getAPI('getLessonData', {chapterUrl: chapterUrl, lessonId: lesson.id});
@@ -200,7 +192,7 @@ angular.module('Mistakes.services', [])
                         deferred.resolve(lessonData);
                     })
                     .error(function(err) {
-                        alert('getLessonData Error');
+                        console.log('getLessonData Error');
                         deferred.reject('Error');
                     })
             } else {
@@ -213,7 +205,7 @@ angular.module('Mistakes.services', [])
                         })
                 }, function(err) {
                     deferred.reject('Error');
-                    alert('get chapter error when get lesson data');
+                    console.log('get chapter error when get lesson data');
                 })
             }
     	return lessonPromise; 
@@ -231,7 +223,7 @@ angular.module('Mistakes.services', [])
                     deferred.resolve(lessonUserdata);
                 })
                 .error(function(err) {
-                    alert('getLessonUserdata Error');
+                    console.log('getLessonUserdata Error');
                     deferred.reject('Error');
                 })
             return lessonUserdataPromise;
@@ -257,7 +249,7 @@ angular.module('Mistakes.services', [])
                  })
                  .error(function(err) {
                     deferred.reject('Error');
-                    alert('getMistakeMap Error');
+                    console.log('getMistakeMap Error');
                  })
             return allUserProblemPromise;
         }
@@ -283,7 +275,7 @@ angular.module('Mistakes.services', [])
                 //console.log(angular.toJson(lessonProblemsMap));
             }, function(err) {
                 deferred.reject('Error');
-                alert('get lessonData Error when getAllLessonProblemsMap');
+                console.log('get lessonData Error when getAllLessonProblemsMap');
             })
 
             return lessonProblemsPromise;
@@ -312,7 +304,7 @@ angular.module('Mistakes.services', [])
                 deferred.resolve(lessonProblemsUserdataMap);
             }, function(err) {
                 deferred.reject('Error');
-                alert('get lessonUserdata Error when getAllLessonProblemsUserdataMap');
+                console.log('get lessonUserdata Error when getAllLessonProblemsUserdataMap');
             })
 
             return lessonProblemsUserdataMapPromise;
