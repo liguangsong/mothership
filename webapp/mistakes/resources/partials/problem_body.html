@@ -1,14 +1,14 @@
 <!-- <<<<<<< HEAD -->
-<div>{{currentProblems[$index].pbody}}</div>
-<div href="" class="quiz-text" ng-click="showProblem(mproblem)" data-toggle="modal" data-target="#myModal">
+<!-- <div>{{currentProblems[$index].pbody}}</div> -->
+<a href="" class="quiz-text" ng-click="showProblem(mproblem)" data-toggle="modal" data-target="#myModal">
   <span mathjax-bind="currentProblems[$index].pbody"></span>   <!--  -->
-</div>
-<h3>HellMagic</h3>
-<!-- =======
+</a>
+<!-- <h3>HellMagic</h3>
+=======
 <h1>Fuckf</h1>
 
 <a href="" class="quiz-text" ng-click="showProblem(mproblem)" data-toggle="modal" data-target="#myModal">
-  <span mathjax-bind="currentProblems[$index].body"></span>
+  <span mathjax-bind="currentProblems[$index].pbody"></span>
 </a>
 
 >>>>>>> 0b27635b443c0002ac89cc1d8f5b6b6f6d98e86f -->
@@ -23,8 +23,8 @@
       
       <div class="modal-header text-center">
         <button type="button" class="close fui-cross" data-dismiss="modal" aria-hidden="true"> </button>
-        <button type="button" class="btn btn-default" ng-class="{'disabled':isFirst}" ng-click="preProblem()"><span class="fui-arrow-left"></span> 前一题 {{isFirst}}</button>
-        <button type="button" class="btn btn-default" ng-class="{'disabled':isLast}" ng-click="nextProblem()">后一题 {{isLast}}<span class="fui-arrow-right"></span></button>
+        <button type="button" class="btn btn-default" ng-class="{'disabled':isFirst}" ng-click="preProblem()"><span class="fui-arrow-left"></span> 前一题 </button>
+        <button type="button" class="btn btn-default" ng-class="{'disabled':isLast}" ng-click="nextProblem()">后一题 <span class="fui-arrow-right"></span></button>
       </div>
 
       <div class="modal-body">
