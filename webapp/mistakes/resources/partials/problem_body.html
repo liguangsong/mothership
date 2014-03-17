@@ -1,8 +1,17 @@
+<!-- <<<<<<< HEAD -->
 <div>{{currentProblems[$index].pbody}}</div>
 <div href="" class="quiz-text" ng-click="showProblem(mproblem)" data-toggle="modal" data-target="#myModal">
   <span mathjax-bind="currentProblems[$index].pbody"></span>   <!--  -->
 </div>
 <h3>HellMagic</h3>
+<!-- =======
+<h1>Fuckf</h1>
+
+<a href="" class="quiz-text" ng-click="showProblem(mproblem)" data-toggle="modal" data-target="#myModal">
+  <span mathjax-bind="currentProblems[$index].body"></span>
+</a>
+
+>>>>>>> 0b27635b443c0002ac89cc1d8f5b6b6f6d98e86f -->
 <a href="" ng-class="{'fav':(!mproblem.is_favorite), 'fav fav-faved':(mproblem.is_favorite)}" ng-click="editFavorite(mproblem)">
   <span class="glyphicon glyphicon-star"></span>
 </a>
