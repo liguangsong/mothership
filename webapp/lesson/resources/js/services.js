@@ -196,7 +196,7 @@ angular.module('SunLesson.services', [])
                     deferred.resolve(DataProvider.allUserProblemMap);
                 })
                 .error(function(err) {
-                     alert("getAllUserProblem Error in getAllUserProblem");
+                     console.log("getAllUserProblem Error in getAllUserProblem");
                      deferred.reject('Error');
                 })
                 return allMistakePromise;
@@ -396,7 +396,7 @@ angular.module('SunLesson.services', [])
 
 
         var flushAllUserdata = function() {
-            //alert('flushUserdata');
+            //console.log('flushUserdata');
             //var deferred = $q.defer();
             //var flushAllUserdataPromise = deferred.promise;
             var ids = $rootScope.ids;
@@ -404,13 +404,13 @@ angular.module('SunLesson.services', [])
             postLessonUserdataPromise.then(function() {
                 console.log('lessonuserdata success~');
             }, function(err) {
-                alert('lessonUserdata error');
+                console.log('lessonUserdata error');
             });
             var postMistakeUserdataPromise = flushUserdata("me", "mistake", DataProvider.allUserProblemMap);
             postMistakeUserdataPromise.then(function() {
                 console.log('post all mistake: '+angular.toJson(DataProvider.allUserProblemMap));
             }, function(err) {
-                alert('mistakeUserdata error');
+                console.log('mistakeUserdata error');
             });
             var allPromise = $q.all([postLessonUserdataPromise, postMistakeUserdataPromise]);
             return allPromise;
@@ -860,7 +860,7 @@ angular.module('SunLesson.services', [])
                         //this.continueLesson(lessonData.id, args.activity);
                         $location.path('/chapter/'+$rootScope.ids.cid+'/lesson/' + lessonData.id + '/activity/' + args.activity);
                     }, function(err) {
-                         alert("flushAllUserdata Error in listenToActivityComplete");
+                         console.log("flushAllUserdata Error in listenToActivityComplete");
                     })
                 } else if (activityIndex != lessonData.activities.length-1) {
                     lessonUserdata.current_activity = lessonData.activities[activityIndex + 1].id;
@@ -869,7 +869,7 @@ angular.module('SunLesson.services', [])
                         //this.continueLesson(lessonData.id, lessonData.activities[activityIndex + 1].id);
                         $location.path('/chapter/'+$rootScope.ids.cid+'/lesson/' + lessonData.id + '/activity/' + lessonData.activities[activityIndex+1].id);
                     }, function(err) {
-                        alert('flushAllUserdata Error in listenToActivityComplete');
+                        console.log('flushAllUserdata Error in listenToActivityComplete');
                     })
                 } else {
                     lessonUserdata.current_activity = undefined;

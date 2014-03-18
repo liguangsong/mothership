@@ -55,10 +55,10 @@
             <!--           <a href="" class="fav" ng-click="editFavorite(currentProblem)">
               <span class="glyphicon glyphicon-star"></span>
             </a> -->
-            <a href="" ng-class="{'fav':(!currentProblem.is_favorite), 'fav fav-faved':(currentProblem.is_favorite)}" ng-click="editFavorite(mproblem)">
+            <a href="" ng-class="{'fav':(!currentProblem.is_favorite), 'fav fav-faved':(currentProblem.is_favorite)}">
               <span class="glyphicon glyphicon-star" ng-click="editFavorite(currentProblem)"></span> 
-              <span ng-show="!currentProblem.is_favorite">收藏此题</span>
-              <span ng-show="currentProblem.is_favorite">取消收藏</span>
+              <span ng-show="!currentProblem.is_favorite" ng-click="editFavorite(currentProblem)">收藏此题</span>
+              <span ng-show="currentProblem.is_favorite" ng-click="editFavorite(currentProblem)">取消收藏</span>
             </a>
             <br>
             <button type="button" class="btn btn-primary" ng-click="showAnswer(currentProblem)">显示答案</button>
