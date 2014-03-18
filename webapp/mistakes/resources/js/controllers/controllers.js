@@ -193,8 +193,9 @@ angular.module('Mistakes.controllers', [])
                 $scope.isSingleFilling = true;
                 var answer = '';
                 $scope.currentProblemUserdata.answer.forEach(function(item, index) {
-
+                    answer += item;
                 })
+                $scope.userAnswer = answer;
             }            
        }
 
