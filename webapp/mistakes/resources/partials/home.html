@@ -54,7 +54,7 @@
 
           <div ng-show="selectedChapterId==chapter.id" class="list-group">
             <div ng-repeat="lesson in navigatorMap[chapter.id]" ng-class="{'list-group-item':true, 'active':selectedLessonId==lesson.id}" ng-click="clickOnItem(lesson)" class="list-group-item">
-              <span class="badge pull-right">{{problemCountMap[lesson.id] || 0}}</span>{{lesson.title}}
+              <span class="badge pull-right" ng-class="{'empty':problemCountMap[lesson.id]==0}">{{problemCountMap[lesson.id] || 0}}</span>{{lesson.title}}
             </div>       
           </div>
 

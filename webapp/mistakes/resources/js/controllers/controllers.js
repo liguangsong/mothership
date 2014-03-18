@@ -152,6 +152,10 @@ angular.module('Mistakes.controllers', [])
             $scope.showHintBox = false;
             $scope.showExplanation = false;   
 
+            if($scope.currentProblem.explanation) {
+                 $scope.showExplanation = true;
+            }
+
           $scope.body= "<span>"+$scope.currentProblem.body+"</span>";
             $scope.isShowProblem = true;
 
