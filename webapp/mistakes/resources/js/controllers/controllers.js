@@ -258,6 +258,8 @@ angular.module('Mistakes.controllers', [])
       if($routeParams.cid && $routeParams.lid) {
           DataCache.allChapterMap[$routeParams.cid].lessons.forEach(function(item, index) {
                if(item.id == $routeParams.lid) {
+                    $scope.selectedChapterId = $routeParams.cid;
+                    $scope.selectedLessonId = $routeParams.lid;
                     $scope.selectLesson(item);
                     return;
                }
