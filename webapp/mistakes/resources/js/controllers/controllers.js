@@ -152,9 +152,6 @@ angular.module('Mistakes.controllers', [])
             $scope.showHintBox = false;
             $scope.showExplanation = false;   
 
-            if($scope.currentProblem.explanation) {
-                 $scope.showExplanation = true;
-            }
 
           $scope.body= "<span>"+$scope.currentProblem.body+"</span>";
             $scope.isShowProblem = true;
@@ -176,6 +173,9 @@ angular.module('Mistakes.controllers', [])
        }
 
        $scope.showAnswer = function(problem) {
+            if($scope.currentProblem.explanation) {
+                 $scope.showExplanation = true;
+            }        
             if(problem.type != 'singlefilling') {
                 $scope.currentProblem.choices.forEach(function(choice) {
                     if(choice.is_correct) {
