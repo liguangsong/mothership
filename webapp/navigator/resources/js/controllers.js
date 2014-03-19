@@ -12,8 +12,14 @@ angular.module('SunNavigator.controllers', [])
         }
     })
 
-    .controller('SubjectCtrl', function ($scope, $location, $route, $routeParams, $rootScope, $http, SandboxProvider, me, rootMaterial) {
+    .controller('SubjectCtrl', function ($scope, $location, $route, $routeParams, $rootScope, $http, SandboxProvider, me, rootMaterial, DataProvider) {
         var subjectSandbox = SandboxProvider.getSandbox();
+
+       $scope.goToNavigator = function() {
+            window.location = '/webapp/navigator';
+       }
+
+       $scope.me = DataProvider.me;
 
         $scope.subjects = rootMaterial.subjects;
         //Mixpanel
@@ -89,8 +95,8 @@ angular.module('SunNavigator.controllers', [])
         $scope.signout = function() {
         	$http.get('/signout')
         	    .success(function(data) {
-        	        var me = subjectSandbox.loadMe();  
-        	        me = null;  
+        	        //var me = subjectSandbox.loadMe();  
+        	        DataProvider.me = null;  
                     window.location = '/webapp/login';
         	    })
         	    .error(function(err) {
@@ -104,9 +110,28 @@ angular.module('SunNavigator.controllers', [])
    })
 
 
-    .controller('ChapterCtrl', function ($scope, $rootScope, $location, $routeParams, $q, $timeout, SandboxProvider, me, rootMaterial, DataProvider) {
-        console.log('进入了ChapterCtrl..');
+    .controller('ChapterCtrl', function ($http, $scope, $rootScope, $location, $routeParams, $q, $timeout, SandboxProvider, me, rootMaterial, DataProvider) {
+        $scope.goToMistakeNote = function() {
+            window.location = '/webapp/mistakes/';
+        }
 
+       $scope.goToNavigator = function() {
+            window.location = '/webapp/navigator';
+       }     
+
+        $scope.signout = function() {
+            $http.get('/signout')
+                .success(function(data) {
+                    //var me = subjectSandbox.loadMe();  
+                    DataProvider.me = null;  
+                    window.location = '/webapp/login';
+                })
+                .error(function(err) {
+                    console.log('Signout Error:  ' + err);
+                })
+        };          
+
+        $scope.me = DataProvider.me;
         //backToChapter---内循环  subjectToChpater---外循环
         $scope.me = me;
         var chapterSandbox = SandboxProvider.getSandbox();

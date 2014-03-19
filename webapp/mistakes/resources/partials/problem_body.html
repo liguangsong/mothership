@@ -34,7 +34,7 @@
 
               <div ng-show="isSingleFilling">
                 <span>正确答案是：{{currentProblem.correct_answer}}</span>
-                <span>你的答案是：{{currentProblem.userAnswer}}</span>
+                <span>你的答案是：{{userAnswer}}</span>
               </div>
 
               <div class="col-md-12 explanation-container pull-left font-size-small">         
@@ -47,7 +47,7 @@
 <!--                     <div class="explanation-title" ng-show="hasExplanation()">
                        <img src="resources/img/explanation.png"/>&nbsp;&nbsp;&nbsp;题目解析
                     </div> -->
-                    <div class="explanation-content" mathjax-bind="explanation"></div>
+                    <div class="explanation-content" mathjax-bind="currentProblem.explanation"></div>
                 </div>
             </div>
           </div>
@@ -55,10 +55,10 @@
             <!--           <a href="" class="fav" ng-click="editFavorite(currentProblem)">
               <span class="glyphicon glyphicon-star"></span>
             </a> -->
-            <a href="" ng-class="{'fav':(!currentProblem.is_favorite), 'fav fav-faved':(currentProblem.is_favorite)}" ng-click="editFavorite(mproblem)">
+            <a href="" ng-class="{'fav':(!currentProblem.is_favorite), 'fav fav-faved':(currentProblem.is_favorite)}">
               <span class="glyphicon glyphicon-star" ng-click="editFavorite(currentProblem)"></span> 
-              <span ng-show="!currentProblem.is_favorite">收藏此题</span>
-              <span ng-show="currentProblem.is_favorite">取消收藏</span>
+              <span ng-show="!currentProblem.is_favorite" ng-click="editFavorite(currentProblem)">收藏此题</span>
+              <span ng-show="currentProblem.is_favorite" ng-click="editFavorite(currentProblem)">取消收藏</span>
             </a>
             <br>
             <button type="button" class="btn btn-primary" ng-click="showAnswer(currentProblem)">显示答案</button>

@@ -11,6 +11,24 @@ angular.module('Mistakes.controllers', [])
        var allChapterMap = DataCache.allChapterMap;
        $scope.navigatorMap = DataCache.navigatorMap;
 
+       $scope.me = DataCache.me;
+
+       $scope.goToNavigator = function() {
+            window.location = '/webapp/navigator';
+       }
+
+        $scope.signout = function() {
+          $http.get('/signout')
+              .success(function(data) {
+                  //var me = subjectSandbox.loadMe();  
+                  DataCache.me = null;  
+                    window.location = '/webapp/login';
+              })
+              .error(function(err) {
+                  console.log('Signout Error:  ' + err);
+              })
+        };       
+
        $scope.totalProblemCount = 0;
        $scope.problemCountMap = {};
        for(var cid in DataCache.allUserProblemMap) {
@@ -152,6 +170,7 @@ angular.module('Mistakes.controllers', [])
             $scope.showHintBox = false;
             $scope.showExplanation = false;   
 
+
           $scope.body= "<span>"+$scope.currentProblem.body+"</span>";
             $scope.isShowProblem = true;
 
@@ -172,6 +191,9 @@ angular.module('Mistakes.controllers', [])
        }
 
        $scope.showAnswer = function(problem) {
+            if($scope.currentProblem.explanation) {
+                 $scope.showExplanation = true;
+            }        
             if(problem.type != 'singlefilling') {
                 $scope.currentProblem.choices.forEach(function(choice) {
                     if(choice.is_correct) {
@@ -189,8 +211,9 @@ angular.module('Mistakes.controllers', [])
                 $scope.isSingleFilling = true;
                 var answer = '';
                 $scope.currentProblemUserdata.answer.forEach(function(item, index) {
-
+                    answer += item;
                 })
+                $scope.userAnswer = answer;
             }            
        }
 

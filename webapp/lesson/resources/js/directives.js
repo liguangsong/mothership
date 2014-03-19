@@ -912,7 +912,7 @@ angular.module('SunLesson.directives', [])
                             }
                         })
                         if(!exist) {
-                            var time = new Date().toLocaleString();
+                            var time = new Date().getTime();
                             var mistake = {
                                 id: currProblem.id,
                                 activityId: $routeParams.aid,

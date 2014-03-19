@@ -8,6 +8,9 @@ angular.module('Mistakes', ['Mistakes.services', 'Mistakes.controllers', 'Mistak
     	        controller: 'RootCtrl',
     	        templateUrl: 'resources/partials/home.html',
     	        resolve: {
+                         me: function(MaterialProvider) {
+                            return MaterialProvider.getMe();
+                         },
     	            navigatorMap: function(MaterialProvider) {
     	        	    return MaterialProvider.getNavigatorMap();
     	            },
@@ -20,6 +23,9 @@ angular.module('Mistakes', ['Mistakes.services', 'Mistakes.controllers', 'Mistak
     	        controller: 'HomeCtrl',
     	        templateUrl: 'resources/partials/home.html',
                      resolve: {
+                        me: function(MaterialProvider) {
+                            return MaterialProvider.getMe();
+                        },
                         navigatorMap: function(MaterialProvider) {
                             return MaterialProvider.getNavigatorMap();
                         },

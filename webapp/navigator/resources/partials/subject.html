@@ -1,6 +1,6 @@
 <div ng-hide="completeLoading">搏命加载中...</div>
 <div ng-show="completeLoading" class="subjects-container">
-    <nav class="main-nav" id="main-nav">
+<!--     <nav class="main-nav" id="main-nav">
         <span class="main-nav-label">选择科目</span>
 
         <div style="width: 50%" class="pull-left" ng-repeat="subject in subjects">
@@ -13,21 +13,33 @@
                  ng-click="signout()">登出</div>
             <div class="btn btn-block btn-primary" style="position:absolute;bottom: 50px; width: 90%;margin:5%; font-size:20px" 
                  ng-click="goToMistakeNote()">错题本</div>                 
-        </nav>
+    </nav> -->
 
     <div class="page-wrap" style="width:100%; left:{{ offsetWidth }}">
-        <header class="main-header" style="width:100%; left:{{ offsetWidth }}">
-            <a ng-click="showSubjectsNav()" class="open-menu">
-                <img src="resources/img/hamburg.png"/>
-            </a>
-            <span>{{ title }}</span>
+  <nav class="navbar navbar-inverse navbar-static-top">
+    <div class="container">
+      <div class="navbar-header">
+        <a href="#" class="navbar-brand" ng-click="backToNavigator()">洋葱数学</a>
+      </div>
+      <div class="collapse navbar-collapse">
+        <p class="navbar-text" style="margin-left:-10px;opacity:.5;"> 光合新知出品</p>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="" ng-click="goToNavigator()">学习</a></li>
+          <li><a href="" ng-click="goToMistakeNote()">错题本</a></li>
+        </ul>
 
-            <div class="achievements-button" ng-click="enterAchievementCenter()">
-                <img src="resources/img/achievements-icon.png"/>
-                <span class="font-size-small">成就陈列室</span>
-            </div>
-        </header>
-
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="" class="dropdown-toggle" data-toggle="dropdown">{{me.name || me.username}}<b class="caret"></b></a>
+            <span class="dropdown-arrow dropdown-arrow-inverse"></span>            
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="" ng-click="signout()">登出</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
         <div class="subject-content">
             <div style="padding-top: 20px;" class="col-sm-3 col-md-3" ng-repeat="chapter in chapters">
                 <div class="chapters-container" ng-class="chapter.style"
