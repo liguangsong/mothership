@@ -190,6 +190,7 @@ angular.module('SunLesson.services', [])
             $http.get(url)
                 .success(function(allmistake) {
                     DataProvider.allUserProblemMap = allmistake;
+                    console.log("-------------->"+JSON.stringify(allmistake));
                     if(!DataProvider.allUserProblemMap) {
                         DataProvider.allUserProblemMap = {};
                     }
@@ -408,7 +409,7 @@ angular.module('SunLesson.services', [])
             });
             var postMistakeUserdataPromise = flushUserdata("me", "mistake", DataProvider.allUserProblemMap);
             postMistakeUserdataPromise.then(function() {
-                console.log('post all mistake: '+angular.toJson(DataProvider.allUserProblemMap));
+                console.log('post all mistake: ------------------>'+angular.toJson(DataProvider.allUserProblemMap));
             }, function(err) {
                 console.log('mistakeUserdata error');
             });
@@ -426,9 +427,8 @@ angular.module('SunLesson.services', [])
             var promise = $http({
                 method: 'POST',
                 url: APIProvider.getAPI('postUserdata', {"appId": appId, "entityId": entityId}, ''),
-                headers: {'Content-Type': 'application/json;charset:UTF-8'},
-
-                data: JSON.stringify(content)                
+                headers: {'Content-Type': 'application/json;charset=UTF-8'},
+                data: JSON.stringify(content)
             });
 
             promise.success(function (msg) {
