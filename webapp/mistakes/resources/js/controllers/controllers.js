@@ -236,7 +236,7 @@ angular.module('Mistakes.controllers', [])
             var promise = $http({
                 method: 'Put', 
                 url: APIProvider.getAPI('putFavoriteUserdata', {"appId": "me", "entityId": "mistake"}),
-                headers: {'Content-Type': 'application/json;charset:UTF-8'},
+                headers: {'Content-Type': 'application/json;charset=UTF-8'},
                 data: JSON.stringify(content)                
             });
             promise.success(function() {
