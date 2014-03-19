@@ -879,7 +879,7 @@ angular.module('SunLesson.directives', [])
                     if(!problemUserdata.is_correct) {
                         if(!DataProvider.allUserProblemMap || Object.keys(DataProvider.allUserProblemMap).length <= 0) {
                             $('#myModal').modal('toggle');
-                        }else{
+                        }/*else{
                             var chapterUserProblems = DataProvider.allUserProblemMap[$routeParams.cid];
                             if(!chapterUserProblems || Object.keys(chapterUserProblems).length<=0) {
                                 $('#myModal').modal('toggle');
@@ -889,18 +889,17 @@ angular.module('SunLesson.directives', [])
                                     $('#myModal').modal('toggle');
                                 }
                             }
-                        }                        
-                    }
-
-                    //add in the mistake note
-                    if(!DataProvider.allUserProblemMap[$rootScope.ids.cid]) {
-                        DataProvider.allUserProblemMap[$rootScope.ids.cid] = {};
-                    }
-                    if(!DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid]) {
-                        DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid] = [];
+                        }      */                  
                     }
 
                     if(!problemUserdata.is_correct) {
+                        //add in the mistake note
+                        if(!DataProvider.allUserProblemMap[$rootScope.ids.cid]) {
+                             DataProvider.allUserProblemMap[$rootScope.ids.cid] = {};
+                        }
+                        if(!DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid]) {
+                           DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid] = [];
+                        }                        
                         //checkout the problem if exist
                         var tempIndex = 0;
                         var exist = DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid].some(function(item, index) {
@@ -912,6 +911,10 @@ angular.module('SunLesson.directives', [])
                             }
                         })
                         if(!exist) {
+/*                            if(isFirstMistake()) {
+                                $('#myModal').modal('toggle');
+                            }*/
+
                             var time = new Date().getTime();
                             var mistake = {
                                 id: currProblem.id,
@@ -926,6 +929,7 @@ angular.module('SunLesson.directives', [])
                             DataProvider.allUserProblemMap[$rootScope.ids.cid][$routeParams.lid][tempIndex].count += 1;
                         }
                     }
+
 
                     if ((typeof $scope.activityData.show_answer !== "undefined") && ($scope.activityData.show_answer)) {
                         $scope.showExplanation = true;
