@@ -4,6 +4,7 @@ angular.module('Mistakes.services', [])
         var allChapterArr = [];
         var allChapterMap = {};   
         var allUserProblemMap = {};
+        var me = {};
 
         var TAGS = {
             wrong: "wrong",
@@ -15,7 +16,8 @@ angular.module('Mistakes.services', [])
             allChapterArr: allChapterArr,
             allChapterMap: allChapterMap,
             allUserProblemMap: allUserProblemMap,
-            TAGS: TAGS
+            TAGS: TAGS,
+            me: me
         }
     })
 
@@ -35,6 +37,8 @@ angular.module('Mistakes.services', [])
                     return HOST + '/userdata/' + args.appId + '/' + args.entityId;
                 case 'putFavoriteUserdata' :
                     return HOST + '/userdata/' + args.appId + '/' + args.entityId;
+                case 'getMe' :
+                    return HOST + '/me';
             }
             return HOST;
         }
@@ -45,6 +49,27 @@ angular.module('Mistakes.services', [])
     })
 
     .factory('MaterialProvider', function($q, $http, DataCache, APIProvider) {
+        var getMe = function() {
+            var deferred = $q.defer();
+            var mePromise = deferred.promise;
+
+            if(DataCache.me && DataCache.me.username) {
+                deferred.resolve(DataCache.me);
+                return mePromise;
+            }
+
+            $http.get(APIProvider.getAPI('getMe'))
+                .success(function(me) {
+                    DataCache.me = me;
+                    deferred.resolve(DataCache.me);
+                })
+                .error(function(err) {
+                    console.log('getMe Error!!!');
+                    deferred.reject('Get Me Error');
+                })
+            return mePromise;
+        }
+
         var getNavigatorMap = function() {
             var deferred = $q.defer();
             var navigatorMapPromise = deferred.promise;
@@ -314,6 +339,7 @@ angular.module('Mistakes.services', [])
             getNavigatorMap: getNavigatorMap,
             getAllUserProblemMap: getAllUserProblemMap,
             getAllLessonProblemsMap: getAllLessonProblemsMap,
-            getAllLessonProblemsUserdataMap: getAllLessonProblemsUserdataMap
+            getAllLessonProblemsUserdataMap: getAllLessonProblemsUserdataMap,
+            getMe: getMe
         }
     })

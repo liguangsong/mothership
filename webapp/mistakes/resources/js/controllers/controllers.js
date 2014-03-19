@@ -11,6 +11,24 @@ angular.module('Mistakes.controllers', [])
        var allChapterMap = DataCache.allChapterMap;
        $scope.navigatorMap = DataCache.navigatorMap;
 
+       $scope.me = DataCache.me;
+
+       $scope.goToNavigator = function() {
+            window.location = '/webapp/navigator';
+       }
+
+        $scope.signout = function() {
+          $http.get('/signout')
+              .success(function(data) {
+                  //var me = subjectSandbox.loadMe();  
+                  DataCache.me = null;  
+                    window.location = '/webapp/login';
+              })
+              .error(function(err) {
+                  console.log('Signout Error:  ' + err);
+              })
+        };       
+
        $scope.totalProblemCount = 0;
        $scope.problemCountMap = {};
        for(var cid in DataCache.allUserProblemMap) {

@@ -6,16 +6,17 @@
         <a href="#" class="navbar-brand" ng-click="backToNavigator()">洋葱数学</a>
       </div>
       <div class="collapse navbar-collapse">
-        <p class="navbar-text"> 光合新知出品</p>
-
+        <p class="navbar-text" style="margin-left:-10px;opacity:.5;"> 光合新知出品</p>
+        <ul class="nav navbar-nav">
+          <li><a href="" ng-click="goToNavigator()">学习</a></li>
+          <li class="active"><a href="" ng-click="goToMistakeNote()">错题本</a></li>
+        </ul>
         <ul class="nav navbar-nav navbar-right">
           <li class="dropdown">
-            <a href="" class="dropdown-toggle" data-toggle="dropdown">{{}} <b class="caret"></b></a>
+            <a href="" class="dropdown-toggle" data-toggle="dropdown">{{me.name || me.username}} <b class="caret"></b></a>
             <span class="dropdown-arrow dropdown-arrow-inverse"></span>            
             <ul class="dropdown-menu" role="menu">
-              <li><a href="#">错题本</a></li>
-              <li class="divider"></li>
-              <li><a href="#">登出</a></li>
+              <li><a href="" ng-click="signout()">登出</a></li>
             </ul>
           </li>
         </ul>
