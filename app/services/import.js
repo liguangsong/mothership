@@ -1,7 +1,13 @@
 var mongoose = require('mongoose');
 var Track = mongoose.model('Track');
 var schedule = require('node-schedule');
-var tracks = require('../controllers/tracks')
+var tracks = require('../controllers/tracks');
+
+var users = require('../controllers/users');
+var fs = require('fs');
+var file ='xiangmu.json';
+var data;
+
 
 
 exports.start = function () {
@@ -19,6 +25,23 @@ exports.start = function () {
                         console.log(err.message + JSON.stringify(track));
                     }
                 });
+            });
+        });
+        var json = fs.readFile(file, 'utf8', function (err, data) {
+            if (err) {
+                console.log('Error: ' + err);
+                return;
+            }
+
+            data = JSON.parse(data);
+            data.forEach(function(json){
+                users.createUser(json);
+                /*User.find({"username":json.username},function (err, results) {
+                 if(err) {
+                 console.log('mongoose find error:' + JSON.stringify(err) +"the user is"+json.username);
+                 return;
+                 }
+                 });*/
             });
         });
     });
