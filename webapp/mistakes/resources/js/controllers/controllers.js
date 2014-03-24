@@ -150,7 +150,7 @@ angular.module('Mistakes.controllers', [])
                      $scope.currentProblems = $scope.favoriteProblemsArr;
                      break;
             }
-            $scope.none_tip = ($scope.currentProblems ? true : false);
+            $scope.none_tip = ($scope.currentProblems.length != 0 ? true : false);
        }
 
        $scope.showProblem = function(problem) {
