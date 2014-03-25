@@ -183,7 +183,8 @@ exports.dispatch = function (req, res) {
                 res.redirect("/webapp/me/bootstrap.html")
             }
         } else {
-            res.redirect("/webapp/me/index.html");
+            //res.redirect("/webapp/me/index.html");
+            res.redirect("/webapp/StatisticDashboard/build/");
         }
     } else {
         res.redirect('/');
