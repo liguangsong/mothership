@@ -3,9 +3,9 @@
 <html ng-app>
 <head>
     <meta charset="utf-8">
-    <title>StatisticDashboard</title>
+    <title>教师后台 | 洋葱数学</title>
     <link rel="stylesheet" href="files/lib/bootstrap-3.1.1/css/bootstrap.min.css"/>
-    <link rel="stylesheet/less" href="css/c-flat-ui.less"> 
+    <link rel="stylesheet/less" href="css/c-flat-ui.less">
     <link rel="stylesheet" href="css/statisticdashboard.css"/>
     <link rel="stylesheet" href="css/loader.css"/>
     <script src="files/lib/less-1.5.0.min.js"></script>
@@ -14,10 +14,10 @@
 <nav class="navbar navbar-inverse navbar-static-top">
     <div class="container">
         <div class="navbar-header">
-            <a href="#" class="navbar-brand">ghxz</a>
+            <a href="#" class="navbar-brand" ng-click="backToNavigator()">洋葱数学</a>
         </div>
-
         <div class="collapse navbar-collapse">
+            <p class="navbar-text" style="margin-left:-10px;opacity:.5;"> 光合新知出品</p>
             <ul class="nav navbar-nav">
                 <li class="active">
                     <a href="#"><span class="glyphicon glyphicon-stats"> </span> 学生数据</a>
@@ -61,9 +61,9 @@
                     </optgroup>-->
                 </select>
             </div>
-            
+
         </form>
-    
+
         <p class="pull-right">
             全班学生中，
             <span ng-repeat="event in ctrl.events | eventfilter: 'LoginRelated':''">
@@ -111,18 +111,18 @@
             </tr>
             </tbody>
         </table>
-        
+
         <div id="lessonLoaderModal" class="modal fade" role="dialog" aria-labelledby="lessonsLoaderLabel"
-           data-backdrop="static">
-          <div class="spinner">
-              <div class="rect1"></div>
-              <div class="rect2"></div>
-              <div class="rect3"></div>
-              <div class="rect4"></div>
-              <div class="rect5"></div>
-              <p style="width:200%;margin-left:-50%;color:#b4b4b4">正在分析数据</p>
-          </div>
-       </div>
+             data-backdrop="static">
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+                <p style="width:200%;margin-left:-50%;color:#b4b4b4">正在分析数据</p>
+            </div>
+        </div>
     </div>
 
     <div class="panel slide-in" id="right-panel">
