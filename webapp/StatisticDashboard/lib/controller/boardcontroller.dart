@@ -65,6 +65,10 @@ class BoardController {
     js.context.jQuery("#right-panel").fadeOut();
     user = userInfo;
     rooms = user['rooms'];
+    if(rooms.isEmpty){
+      js.context.alert("对不起，您的个人信息中未包含班级，请联系kefu@ghxz.cn");
+      return;
+    }
     chapterInfo = new JsonObject.fromJsonString(responseText);
     chapters = chapterInfo.toList();
     _loadAllUsersAndFindUsers(rooms).then((_){
@@ -95,7 +99,11 @@ class BoardController {
     usersMap = users;
   }
 
-  void giveParamAndLoadEvents(){  
+  void giveParamAndLoadEvents(){
+    if(rooms.isEmpty){
+      js.context.alert("对不起，您的个人信息中未包含班级，请联系kefu@ghxz.cn");
+      return;
+    }
     js.context.jQuery("#right-panel").fadeOut();
     js.context.jQuery('#lessonLoaderModal').modal('show');
     events.clear();
