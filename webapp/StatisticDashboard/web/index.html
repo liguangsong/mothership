@@ -23,7 +23,7 @@
                     <a href="#"><span class="glyphicon glyphicon-stats"> </span> 学生数据</a>
                 </li>
                 <li>
-                    <a href="/webapp/navigator" ><span class="glyphicon"> </span> 进入提高班</a>
+                    <a href="javascript:void(0)" onclick="javascript:window.open('/webapp/navigator/')" ><span class="glyphicon glyphicon-eye-open"> </span> 体验课程</a>
                 </li>
             </ul>
 
@@ -95,8 +95,8 @@
             <tbody>
             <tr class="row_lesson_cards" ng-repeat="rowLesson in ctrl.rowLessons">
                 <td class="lesson_card" ng-repeat="lesson in rowLesson" ng-click="ctrl.onLessonClick(lesson)">
-                    <button class="btn btn-default btn-sm pull-right" data-toggle="tooltip" data-placement="top"
-                            title="打开提高班" ng-click="ctrl.openLesson($event,lesson)" ng-cloak><span class="glyphicon glyphicon-eye-open"> </span></button>
+                    <!--<button class="btn btn-default btn-sm pull-right" data-toggle="tooltip" data-placement="top"
+                            title="打开提高班" ng-click="ctrl.openLesson($event,lesson)" ng-cloak><span class="glyphicon glyphicon-eye-open"> </span></button>-->
                     <h4 class="lesson_title" title="{{lesson['title']}}" ng-cloak>{{lesson['title']}}</h4>
 
                     <div class="event_container">

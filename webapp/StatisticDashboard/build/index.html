@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>教师后台 | 洋葱数学</title>
     <link rel="stylesheet" href="files/lib/bootstrap-3.1.1/css/bootstrap.min.css"/>
-    <link rel="stylesheet/less" href="css/c-flat-ui.less"> 
+    <link rel="stylesheet/less" href="css/c-flat-ui.less">
     <link rel="stylesheet" href="css/statisticdashboard.css"/>
     <link rel="stylesheet" href="css/loader.css"/>
     <script src="files/lib/less-1.5.0.min.js"></script>
@@ -21,6 +21,9 @@
             <ul class="nav navbar-nav">
                 <li class="active">
                     <a href="#"><span class="glyphicon glyphicon-stats"> </span> 学生数据</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" onclick="javascript:window.open('/webapp/navigator/')" ><span class="glyphicon glyphicon-eye-open"> </span> 体验课程</a>
                 </li>
             </ul>
 
@@ -61,9 +64,9 @@
                     </optgroup>-->
                 </select>
             </div>
-            
+
         </form>
-    
+
         <p class="pull-right">
             全班学生中，
             <span ng-repeat="event in ctrl.events | eventfilter: 'LoginRelated':''">
@@ -92,8 +95,8 @@
             <tbody>
             <tr class="row_lesson_cards" ng-repeat="rowLesson in ctrl.rowLessons">
                 <td class="lesson_card" ng-repeat="lesson in rowLesson" ng-click="ctrl.onLessonClick(lesson)">
-                    <button class="btn btn-default btn-sm pull-right" data-toggle="tooltip" data-placement="top"
-                            title="打开提高班" ng-click="ctrl.openLesson($event,lesson)" ng-cloak><span class="glyphicon glyphicon-eye-open"> </span></button>
+                    <!--<button class="btn btn-default btn-sm pull-right" data-toggle="tooltip" data-placement="top"
+                            title="打开提高班" ng-click="ctrl.openLesson($event,lesson)" ng-cloak><span class="glyphicon glyphicon-eye-open"> </span></button>-->
                     <h4 class="lesson_title" title="{{lesson['title']}}" ng-cloak>{{lesson['title']}}</h4>
 
                     <div class="event_container">
@@ -111,18 +114,18 @@
             </tr>
             </tbody>
         </table>
-        
+
         <div id="lessonLoaderModal" class="modal fade" role="dialog" aria-labelledby="lessonsLoaderLabel"
-           data-backdrop="static">
-          <div class="spinner">
-              <div class="rect1"></div>
-              <div class="rect2"></div>
-              <div class="rect3"></div>
-              <div class="rect4"></div>
-              <div class="rect5"></div>
-              <p style="width:200%;margin-left:-50%;color:#b4b4b4">正在分析数据</p>
-          </div>
-       </div>
+             data-backdrop="static">
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+                <p style="width:200%;margin-left:-50%;color:#b4b4b4">正在分析数据</p>
+            </div>
+        </div>
     </div>
 
     <div class="panel slide-in" id="right-panel">

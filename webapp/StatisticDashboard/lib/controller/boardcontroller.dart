@@ -64,9 +64,6 @@ class BoardController {
   void onFirstLoaded(String responseText){
     js.context.jQuery("#right-panel").fadeOut();
     user = userInfo;
-    //fakeUserInfo = new JsonObject(); // psudo
-    //fakeUserInfo.roomNames = list_schools(); //psudo
-    //rooms = list_schools();
     rooms = user['rooms'];
     chapterInfo = new JsonObject.fromJsonString(responseText);
     chapters = chapterInfo.toList();
@@ -162,7 +159,6 @@ class BoardController {
   // Give requirements and load all the data.
   Future<List<sta.Event>> _loadEvents(int roomIndex, int chapterIndex) {
     List loadingLessonCards = new List();
-    //_roomName = fakeUserInfo.roomNames[roomIndex];
     _roomName = rooms[roomIndex];
     currentChapter = chapterInfo[chapterIndex];
     List<Map> lessonsMap = currentChapter['lessons'];
