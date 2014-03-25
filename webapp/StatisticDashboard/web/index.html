@@ -23,7 +23,7 @@
                     <a href="#"><span class="glyphicon glyphicon-stats"> </span> 学生数据</a>
                 </li>
                 <li>
-                    <a href="/webapp/navigator" ><span class="glyphicon"> </span> 进入提高班</a>
+                    <a href="/webapp/navigator" target="view_window"><span class="glyphicon"> </span> 进入提高班</a>
                 </li>
             </ul>
 
@@ -86,7 +86,7 @@
     </div>
 
 
-    <div id="chapter-panel" class="col-lg-12 col-md-12">
+    <div id="chapter-panel" class="col-lg-12 col-md-12" >
         <!-- <comblesson lessons-data="ctrl.lessons" events-data="ctrl.events"
                      ng-model="ctrl.userClickedLesson"
                      on-lesson-click="ctrl.showUsers(false)">
@@ -114,7 +114,6 @@
             </tr>
             </tbody>
         </table>
-        
         <div id="lessonLoaderModal" class="modal fade" role="dialog" aria-labelledby="lessonsLoaderLabel"
            data-backdrop="static">
           <div class="spinner">
@@ -126,8 +125,7 @@
               <p style="width:200%;margin-left:-50%;color:#b4b4b4">正在分析数据</p>
           </div>
        </div>
-    </div>
-
+</div>
     <div class="panel slide-in" id="right-panel">
         <button class="close pull-right">&times;</button>
         <div ng-if="!ctrl.isEvent" class="panel-heading" id="details-title">

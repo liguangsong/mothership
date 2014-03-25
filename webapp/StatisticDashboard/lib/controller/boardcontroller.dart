@@ -18,11 +18,11 @@ JsonObject chapterInfo;
 String _roomName;
 
 var userInfoUrl = "/me";
-var chapterInfoUrl = "/apps?package_name=org.sunlib.exercise&type=chapter";
-var allUsersUrl = "/users";
+//var chapterInfoUrl = "/apps?package_name=org.sunlib.exercise&type=chapter";
+//var allUsersUrl = "/users";
 
-//String chapterInfoUrl = "files/all_chapter.json";
-//String allUsersUrl = "files/all_user.json";
+String chapterInfoUrl = "files/all_chapter.json";
+String allUsersUrl = "files/all_user.json";
 String exerciseSchema = "/webapp/navigator/#/subject/";
 
 var currentRoomIndex = 0;
