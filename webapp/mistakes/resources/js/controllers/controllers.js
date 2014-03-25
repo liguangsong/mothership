@@ -251,6 +251,7 @@ angular.module('Mistakes.controllers', [])
                 problem.tags.splice(tagIndex, 1);
                 var index = $scope.favoriteProblemsArr.indexOf(problem);
                 $scope.favoriteProblemsArr.splice(index, 1);
+                $scope.none_tip = ($scope.favoriteProblemsArr.length ? true : false);
             }
             var putUrl = '/userdata/me/mistake';
             content.cid = problem.cid;
