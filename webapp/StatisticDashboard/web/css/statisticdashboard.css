@@ -98,6 +98,14 @@ body {
     border-bottom: 1px solid #ccc;
 }
 
+.chapter-overflow{
+  overflow:auto;
+}
+
+.lesson-white-space{
+  white-space:nowrap;
+}
+
 #details-body{
   padding-bottom: 20px;
 }

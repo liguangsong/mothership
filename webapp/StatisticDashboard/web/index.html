@@ -70,8 +70,7 @@
         <p class="pull-right">
             全班学生中，
             <span ng-repeat="event in ctrl.events | eventfilter: 'LoginRelated':''">
-                <a href="#" ng-if="event.info['type'].contains('SelfMade')" ng-click="ctrl.showUsers(true,event)" ng-cloak>{{event.info['result'].length}}</a>
-                
+                <a href="#" ng-if="event.info['type'].contains('SelfMade')" ng-click="ctrl.showUsers(true,event)" ng-cloak>{{event.info['result'].length}}</a>               
             </span>
             人从未登录
             <!--<div class="event" ng-repeat="event in ctrl.events | eventfilter: 'LoginRelated':''">
@@ -86,14 +85,14 @@
     </div>
 
 
-    <div id="chapter-panel" class="col-lg-12 col-md-12">
+    <div id="chapter-panel" class="col-lg-8 col-md-8 chapter-overflow">
         <!-- <comblesson lessons-data="ctrl.lessons" events-data="ctrl.events"
                      ng-model="ctrl.userClickedLesson"
                      on-lesson-click="ctrl.showUsers(false)">
          </comblesson>-->
         <table>
             <tbody>
-            <tr class="row_lesson_cards" ng-repeat="rowLesson in ctrl.rowLessons">
+            <tr class="row_lesson_cards lesson-white-space" ng-repeat="rowLesson in ctrl.rowLessons">
                 <td class="lesson_card" ng-repeat="lesson in rowLesson" ng-click="ctrl.onLessonClick(lesson)">
                     <!--<button class="btn btn-default btn-sm pull-right" data-toggle="tooltip" data-placement="top"
                             title="打开提高班" ng-click="ctrl.openLesson($event,lesson)" ng-cloak><span class="glyphicon glyphicon-eye-open"> </span></button>-->
