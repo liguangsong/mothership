@@ -43,14 +43,36 @@ angular.module('Mistakes.controllers', [])
                $scope.problemCountMap[cid] = tempCount;
                $scope.totalProblemCount += tempCount;
            }
-       }       
-
+       }
+        var record = {};
+        for(var chapterId in $scope.navigatorMap){
+           var content = $scope.navigatorMap[chapterId];
+           for(var i = 0, j = content.length; i < j; ++i){
+               if(_.find($scope.problemCountMap, function(value, key){
+                    return key == content[i]['id'];
+               })){
+                    break;
+               }
+           }
+           record[chapterId] = (i == j ? 0 : i);
+           content = null;
+       }
+       $scope.locate_url = function(){
+            for(var chapterId in record){
+                $routeParams.lid = $scope.navigatorMap[$routeParams.cid][record[$routeParams.cid]].id;
+                return;
+            }
+        }
+       $scope.locate_url();
        $scope.clickOnItem = function(item) {
             if(!item.type || (item.type != 'chapter')) {
-                  $scope.selectLesson(item);
-                  $scope.selectedLessonId = item.id;
+                $scope.selectedLessonId = item.id;
+                $scope.selectLesson(item);
             }else{
-                 $scope.selectedChapterId = item.id;
+                $scope.selectedChapterId = item.id;
+                $scope.lesson = $scope.navigatorMap[item.id][record[item.id]];
+                $scope.selectedLessonId = $scope.lesson.id;
+                $scope.selectLesson($scope.lesson);
             }
        }
 
