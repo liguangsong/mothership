@@ -27,13 +27,14 @@ exports.create = function (req, res) {
 }
 
 var upload = function (track) {
-
-    track.headers.time = Date.now();
-
     var mixFormat = track.data.toObject();
     for (var key in track.headers.toObject()) {
 //        console.log(key);
-        mixFormat.properties[key] = track.headers[key];
+        if(key === 'time'){
+            mixFormat.properties[key] = track.headers[key].getTime();
+        }else{
+            mixFormat.properties[key] = track.headers[key];
+        }
     }
 
     var data = queryString.stringify({

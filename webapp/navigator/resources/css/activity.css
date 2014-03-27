@@ -104,7 +104,7 @@ ximage {
 
 .choice-layout-list-state-wrong {
     background-color: #f4a5aa;
-    color: white;
+    /* color: white;*/
     margin: 0px 0px 15px 0px;
     padding: 15px 0px 15px 15px;
 }
@@ -123,7 +123,9 @@ ximage {
     padding: 0px 0px 0px 20%;
     margin: 15px 15px 0 0;
 }
-
+.choice-layout-card-state-default ximage{
+    margin-top: 0;
+}
 .choice-layout-card-state-default img {
     max-height: 100%;
     max-width: 100%;

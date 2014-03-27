@@ -80,6 +80,37 @@ exports.create = function (req, res, next) {
     });
 };
 
+
+exports.createUser = function(userJson){
+    var user = new User(userJson);
+    var message = null;
+
+    user.provider = 'local';
+    user.active = false;
+    if (user.usergroup != "teacher") {
+        user.usergroup = 'student';
+    }
+
+    user.save(function (err) {
+        if (err) {
+            switch (err.code) {
+                case 11000:
+                case 11001:
+                    message = 'Username already exists';
+                    console.log("---------->this username has been used"+user.username);
+                    break;
+                default:
+                    message = 'Please fill all the required fields';
+
+            }
+            return err.message;
+        } else {
+            console.log("-------->this user has been successfully created"+user.username);
+            return "Succeed"
+        }
+    });
+};
+
 /**
  * Get all users
  */
@@ -87,7 +118,7 @@ exports.all = function (req, res) {
     User.find().exec(function (err, users) {
         res.json((err) ? null : users);
     })
-}
+};
 
 /**
  * Reset user password
@@ -152,12 +183,13 @@ exports.dispatch = function (req, res) {
                 res.redirect("/webapp/me/bootstrap.html")
             }
         } else {
-            res.redirect("/webapp/me/index.html");
+            //res.redirect("/webapp/me/index.html");
+            res.redirect("/webapp/StatisticDashboard/build/");
         }
     } else {
         res.redirect('/');
     }
-}
+};
 
 /**
  * Find user by id

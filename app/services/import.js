@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Track = mongoose.model('Track');
 var schedule = require('node-schedule');
-var tracks = require('../controllers/tracks')
+var tracks = require('../controllers/tracks');
 
 
 exports.start = function () {
