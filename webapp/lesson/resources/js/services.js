@@ -761,7 +761,7 @@ angular.module('SunLesson.services', [])
             }
 
             Sandbox.prototype.continueLesson = function (lid, aid) {
-                $location.path('/chapter/' + $rootScope.ids.cid + '/lesson/' + lid + '/activity/' + aid);
+                $location.path('/chapter/' + $rootScope.ids.cid + '/layer/' + $rootScope.ids.layer_id + '/lesson/' + lid + '/activity/' + aid);
             }
 
             Sandbox.prototype.createGrader = function (graderFunc, userData) {
@@ -859,7 +859,7 @@ angular.module('SunLesson.services', [])
                     //this.flushUserdata(lessonData.id, $rootScope.ids.cid);
                     this.flushAllUserdata().then(function() {
                         //this.continueLesson(lessonData.id, args.activity);
-                        $location.path('/chapter/'+$rootScope.ids.cid+'/lesson/' + lessonData.id + '/activity/' + args.activity);
+                        $location.path('/chapter/'+$rootScope.ids.cid+ '/layer/' + $rootScope.ids.layer_id +  '/lesson/' + lessonData.id + '/activity/' + args.activity);
                     }, function(err) {
                          console.log("flushAllUserdata Error in listenToActivityComplete");
                     })
@@ -868,7 +868,7 @@ angular.module('SunLesson.services', [])
                     //this.flushUserdata(lessonData.id, $rootScope.ids.cid);
                     this.flushAllUserdata().then(function() {
                         //this.continueLesson(lessonData.id, lessonData.activities[activityIndex + 1].id);
-                        $location.path('/chapter/'+$rootScope.ids.cid+'/lesson/' + lessonData.id + '/activity/' + lessonData.activities[activityIndex+1].id);
+                        $location.path('/chapter/'+$rootScope.ids.cid+ '/layer/' + $rootScope.ids.layer_id + '/lesson/' + lessonData.id + '/activity/' + lessonData.activities[activityIndex+1].id);
                     }, function(err) {
                         console.log('flushAllUserdata Error in listenToActivityComplete');
                     })
