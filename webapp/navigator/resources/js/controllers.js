@@ -51,7 +51,7 @@ angular.module('SunNavigator.controllers', [])
             var currentStatusPromise = subjectSandbox.getCurrentChapterStatus(chapter.id);
             currentStatusPromise.then(function (status) {
                 $scope.hasCached[chapter.id] = status;
-                if (chapter.id === "22953b7f-266c-4070-98dc-2d2df53a7239") {
+                if (chapter.id === "eee8073c-e0fa-4119-a7f9-40286e4bf27a") {
                     chapter.style = "updated";
                 }
             })
