@@ -32,7 +32,7 @@ angular.module('SunLesson.services', [])
     })
 
 //TODO：这里面的API肯定是要做清理的，用不到的干掉
-    .service('APIProvider', function (DataProvider, $rootScope, $q, $http) {
+    .service('APIProvider', function (DataProvider, $rootScope, $q, $http, $routeParams) {
         var HOST = '';
 
         var getAPI = function (type, id, ts) {
@@ -49,13 +49,13 @@ angular.module('SunLesson.services', [])
                 case "getLessonJson" :
                     if (typeof id.chapter === "undefined") {
                     }
-                    return HOST + id.chapter.url + "/" + id.lessonId + "/lesson.json";
+                    return HOST + id.chapter.url + "/" + id.layerId + '/' + id.lessonId + "/lesson.json";
 
-                case "getFileResources" :
+                case "getFileResources" :     //这个需要修改为带有layer_id的形式...
                     var chapter = DataProvider.chapterData;
                     if (typeof chapter === "undefined") {
                     }
-                    return HOST + chapter.url + "/" + id.lessonId;
+                    return HOST + chapter.url + "/" + id.layer_id + '/' + id.lessonId;
 
                 case "getAchievementsJson" :
                     return HOST + "/exercise/v1/achievements?ts=" + ts;
@@ -121,8 +121,9 @@ angular.module('SunLesson.services', [])
                 $rootScope.sid = params.sid;
             }
             ids.cid = params.cid;
+            ids.layer_id = params.layer_id;
             ids.lid = params.lid;
-            ids.aid = params.aid;
+            //ids.aid = params.aid;
             $rootScope.ids = ids;
 
             deferred.resolve(ids);
@@ -154,13 +155,13 @@ angular.module('SunLesson.services', [])
                         }
                     })
 
-                    var url = APIProvider.getAPI('getLessonJson', {chapter: DataProvider.chapterData, lessonId: $rootScope.ids.lid}, ts);
+                    var url = APIProvider.getAPI('getLessonJson', {chapter: DataProvider.chapterData, layerId: $rootScope.ids.layer_id, lessonId: $rootScope.ids.lid}, ts);
                     getResourceFromServer(url, deferred);
                 }).error(function (err) {
                         console.log('Get chapterData Error...');
                     })
             } else {
-                var url = APIProvider.getAPI('getLessonJson', {chapter: DataProvider.chapterData, lessonId: $rootScope.ids.lid}, ts);
+                var url = APIProvider.getAPI('getLessonJson', {chapter: DataProvider.chapterData, layerId: $rootScope.ids.layer_id, lessonId: $rootScope.ids.lid}, ts);
                 getResourceFromServer(url, deferred);
             }
 
@@ -760,7 +761,7 @@ angular.module('SunLesson.services', [])
             }
 
             Sandbox.prototype.continueLesson = function (lid, aid) {
-                $location.path('/chapter/' + $rootScope.ids.cid + '/lesson/' + lid + '/activity/' + aid);
+                $location.path('/chapter/' + $rootScope.ids.cid + '/layer/' + $rootScope.ids.layer_id + '/lesson/' + lid + '/activity/' + aid);
             }
 
             Sandbox.prototype.createGrader = function (graderFunc, userData) {
@@ -858,7 +859,7 @@ angular.module('SunLesson.services', [])
                     //this.flushUserdata(lessonData.id, $rootScope.ids.cid);
                     this.flushAllUserdata().then(function() {
                         //this.continueLesson(lessonData.id, args.activity);
-                        $location.path('/chapter/'+$rootScope.ids.cid+'/lesson/' + lessonData.id + '/activity/' + args.activity);
+                        $location.path('/chapter/'+$rootScope.ids.cid+ '/layer/' + $rootScope.ids.layer_id +  '/lesson/' + lessonData.id + '/activity/' + args.activity);
                     }, function(err) {
                          console.log("flushAllUserdata Error in listenToActivityComplete");
                     })
@@ -867,7 +868,7 @@ angular.module('SunLesson.services', [])
                     //this.flushUserdata(lessonData.id, $rootScope.ids.cid);
                     this.flushAllUserdata().then(function() {
                         //this.continueLesson(lessonData.id, lessonData.activities[activityIndex + 1].id);
-                        $location.path('/chapter/'+$rootScope.ids.cid+'/lesson/' + lessonData.id + '/activity/' + lessonData.activities[activityIndex+1].id);
+                        $location.path('/chapter/'+$rootScope.ids.cid+ '/layer/' + $rootScope.ids.layer_id + '/lesson/' + lessonData.id + '/activity/' + lessonData.activities[activityIndex+1].id);
                     }, function(err) {
                         console.log('flushAllUserdata Error in listenToActivityComplete');
                     })

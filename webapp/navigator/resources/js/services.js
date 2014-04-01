@@ -5,6 +5,7 @@ angular.module('SunNavigator.services', [])
         var materialMap = {};
         var userInfo = {};
         var lessonsUserdataMap = {};
+        var chapterUserdataMap = {};
 
         var achievements = 
             {"ts": "1", "badges": [
@@ -28,6 +29,7 @@ angular.module('SunNavigator.services', [])
             rootMaterial: rootMaterial,
             materialMap: materialMap,
             lessonsUserdataMap: lessonsUserdataMap,
+            chapterUserdataMap: chapterUserdataMap,
             userInfo: userInfo,            
             achievements: achievements,
             SUBJECT_MAP: SUBJECT_MAP
@@ -67,6 +69,9 @@ angular.module('SunNavigator.services', [])
                 case "getLessonUserdata" :
                     return HOST + "/userdata/" + id.chapterId + "/" + id.lessonId;
 
+                case "getChapterUserdata" :
+                    return HOST + '/userdata/' + id.chapterId;
+
                 case "postLessonUserdata" :
                     return HOST + "/userdata/" + id.chapterId + "/" + id.lessonId;
 
@@ -97,18 +102,7 @@ angular.module('SunNavigator.services', [])
             if(DataProvider.rootMaterial && DataProvider.rootMaterial.subjects) {
                 deferred.resolve(DataProvider.rootMaterial);
                 return rootMaterialPromise;
-            }
-
-/*            if(!!window.sessionStorage && sessionStorage.getItem('resourceSession')) {
-                var resourceSession = angular.fromJson(sessionStorage.getItem('resourceSession'));
-                if(resourceSession && resourceSession.rootMaterial && resourceSession.materialMap) {
-                    DataProvider.rootMaterial = resourceSession.rootMaterial;                    
-                    DataProvider.materialMap = resourceSession.materialMap;
-                    deferred.resolve(DataProvider.rootMaterial);
-                    return rootMaterialPromise;
-                }
-            }
-*/                     
+            }                   
 
             var rootMaterial = DataProvider.rootMaterial;
             var materialMap = DataProvider.materialMap;
@@ -131,7 +125,7 @@ angular.module('SunNavigator.services', [])
                         subject.chapters.push(material);
                         materialMap[material.id] = material;
                         _.each(material.lessons, function(lesson) {
-                            lesson.chapterId = material.id;   //TODO:是不是叫做parent.id好一点
+                            lesson.chapterId = material.id;   
                             materialMap[lesson.id] = lesson;
                         })
                     })
@@ -150,22 +144,9 @@ angular.module('SunNavigator.services', [])
             if(DataProvider.materialMap[lessonId] && DataProvider.materialMap[lessonId].activities) {
                 deferred.resolve(DataProvider.materialMap[lessonId]);
                 return lessonMaterialPromise;
-            }
-
- /*           if(!!window.sessionStorage && sessionStorage.getItem('resourceSession')) {
-                var resourceSession = angular.fromJson(sessionStorage.getItem('resourceSession'));
-                if(resourceSession && resourceSession.materialMap) {
-                    DataProvider.materialMap =  resourceSession.materialMap;
-                    if(DataProvider.materialMap[lessonId] && DataProvider.materialMap[lessonId].activities) {
-                        deferred.resolve(DataProvider.materialMap[lessonId]);
-                        return lessonMaterialPromise;
-                    }                
-                }
-            }
-*/            
+            }          
 
             var materialMap = DataProvider.materialMap;
-//   console.log(angular.toJson(materialMap));         
             var chapter = materialMap[chapterId];
             if(!chapter) {
                 console.log('Error: getLessonMaterial中获取chapter出错');
@@ -207,16 +188,6 @@ angular.module('SunNavigator.services', [])
                   return userInfoPromise;
               } 
 
-   /*           else {
-                 var resourceSession = angular.fromJson(sessionStorage.getItem('resourceSession'));
-                 if(resourceSession && resourceSession.userInfo) {
-                    DataProvider.userInfo = resourceSession.userInfo;
-                    deferred.resolve(DataProvider.userInfo);
-                    return userInfoPromise;
-                 }
-              }
-   */
-
               var promise = $http.get(APIProvider.getAPI('getUserInfo', ''));
               promise.success(function(data) {
                   if(!data.achievements) {
@@ -252,7 +223,7 @@ angular.module('SunNavigator.services', [])
 
     })   
 
-    .factory('UserdataProvider', function($q, $http, APIProvider, DataProvider, MaterialProvider) {
+    .factory('UserdataProvider', function($q, $http, APIProvider, DataProvider, MaterialProvider, $routeParams, $route) {
         var getMe = function() {
             var deferred = $q.defer();
             var userPromise = deferred.promise;
@@ -261,19 +232,6 @@ angular.module('SunNavigator.services', [])
                 deferred.resolve(DataProvider.me);
                 return userPromise;
             } 
-
-    /*        if(!!window.sessionStorage && sessionStorage.getItem('resourceSession')) {
-                if(sessionStorage.getItem('resourceSession')) {
-                    console.log(angular.toJson(sessionStorage.getItem('resourceSession')));
-                }
-                var resourceSession = angular.fromJson(sessionStorage.getItem('resourceSession'));
-                if(resourceSession && resourceSession.me) {
-                    DataProvider.me = resourceSession.me;
-                    deferred.resolve(DataProvider.me);
-                    return userPromise;
-                }              
-            }
-    */
 
             $http.get(APIProvider.getAPI('getMe'))
               .success(function(user) {
@@ -286,6 +244,31 @@ angular.module('SunNavigator.services', [])
              return userPromise;
          };  
 
+         var getChapterUserdata = function() {
+            var deferred = $q.defer();
+            var chapterUserdataPromise = deferred.promise;
+
+            var chapterId = $route.current.params.cid;
+            console.log('---------------------------chapterId='+chapterId);
+
+            if(DataProvider.chapterUserdataMap[chapterId]) {
+                deferred.resolve(DataProvider.chapterUserdataMap[chapterId]);
+                return chapterUserdataPromise;
+            }
+
+//make sure the DataProvider.materialMap[cid] is ready...
+            $http.get(APIProvider.getAPI('getChapterUserdata', {"chapterId":chapterId}, ''))
+                .success(function(chapterUserdata) {
+                    //DataProvider.chapterUserdataMap[chapterId] = chapterUserdata;   //is array, need to convert to standed map
+                    deferred.resolve(chapterUserdata);
+                })
+                .error(function(err) {
+                    console.log('get chapterUserdata Error');
+                    deferred.reject('get chapterUserdata Error');
+                })
+            return chapterUserdataPromise;
+         }
+
        var getLessonUserdata = function(lessonId, chapterId) {
             var deferred = $q.defer();
             var lessonUserdataPromise = deferred.promise;
@@ -295,16 +278,6 @@ angular.module('SunNavigator.services', [])
                 deferred.resolve(DataProvider.lessonsUserdataMap[lessonId]);
                 return lessonUserdataPromise;
             }
-
-   /*         if(!!window.sessionStorage && sessionStorage.getItem('resourceSession')) {
-                var resourceSession = angular.fromJson(sessionStorage.getItem('resourceSession'));
-                if(resourceSession && resourceSession.lessonsUserdataMap) {
-                    DataProvider.lessonsUserdataMap = resourceSession.lessonsUserdataMap;  
-                    deferred.resolve(DataProvider.lessonsUserdataMap[lessonId]);
-                    return lessonUserdataPromise;
-                }
-            }
-  */
 
             $http.get(APIProvider.getAPI('getLessonUserdata', {"lessonId":lessonId, "chapterId":chapterId}, ''))
                 .success(function(userdata, status) {              
@@ -320,7 +293,8 @@ angular.module('SunNavigator.services', [])
                     
         return {
             getMe: getMe,
-            getLessonUserdata: getLessonUserdata
+            getLessonUserdata: getLessonUserdata,
+            getChapterUserdata: getChapterUserdata
         }
 
     })      //end of UserdataProvider

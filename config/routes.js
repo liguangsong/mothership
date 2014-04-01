@@ -50,7 +50,8 @@ module.exports = function (app, passport, auth) {
     app.post('/users/:userId/password', auth.requiresLogin, users.password);
     app.post('/users/:userId/profile', auth.requiresLogin, users.profile);
 
-    app.get('/userdata/:appId/:entityId', auth.requiresLogin, userdata.read);
+    app.get('/userdata/:appId/:entityId', auth.requiresLogin, userdata.readOne);
+    app.get('/userdata/:appId', auth.requiresLogin, userdata.readSome);   //
     app.post('/userdata/:appId/:entityId', auth.requiresLogin, userdata.write);
     app.put('/userdata/:appId/:entityId', auth.requiresLogin, userdata.editFavorite);
 
