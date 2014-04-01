@@ -125,9 +125,9 @@ angular.module('SunNavigator.controllers', [])
         var chapterLessonStateMap = {};
         if(!chapterUserdataMap) {
             //need to convert arr to standed map
-            var tempChapterUserdataMap = {};
+            $scope.tempChapterUserdataMap = {};
             _.each(chapterUserdataArr, function(lessonMetaUserdata, index) {
-                tempChapterUserdataMap[lessonMetaUserdata.entityId] = lessonMetaUserdata.data;
+                $scope.tempChapterUserdataMap[lessonMetaUserdata.entityId] = lessonMetaUserdata.data;
             })
 
             chapterUserdataMap = {};
@@ -136,9 +136,9 @@ angular.module('SunNavigator.controllers', [])
                     if(!chapterUserdataMap[layer.id]) {
                         chapterUserdataMap[layer.id] = [];
                     }
-                    if(tempChapterUserdataMap[lesson.id]) {
-                        chapterUserdataMap[layer.id].push(tempChapterUserdataMap[lesson.id]); 
-                        chapterLessonStateMap[lesson.id] = tempChapterUserdataMap[lesson.id].is_complete;
+                    if($scope.tempChapterUserdataMap[lesson.id]) {
+                        chapterUserdataMap[layer.id].push($scope.tempChapterUserdataMap[lesson.id]); 
+                        chapterLessonStateMap[lesson.id] = $scope.tempChapterUserdataMap[lesson.id].is_complete;
                     }else{
                         chapterUserdataMap[layer.id].push({is_complete:false});
                         chapterLessonStateMap[lesson.id] = false;
@@ -190,7 +190,17 @@ angular.module('SunNavigator.controllers', [])
             })
         }
 
-
+        $scope.comeInLesson = function(chapterId, layerId, lessonId) {
+            //怎么进入内循环，需要最后的定义~
+/*            var userdata = $scope.tempChapterUserdataMap[lessonId];
+            var activityId = '';
+            if(userdata.current_activity) {
+                activityId = userdata.current_activity;
+            }else{
+               //activityId = lessonData.activities[0].id  
+            }*/
+            window.location = '/webapp/lesson/#/subject/math/chapter/' + chapterId + '/layer/' + layerId + '/lesson/' +lessonId;
+        }
 
         //注意真正的userdata是返回的object中的data属性的value-->chpaterUserdata=chapter.lessonUserdatas-->userData=lessonUserdata.data
 console.log('--==--=--=-=-=-=-=--=-The End--==--=--=-=-=-=-=--=-')

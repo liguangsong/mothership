@@ -32,7 +32,7 @@ angular.module('SunLesson.services', [])
     })
 
 //TODO：这里面的API肯定是要做清理的，用不到的干掉
-    .service('APIProvider', function (DataProvider, $rootScope, $q, $http) {
+    .service('APIProvider', function (DataProvider, $rootScope, $q, $http, $routeParams) {
         var HOST = '';
 
         var getAPI = function (type, id, ts) {
@@ -49,7 +49,7 @@ angular.module('SunLesson.services', [])
                 case "getLessonJson" :
                     if (typeof id.chapter === "undefined") {
                     }
-                    return HOST + id.chapter.url + "/" + id.lessonId + "/lesson.json";
+                    return HOST + id.chapter.url + "/" + id.layerId + '/' + id.lessonId + "/lesson.json";
 
                 case "getFileResources" :     //这个需要修改为带有layer_id的形式...
                     var chapter = DataProvider.chapterData;
@@ -123,7 +123,7 @@ angular.module('SunLesson.services', [])
             ids.cid = params.cid;
             ids.layer_id = params.layer_id;
             ids.lid = params.lid;
-            ids.aid = params.aid;
+            //ids.aid = params.aid;
             $rootScope.ids = ids;
 
             deferred.resolve(ids);
@@ -155,13 +155,13 @@ angular.module('SunLesson.services', [])
                         }
                     })
 
-                    var url = APIProvider.getAPI('getLessonJson', {chapter: DataProvider.chapterData, lessonId: $rootScope.ids.lid}, ts);
+                    var url = APIProvider.getAPI('getLessonJson', {chapter: DataProvider.chapterData, layerId: $rootScope.ids.layer_id, lessonId: $rootScope.ids.lid}, ts);
                     getResourceFromServer(url, deferred);
                 }).error(function (err) {
                         console.log('Get chapterData Error...');
                     })
             } else {
-                var url = APIProvider.getAPI('getLessonJson', {chapter: DataProvider.chapterData, lessonId: $rootScope.ids.lid}, ts);
+                var url = APIProvider.getAPI('getLessonJson', {chapter: DataProvider.chapterData, layerId: $rootScope.ids.layer_id, lessonId: $rootScope.ids.lid}, ts);
                 getResourceFromServer(url, deferred);
             }
 
