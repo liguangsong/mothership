@@ -94,8 +94,8 @@
             <tbody>
             <tr class="row_lesson_cards lesson-white-space" ng-repeat="rowLesson in ctrl.rowLessons">
                 <td class="lesson_card" ng-repeat="lesson in rowLesson" ng-click="ctrl.onLessonClick(lesson)">
-                    <!--<button class="btn btn-default btn-sm pull-right" data-toggle="tooltip" data-placement="top"
-                            title="打开提高班" ng-click="ctrl.openLesson($event,lesson)" ng-cloak><span class="glyphicon glyphicon-eye-open"> </span></button>-->
+                    <button class="btn btn-default btn-sm pull-right" data-toggle="tooltip" data-placement="top"
+                            title="查看本节错题率" ng-click="ctrl.openLesson($event,lesson)" ng-cloak><span class="glyphicon glyphicon-eye-open"> </span></button>
                     <h4 class="lesson_title" title="{{lesson['title']}}" ng-cloak>{{lesson['title']}}</h4>
 
                     <div class="event_container">

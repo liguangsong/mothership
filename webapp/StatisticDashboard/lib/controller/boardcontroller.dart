@@ -159,9 +159,11 @@ class BoardController {
   //open the lesson within exercise
   void openLesson(MouseEvent evt, Map lesson){
     evt.preventDefault();
-    String url = exerciseSchema + currentChapter['subject'] +"/chapter/"+
+/*    String url = exerciseSchema + currentChapter['subject'] +"/chapter/"+
         currentChapter['id'];
-    window.open(url,"提高班");
+    window.open(url,"提高班");*/
+    String url = "viewLessonDetails.html?ChapterId="+currentChapter['id']+"&LessonId="+lesson['id']+"&Room=$_roomName";
+    window.open(url,"错题率");
   }
   
   // Give requirements and load all the data.
