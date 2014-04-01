@@ -7,36 +7,23 @@ var TrackSchema = new Schema({
         type: Boolean,
         default: false
     },
+    validation: {
+        type: String,
+        default: 'unvalidated' // 'invalid' 'valid'
+    },
     headers: {
-        distinct_id: {
-            type: String,
-            required: true
-        },
-        /*ip: {
-            type: String,
-            required: true
-        },*/
+        distinct_id: String,
+        ip: String,
         token: {
             type: String,
             default: config.token
         },
-        time: {
-            type: Date,
-            required: true
-        }
+        time: Date
     },
     data: {
-        event: {
-            type: String,
-            required: true
-        },
+        event: String,
         properties: {}
     }
 });
-
-
-TrackSchema.path('headers.time').validate(function (time) {
-    return ( typeof time != 'undefined' && time < Date.now());
-}, 'time should cannot be future.');
 
 var Track = mongoose.model('Track', TrackSchema);

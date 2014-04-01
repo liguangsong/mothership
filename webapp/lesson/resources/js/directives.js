@@ -521,9 +521,7 @@ angular.module('SunLesson.directives', [])
                             })
                         };
                         $scope.chooseOption = function (index) {
-                            /**
-                             * TODO Mixpanel submit answer
-                             */
+
                             $scope.isSelected[index] = "selected";
                             submitTime = Date.now();
                             duration = submitTime - enterTime;
@@ -552,6 +550,9 @@ angular.module('SunLesson.directives', [])
                                     videoDOM.play();
                                 }
                             }
+                            // Mixpanel
+                            LearningRelated.finishProblem(true,video.url,activityData.title,pausedTime);
+
                         };
                     })
                 })  // end of videoDOMMapPromise

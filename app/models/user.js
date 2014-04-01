@@ -14,7 +14,10 @@ var mongoose = require('mongoose'),
 var UserSchema = new Schema({
     name: String,
     email: String,
-    usergroup: String,
+    usergroup: {
+        type: String,
+        default: 'student'
+    },
     profile: {
         room: String,
         gender: String,
@@ -29,9 +32,15 @@ var UserSchema = new Schema({
     rooms: [
         { type: String }
     ],
-    active: Boolean,
+    active: {
+        type: Boolean,
+        default: false
+    },
     hashed_password: String,
-    provider: String,
+    provider: { // OAUTH Provider
+        type: String,
+        default: 'local'
+    },
     salt: String
 });
 
@@ -80,18 +89,6 @@ UserSchema.path('hashed_password').validate(function (hashed_password) {
 
 
 /**
- * Pre-save hook
- */
-UserSchema.pre('save', function (next) {
-    if (!this.isNew) return next();
-
-    if (!validatePresenceOf(this.password) && authTypes.indexOf(this.provider) === -1)
-        next(new Error('Invalid password'));
-    else
-        next();
-});
-
-/**
  * Methods
  */
 UserSchema.methods = {
@@ -135,4 +132,16 @@ UserSchema.methods = {
     }
 };
 
+
+/**
+ * Pre-save hook
+ */
+UserSchema.pre('save', function (next) {
+    if (!this.isNew) return next();
+
+    if (!validatePresenceOf(this.password) && authTypes.indexOf(this.provider) === -1)
+        next(new Error('Invalid password'));
+    else
+        next();
+});
 mongoose.model('User', UserSchema);
