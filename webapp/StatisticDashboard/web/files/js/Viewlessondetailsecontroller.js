@@ -25,9 +25,9 @@ angular.module('static', []).controller('Viewlessondetailsecontroller', function
             $scope.loggedin = false;
             console.log('not logged in');
         });
-//    var url = "/webapp/"+ "/" + Request["ChapterId"] + "/" + Request["LessonId"] + "/lesson.json";
-//    $http.get(url)
-    $http.get("/webapp/c844f495-4a66-4cd0-b03c-a7a3155e22db/3a661cb0-ff43-4f8a-aa0c-74ad47b507ff/lesson.json")
+    var url = "/webapp/"+ "/" + Request["ChapterId"] + "/" + Request["LessonId"] + "/lesson.json";
+    $http.get(url)
+    //$http.get("/webapp/c844f495-4a66-4cd0-b03c-a7a3155e22db/3a661cb0-ff43-4f8a-aa0c-74ad47b507ff/lesson.json")
         .success(function (lessonData) {
             $scope.title = lessonData['title'];
             $scope.date = []
