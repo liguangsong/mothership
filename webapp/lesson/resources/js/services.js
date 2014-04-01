@@ -51,11 +51,11 @@ angular.module('SunLesson.services', [])
                     }
                     return HOST + id.chapter.url + "/" + id.lessonId + "/lesson.json";
 
-                case "getFileResources" :
+                case "getFileResources" :     //这个需要修改为带有layer_id的形式...
                     var chapter = DataProvider.chapterData;
                     if (typeof chapter === "undefined") {
                     }
-                    return HOST + chapter.url + "/" + id.lessonId;
+                    return HOST + chapter.url + "/" + id.layer_id + '/' + id.lessonId;
 
                 case "getAchievementsJson" :
                     return HOST + "/exercise/v1/achievements?ts=" + ts;
@@ -121,6 +121,7 @@ angular.module('SunLesson.services', [])
                 $rootScope.sid = params.sid;
             }
             ids.cid = params.cid;
+            ids.layer_id = params.layer_id;
             ids.lid = params.lid;
             ids.aid = params.aid;
             $rootScope.ids = ids;

@@ -1,7 +1,7 @@
 angular.module('SunLesson', ['SunLesson.services', 'SunLesson.controllers', 'SunLesson.directives'])
     .config(function($routeProvider) { 
          $routeProvider
-             .when('/subject/:sid/chapter/:cid/lesson/:lid/activity/:aid', {
+             .when('/subject/:sid/chapter/:cid/layer/:layer_id/lesson/:lid/activity/:aid', {
                  controller: 'RootCtrl',
                  template: '马上进入课程...初始化所有资源!!!',
                  resolve: {
@@ -28,7 +28,7 @@ angular.module('SunLesson', ['SunLesson.services', 'SunLesson.controllers', 'Sun
                  }
              })    
 
-             .when('/chapter/:cid/lesson/:lid/activity/:aid', {
+             .when('/chapter/:cid/layer/:layer_id/lesson/:lid/activity/:aid', {
                  controller: 'ActivityCtrl',
                  templateUrl: 'resources/partials/activity.html',
                  resolve: {

@@ -4,7 +4,7 @@
 var mongoose = require('mongoose');
 var Userdata = mongoose.model('Userdata');
 
-exports.read = function (req, res) {
+exports.readOne = function (req, res) {
     if (!req.user) return res.send(401);
     var username = req.user.username
         , appId = req.app.id
@@ -21,6 +21,25 @@ exports.read = function (req, res) {
             res.json(200, (userdata) ? userdata.data : {});
         })
 };
+
+exports.readSome = function(req, res) {
+    if(!req.user) return res.send(401);
+    var username = req.user.username,
+           appId = req.app.id;
+    console.log('-=-=-=-=-==username='+username+'   appId='+appId);
+    
+    Userdata.find({
+        userId: username,
+        appId: appId
+    }).exec(function(err, userdatas) {
+        if(err) {
+            return res.send(500, err);
+        }
+        console.log('userdatas='+JSON.stringify(userdatas));
+        res.json(200, userdatas);
+    })
+};
+
 
 exports.write = function (req, res) {
     if (!req.user) return res.send(401);

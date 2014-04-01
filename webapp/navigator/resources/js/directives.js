@@ -86,6 +86,16 @@ angular.module('SunNavigator.directives', [])
         }
     })
 
+    .directive('navigator', function() {
+        return {
+            restrict: 'E',
+            templateUrl: '/resources/partials/navigator.html',
+            link: function($scope, $element) {
+                
+            }
+        }
+    })
+
 
     .directive('lesson', function($routeParams, $location, $http, $q, $templateCache, $compile, $rootScope, SandboxProvider, DataProvider) {
         var lessonSandbox = SandboxProvider.getSandbox();

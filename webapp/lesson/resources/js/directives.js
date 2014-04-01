@@ -271,7 +271,7 @@ angular.module('SunLesson.directives', [])
                 var activityData = activitySandbox.getActivityMaterial($routeParams.aid, null);
 
                 var template = "<div ng-hide='showVideoRating'><video style='display: none' id='video' class='xvideo' src='" +
-                    APIProvider.getAPI("getFileResources", {chapterId: $rootScope.ids.cid, lessonId: $routeParams.lid}, "") + "/" + $attrs.src
+                    APIProvider.getAPI("getFileResources", {layer_id: $rootScope.ids.layer_id, lessonId: $routeParams.lid}, "") + "/" + $attrs.src
                     + "' controls></video><br>" +
                     "<button class='play-button' ng-click='playVideo()'>{{ playButtonMsg }}</button><br><br></div>" +
                     "<div ng-show='showVideoRating'>" +
@@ -398,7 +398,7 @@ angular.module('SunLesson.directives', [])
                 var video = activityData.video;
                 var problemMaterial = activityData.problems;
                 var videoArray = [];
-                var baseUrl = APIProvider.getAPI("getFileResources", {chapterId: $rootScope.ids.cid, lessonId: $routeParams.lid}, "") + "/";
+                var baseUrl = APIProvider.getAPI("getFileResources", {layer_id: $rootScope.ids.layer_id, lessonId: $routeParams.lid}, "") + "/";
 
                 videoArray.push(baseUrl + video.url);
                 for (var i = 0; i < problemMaterial.length; i++) {
@@ -563,7 +563,7 @@ angular.module('SunLesson.directives', [])
         return {
             restrict: "E",
             link: function ($scope, $element, $attrs) {
-                var template = "<audio class='xaudio' src='" + APIProvider.getAPI("getFileResources", {chapterId: $rootScope.ids.cid, lessonId: $routeParams.lid}, "")
+                var template = "<audio class='xaudio' src='" + APIProvider.getAPI("getFileResources", {layer_id: $rootScope.ids.layer_id, lessonId: $routeParams.lid}, "")
                     + "/" + $attrs.src + "' controls></audio>";
                 $element.html(template);
                 $compile($element.contents())($scope);
@@ -575,7 +575,7 @@ angular.module('SunLesson.directives', [])
         return {
             restrict: "E",
             link: function ($scope, $element, $attrs) {
-                var template = "<img class='ximage' src='" + APIProvider.getAPI("getFileResources", {chapterId: $rootScope.ids.cid, lessonId: $routeParams.lid}, "")
+                var template = "<img class='ximage' src='" + APIProvider.getAPI("getFileResources", {layer_id: $rootScope.ids.layer_id, lessonId: $routeParams.lid}, "")
                     + "/" + $attrs.src + "' />";
                 $element.html(template);
                 $compile($element.contents())($scope);
@@ -617,7 +617,7 @@ angular.module('SunLesson.directives', [])
 
                 // Asynchronously download PDF as an ArrayBuffer
                 var pdf_url = APIProvider.getAPI("getFileResources",
-                    {chapterId: $rootScope.ids.cid, lessonId: $routeParams.lid}, "")
+                    {layer_id: $rootScope.ids.layer_id, lessonId: $routeParams.lid}, "")
                     + "/"
                     + encodeURI($attrs.src);
                 $scope.openReader = function () {

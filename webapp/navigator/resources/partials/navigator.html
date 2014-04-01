@@ -1,0 +1,28 @@
+<div ng-class="chapter-container">
+    <h3>{{currentChapter.name}}</h3>
+    <h4>{{currentChapter.description}}</h4>
+</div>
+
+<ul ng-class="layers-container" id="layers">
+    <li ng-class="layer-item" ng-repeat="layer in currentChapter.layers" ng-click="clickOnLayer(layer)" ng-class="{'layer-unlocked':layerIsUnlocked(layer), 'layer-locked':!layerIsUnlocked(layer)}">
+        <div ng-class="layer-head" data-toggle="collapse" data-parent="#layers">     <!-- ng-click="isShowLayer=!isShowLayer"  -->
+            <img ng-src="resources/img/logo.png"  class="layer-img"/>   <!-- {{layer.type}} -->
+            <span ng-class="layer-title">{{layer.title}}</span>
+            <span ng-class="layer-description">{{layer.description}}</span>
+            <div ng-class="layer-lessons-progress">
+        	    <span ng-class="lesson-progress" ng-repeat="lessonUserdata in chapterUserdata[layer.id]">是否完成：{{lessonUserdata.is_complete}} &nbsp/&nbsp</span>
+            </div>
+        </div>
+        <div ng-class="{'layer-lessons':true, 'collapse':true, 'in':$first}">   <!--  ng-init="isShowLayer=false"   ng-show="isShowLayer || $first" -->
+        	<div ng-repeat="lessonItem in layer.lessons" ng-click="comeInLesson(currentChapter.id, lessonItem.id)" ng-init="layerUserdata=chapterUserdata[layer.id]" ng-class="{'layer-lesson-item':true, 'isUnlocked':isUnlocked(lessonItem)}">
+        	    <img ng-show="layerUserdata[$index].is_complete" ng-src="resources/img/lesson_complete.png" />
+        	    <img ng-hide="layerUserdata[$index].is_complete" ng-src="resources/img/logo.png">    <!-- {{lesson.type}} -->
+        	    <span ng-class="layer-lesson-item-title">{{lessonItem.title}}</span>
+        	</div>
+        </div>            	
+        <div ng-class="layer-buttom" data-toggle="collapse" data-parent="#layers">  <!-- ng-click="isShowLayer=!isShowLayer" -->
+        </div>
+    </li>
+</ul>
+
+
