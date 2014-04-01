@@ -51,74 +51,74 @@ exports.session = function (req, res) {
 /**
  * Create user
  */
-exports.create = function (req, res, next) {
-    var user = new User(req.body);
-    var message = null;
+//exports.create = function (req, res, next) {
+//    var user = new User(req.body);
+//    var message = null;
+//
+//    user.provider = 'local';
+//    user.active = false;
+//    if (user.usergroup != "teacher") {
+//        user.usergroup = 'student';
+//    }
+////    user.profile.school_name = user.username.substring(0, 2);
+////    user.profile.room_name = user.username.substring(2, 6);
+////    user.profile.room_uid = user.username.substring(6, 8);
+//    user.save(function (err) {
+//        if (err) {
+//            switch (err.code) {
+//                case 11000:
+//                case 11001:
+//                    message = 'Username already exists';
+//                    break;
+//                default:
+//                    message = 'Please fill all the required fields';
+//            }
+//            return res.send(400, {message: message});
+//        } else {
+//            return res.redirect("/dispatch");
+//        }
+//    });
+//};
 
-    user.provider = 'local';
-    user.active = false;
-    if (user.usergroup != "teacher") {
-        user.usergroup = 'student';
-    }
-//    user.profile.school_name = user.username.substring(0, 2);
-//    user.profile.room_name = user.username.substring(2, 6);
-//    user.profile.room_uid = user.username.substring(6, 8);
-    user.save(function (err) {
-        if (err) {
-            switch (err.code) {
-                case 11000:
-                case 11001:
-                    message = 'Username already exists';
-                    break;
-                default:
-                    message = 'Please fill all the required fields';
-            }
-            return res.send(400, {message: message});
-        } else {
-            return res.redirect("/dispatch");
-        }
-    });
-};
 
-
-exports.createUser = function(userJson){
-    var user = new User(userJson);
-    var message = null;
-
-    user.provider = 'local';
-    user.active = false;
-    if (user.usergroup != "teacher") {
-        user.usergroup = 'student';
-    }
-
-    user.save(function (err) {
-        if (err) {
-            switch (err.code) {
-                case 11000:
-                case 11001:
-                    message = 'Username already exists';
-                    console.log("---------->this username has been used"+user.username);
-                    break;
-                default:
-                    message = 'Please fill all the required fields';
-
-            }
-            return err.message;
-        } else {
-            console.log("-------->this user has been successfully created"+user.username);
-            return "Succeed"
-        }
-    });
-};
+//exports.createUser = function(userJson){
+//    var user = new User(userJson);
+//    var message = null;
+//
+//    user.provider = 'local';
+//    user.active = false;
+//    if (user.usergroup != "teacher") {
+//        user.usergroup = 'student';
+//    }
+//
+//    user.save(function (err) {
+//        if (err) {
+//            switch (err.code) {
+//                case 11000:
+//                case 11001:
+//                    message = 'Username already exists';
+//                    console.log("---------->this username has been used"+user.username);
+//                    break;
+//                default:
+//                    message = 'Please fill all the required fields';
+//
+//            }
+//            return err.message;
+//        } else {
+//            console.log("-------->this user has been successfully created"+user.username);
+//            return "Succeed"
+//        }
+//    });
+//};
 
 /**
  * Get all users
  */
-exports.all = function (req, res) {
-    User.find().exec(function (err, users) {
-        res.json((err) ? null : users);
-    })
-};
+//exports.all = function (req, res) {
+//    User.find().exec(function (err, users) {
+//        res.json((err) ? null : users);
+//    })
+//};
 
 /**
  * Reset user password
@@ -170,9 +170,9 @@ exports.me = function (req, res) {
     res.jsonp(req.user || null);
 };
 
-exports.show = function (req, res) {
-    res.jsonp(req.profile);
-}
+//exports.show = function (req, res) {
+//    res.jsonp(req.profile);
+//}
 
 exports.dispatch = function (req, res) {
     if (req.user) {

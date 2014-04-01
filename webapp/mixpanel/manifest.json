@@ -1,6 +1,6 @@
 {
     "id": "mixpanel",
-    "version_code": 1,
+    "version_code": 2,
     "name": "公共库Mixpanel",
     "type": "web_app",
     "launchable": 0,

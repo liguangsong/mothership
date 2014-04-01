@@ -39,6 +39,17 @@ class Computation {
     return BoardController.queryNameFromUsernameList(users);
   }
 
+  List _diffUserName(List list1, List list2){
+    List users = new List();
+    list1.forEach((item){
+      if(!list2.contains(item)){
+        users.add(item);
+      }
+    });
+    return users;
+  }
+
+
   List<sta.Event> _computeValue(){
     _bindEventToLesson();
     for (sta.Event event in _lesson['events']){
@@ -51,7 +62,11 @@ class Computation {
       if(event.info['event_name']=="未进入"){
         _allUsersList.forEach((item)=>_users_all.add(item['username']));
         List enterList = new List.from(new Map.from(_lesson['events'][0].info['result']['data']['values']).keys);
-        event.info['result'] = _diffUsers(_users_all,enterList);
+        List finishList = new List.from(new Map.from(_lesson['events'][1].info['result']['data']['values']).keys);
+        //event.info['result'] = _diffUsers(_users_all,enterList);
+        List possibleList = _diffUserName(_users_all,enterList);
+        event.info['result'] = _diffUsers(possibleList,finishList);
+        /* 这样做名单，是为了放宽检查条件，否则 mixpanel 统计失误的数据会导致统计面板中的数字出现问题，just a hack */
       }
     }
   }

@@ -9,35 +9,35 @@ var mongoose = require('mongoose'),
 /**
  * Create user
  */
-exports.create = function (req, res) {
-    var room = new Room(req.body);
-    var message = null;
-    Room
-        .findOne({
-            name: req.body.name
-        })
-        .exec(function (_err, _room) {
-            if (_err) return res.json(500);
-            if (_room) {
-                message = "Request room already exists";
-                return new Error(message);
-            }
-            room.save(function (err, room) {
-                if (err) {
-                    switch (err.code) {
-                        case 11000:
-                        case 11001:
-                            message = 'Room already exists';
-                            break;
-                        default:
-                            message = 'Please fill all the required fields';
-                    }
-                    return res.json(500);
-                }
-                res.json(room)
-            });
-        })
-};
+//exports.create = function (req, res) {
+//    var room = new Room(req.body);
+//    var message = null;
+//    Room
+//        .findOne({
+//            name: req.body.name
+//        })
+//        .exec(function (_err, _room) {
+//            if (_err) return res.json(500);
+//            if (_room) {
+//                message = "Request room already exists";
+//                return new Error(message);
+//            }
+//            room.save(function (err, room) {
+//                if (err) {
+//                    switch (err.code) {
+//                        case 11000:
+//                        case 11001:
+//                            message = 'Room already exists';
+//                            break;
+//                        default:
+//                            message = 'Please fill all the required fields';
+//                    }
+//                    return res.json(500);
+//                }
+//                res.json(room)
+//            });
+//        })
+//};
 
 exports.users = function (req, res) {
     if (req.room) {
@@ -83,14 +83,14 @@ exports.joinRoom = function (req, res) {
     }
 };
 
-exports.all = function (req, res) {
-    Room.find().exec(function (err, rooms) {
-        res.json((err) ? null : rooms);
-    });
-};
-exports.show = function (req, res) {
-    res.json(req.room);
-};
+//exports.all = function (req, res) {
+//    Room.find().exec(function (err, rooms) {
+//        res.json((err) ? null : rooms);
+//    });
+//};
+//exports.show = function (req, res) {
+//    res.json(req.room);
+//};
 exports.destroy = function (req, res) {
     if (req.room) {
         req.room.remove(function (err, room) {

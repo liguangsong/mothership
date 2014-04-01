@@ -41052,8 +41052,13 @@ init.mangledGlobalNames = {AbstractNgRepeatDirective__LHS_SYNTAX: "_LHS_SYNTAX",
       H.IterableMixinWorkaround_forEach(list1, new N.Computation__diffUsers_closure(list2, users));
       return N.BoardController_queryNameFromUsernameList(users);
     }, "call$2", "get$_diffUsers", 4, 0, null, 1322, 1323],
+    _diffUserName$2: [function(list1, list2) {
+      var users = [];
+      H.IterableMixinWorkaround_forEach(list1, new N.Computation__diffUserName_closure(list2, users));
+      return users;
+    }, "call$2", "get$_diffUserName", 4, 0, null, 1322, 1323],
     _computeValue$0: [function() {
-      var t1, t2, t3, t4, $event, t5, t6, enterList, finishList;
+      var t1, t2, t3, t4, $event, t5, t6, enterList, finishList, possibleList;
       this._bindEventToLesson$0();
       for (t1 = J.get$iterator$ax(J.$index$asx(this._lesson, "events")), t2 = this._users_all, t3 = this._allUsersList, t4 = J.getInterceptor$ax(t3); t1.moveNext$0() === true;) {
         $event = t1.get$current();
@@ -41080,7 +41085,14 @@ init.mangledGlobalNames = {AbstractNgRepeatDirective__LHS_SYNTAX: "_LHS_SYNTAX",
           t5 = new P.LinkedHashMapKeyIterable(t6);
           t5.$builtinTypeInfo = [H.getTypeArgumentByIndex(t6, 0)];
           enterList = P.List_List$from(t5, true, null);
-          J.$indexSet$ax($event.get$info(), "result", this._diffUsers$2(t2, enterList));
+          t5 = J.$index$asx(J.$index$asx(J.$index$asx(J.$index$asx(J.$index$asx(this._lesson, "events"), 1).get$info(), "result"), "data"), "values");
+          t6 = P.LinkedHashMap_LinkedHashMap(null, null, null, null, null);
+          t6.addAll$1(t6, t5);
+          t5 = new P.LinkedHashMapKeyIterable(t6);
+          t5.$builtinTypeInfo = [H.getTypeArgumentByIndex(t6, 0)];
+          finishList = P.List_List$from(t5, true, null);
+          possibleList = this._diffUserName$2(t2, enterList);
+          J.$indexSet$ax($event.get$info(), "result", this._diffUsers$2(possibleList, finishList));
         }
       }
     }, "call$0", "get$_computeValue", 0, 0, null],
@@ -41125,6 +41137,14 @@ init.mangledGlobalNames = {AbstractNgRepeatDirective__LHS_SYNTAX: "_LHS_SYNTAX",
     $isFunction: true
   },
   Computation__diffUsers_closure: {
+    "": "Closure:147;list2_0,users_1",
+    call$1: [function(item) {
+      if (!C.JSArray_methods.contains$1(this.list2_0, item))
+        this.users_1.push(item);
+    }, "call$1", null, 2, 0, null, 1034, "call"],
+    $isFunction: true
+  },
+  Computation__diffUserName_closure: {
     "": "Closure:147;list2_0,users_1",
     call$1: [function(item) {
       if (!C.JSArray_methods.contains$1(this.list2_0, item))
