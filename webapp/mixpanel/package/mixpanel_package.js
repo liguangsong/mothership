@@ -76,7 +76,7 @@ if(currentEnv === "ONLINE"){
             mixpanel.register({QuizId:quiz_id,QuizTitle:quiz_title});
         },
 
-        finishProblem: function(id,body,type,correct_answer,user_answer,correct_or_not,hint_or_not,time_spent){
+        finishProblem: function(is_hyper,video_id,video_title,timeline,id,body,type,correct_answer,user_answer,correct_or_not,hint_or_not,time_spent){
             mixpanel.track("FinishProblem",{
                 ProblemId:id,
                 ProblemBody:body,
@@ -84,8 +84,12 @@ if(currentEnv === "ONLINE"){
                 CorrectAnswer:correct_answer,
                 UserAnswer:user_answer,
                 CorrectOrNot:correct_or_not, //boolean
-                HintOrNot:hint_or_not, //boolean,
-                TimeSpent:time_spent
+                HintOrNot:hint_or_not, //boolean
+                TimeSpent:time_spent,
+                HyperVideo:is_hyper, //boolean
+                VideoId:video_id,
+                VideoTitle:video_title,
+                TimeLine:timeline
             });
         },
 
@@ -209,7 +213,7 @@ if(currentEnv === "ONLINE"){
             offline_mixpanel.register({QuizId:quiz_id,QuizTitle:quiz_title});
         },
 
-        finishProblem: function(id,body,type,correct_answer,user_answer,correct_or_not,hint_or_not,time_spent){
+        finishProblem: function(is_hyper,video_id,video_title,timeline,id,body,type,correct_answer,user_answer,correct_or_not,hint_or_not,time_spent){
             offline_mixpanel.track("FinishProblem",{
                 ProblemId:id,
                 ProblemBody:body,
@@ -217,8 +221,12 @@ if(currentEnv === "ONLINE"){
                 CorrectAnswer:correct_answer,
                 UserAnswer:user_answer,
                 CorrectOrNot:correct_or_not, //boolean
-                HintOrNot:hint_or_not, //boolean,
-                TimeSpent:time_spent
+                HintOrNot:hint_or_not, //boolean
+                TimeSpent:time_spent,
+                HyperVideo:is_hyper, //boolean
+                VideoId:video_id,
+                VideoTitle:video_title,
+                TimeLine:timeline
             });
         },
 
