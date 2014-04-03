@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app = 'static'>
+<html ng-app = 'lesson-details'>
 <head>
     <meta charset="utf-8">
     <title>viewLessonDetails</title>
@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="css/loader.css"/>
     <script src="files/lib/angluar/angular.min.js"></script>
     <script src="files/lib/less-1.5.0.min.js"></script>
-    <script src="files/js/Viewlessondetailsecontroller.js"></script>
+    <script src="files/lib/md5.js"></script>
+    <script src="files/js/service/service.js"></script>
+    <script src="files/js/controller/Viewlessondetailsecontroller.js"></script>
 </head>
 <body board ng-controller="Viewlessondetailsecontroller">
 <nav class="navbar navbar-inverse navbar-static-top">
@@ -44,7 +46,7 @@
     <div class="col-lg-3 col-md-3 form-group">
         <div>{{title}}</div>
         <ul>
-            <li ng-repeat="activity in date" ng-click="show_mistake_of_activity(activity.id)">
+            <li ng-repeat="activity in data" ng-click="show_mistake_of_activity(activity.id)">
                 {{activity.title}}
             </li>
         </ul>
