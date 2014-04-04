@@ -29,3 +29,16 @@ angular.module('mixpanel.service',[])
         apiSecret: apiSecret
     }
 });
+
+angular.module('track.service',[])
+.value('apiSchema',"/tracks")
+.factory('TracksDataProvider',function(apiSchema){
+    var getUrl = function(queryString){
+        var apiUrl = apiSchema + "?" + queryString;
+        return apiUrl;
+    };
+
+    return {
+        getUrl:getUrl
+    }
+});

@@ -1,104 +1,53 @@
-angular.module('lesson-details', ['mixpanel.service'])
-    .controller('Viewlessondetailsecontroller', function ($scope, $http, MixpanelProvider) {
+angular.module('lesson-details', ['track.service'])
+    .controller('Viewlessondetailsecontroller', function ($scope, $http, TracksDataProvider) {
 
-        // 以下的两段代码是用来向 mixpanel 请求同一道题的两个数据，一是所有做过的人的数据（用户名、时间），另一个是所有做对的人的数据（用户名、时间）
+        // 以下的两段代码是用来向数据源请求同一道题的两个数据，一是所有做过的人的数据（用户名、时间），另一个是所有做对的人的数据（用户名、时间）
 
         // 本题的错题率的算法是：
         // 1. 用做对的人的数据与所有做过的人的数据进行比较（时间维度），找出真正“第一次做对”的数据；
         // 2. 第一次做对的“人数”/所有做过的“人数” * 100%
 
-        var finishThisProblemUsersJson,finishThisProblemCorrectUsersJson;
+        var finishThisProblemUsersJson;
+        var finishThisProblemCorrectUsersJson;
 
         /**
-         *
-         * ProblemId = a34edb11-b7ec-4602-9e6c-27f68878fccb; Room = xw1303, FinishProblem(做过这道题) 的全部详情
-         *
-         */
+        * [eg:]
+        *
+        * ProblemId = a34edb11-b7ec-4602-9e6c-27f68878fccb; Room = siba73, FinishProblem(做过这道题) 的全部详情
+        *
+        */
 
-        // 是为了找到有多少人做过这道题，人数 = 第一次做的人数 = 分母
+        // 是为了找到有多少人做过这道题，人数 = 第一次做的人数 = 错题率分母
         var finishProblemAll = {
-            schema:"http://mixpanel.com/api/2.0/segmentation/",
-            args:["limit=10000",
-                "event=FinishProblem",
-                "from_date=2014-01-14",
-/*
-                "unit=hour",
-*/
-                "to_date=2014-04-03",
-                "on=properties[\"UserName\"]",
-                "where=\"xw1303\" in properties[\"UserName\"] and \"a34edb11-b7ec-4602-9e6c-27f68878fccb\" == properties[\"ProblemId\"]",
-                "type=general",
-                "expire="+(new Date().getTime()+100000).toString(),
-                "api_key="+MixpanelProvider.apiKey],
-            api_secret:MixpanelProvider.apiSecret
-        };
+            queryString:"$and=[{\"data.properties.UserName\":\"~siba73\"},{\"data.event\":\"FinishProblem\"},{\"data.properties.ProblemId\":\"a34edb11-b7ec-4602-9e6c-27f68878fccb\"}]&sort=data.properties.UserName"
+        }
+        var finishProblemAllUrl = TracksDataProvider.getUrl(finishProblemAll.queryString);
 
-        var finishProblemAllUrl = MixpanelProvider.mixpanel(finishProblemAll.schema,finishProblemAll.args,finishProblemAll.api_secret)+'&callback=JSON_CALLBACK';
-
-        /**
-         *
-         * ProblemId = a34edb11-b7ec-4602-9e6c-27f68878fccb; Room = xw1303, FinishProblemCorrect(做对这道题) 的全部详情
-         *
-         */
-        var finishProblemCorrect = {
-            schema:"https://data.mixpanel.com/api/2.0/export/",
-            args:[/*"limit=10000",*/
-/*
-                "event=[\"FinishProblem\"]",
-*/
-                "from_date=2014-01-14",
-                "to_date=2014-04-03",
-/*
-                "on=properties[\"$time\"]",
-*/
-/*
-                "where=\"xw130315\" in properties[\"UserName\"] and \"a34edb11-b7ec-4602-9e6c-27f68878fccb\" == properties[\"ProblemId\"] and properties[\"CorrectOrNot\"]",
-*/
-/*
-                "type=general",
-*/
-                "expire="+(new Date().getTime()+100000).toString(),
-                "api_key="+MixpanelProvider.apiKey],
-            api_secret:MixpanelProvider.apiSecret
-        };
-
-        var finishProblemCorrectUrl = MixpanelProvider.mixpanel(finishProblemCorrect.schema,finishProblemCorrect.args,finishProblemCorrect.api_secret)+'&callback=JSON_CALLBACK';
-
-        /*var finishProblemAll = {
-         schema:"https://data.mixpanel.com/api/2.0/export/",
-         args:[
-         "event=FinishProblem",
-         "from_date=2014-01-14",
-         "to_date=2014-04-03",
-         "where=\"xw1303\" in properties[\"UserName\"] and \"a34edb11-b7ec-4602-9e6c-27f68878fccb\" == properties[\"ProblemId\"]",
-
-         "expire="+(new Date().getTime()+100000).toString(),
-         "api_key="+MixpanelProvider.apiKey],
-         api_secret:MixpanelProvider.apiSecret
-         };*/
-
-        $http.jsonp(finishProblemAllUrl)
-        .success(function (data) {
-            finishThisProblemUsersJson = JSON.stringify(data);
-            console.log("finishThisProblemUsersJson----------->"+finishThisProblemUsersJson);
-        }).error(function (error) {
-            console.log(error.message);
-        }).then(function(data){
-            $http.jsonp(finishProblemCorrectUrl)
+        $http.get(finishProblemAllUrl)
             .success(function (data) {
-                finishThisProblemCorrectUsersJson = JSON.stringify(data);
-                console.log("finishThisProblemCorrectUsersJson----------->"+finishThisProblemCorrectUsersJson);
+                finishThisProblemUsersJson = data;
+                console.log("finishThisProblemUsersJson----------->"+JSON.stringify(data));
             }).error(function (error) {
-                //console.log(error);
-                alert("error");
+                console.log("------>"+error);
             }).then(function(data){
-                computeProblemCorrectRatiofunction(finishThisProblemUsersJson,finishThisProblemCorrectUsersJson);
-            })
-        });
+               orderResultByUserName(finishThisProblemUsersJson);
+            });
 
-        var computeProblemCorrectRatiofunction  = function(allData,correctData){
-
+        var orderResultByUserName = function(data){
+            var mapFinal = {};
+            angular.forEach(data,function(userRecord){
+                var username = userRecord.data.properties.UserName;
+                if(mapFinal[username] == undefined){
+                    mapFinal[username] = [];
+                }
+                mapFinal[username].push(userRecord);
+            });
+            console.log("final result----->"+JSON.stringify(mapFinal));
+            return mapFinal;
         };
+
+
+
 
         function GetRequest() {
             var url = location.search; //获取url中"?"符后的字串

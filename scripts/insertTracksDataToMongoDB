@@ -1,0 +1,1 @@
+mongoimport --collection tracks --db exercise-test --file <json-file-path> --jsonArray
