@@ -24,8 +24,8 @@ angular.module('SunNavigator', ['SunNavigator.services', 'SunNavigator.controlle
                         return MaterialProvider.getRootMaterial();
                      }
                  }
-             })
-/*             .when('/subject/:sid/chapter/:cid', {
+             }).
+             when('/subject/:sid/chapter/:cid', {
                 controller: 'ChapterCtrl',
                 templateUrl: 'resources/partials/chapter.html',
                 resolve: {
@@ -39,23 +39,8 @@ angular.module('SunNavigator', ['SunNavigator.services', 'SunNavigator.controlle
                         return MaterialProvider.getUserinfoMaterial();
                     }
                  }
-             }).*/
-             .when('/subject/:sid/chapter/:cid', {
-                controller: 'NavigatorCtrl',
-                templateUrl: 'resources/partials/navigator.html',
-                resolve: {
-                    me: function(UserdataProvider) {
-                        return UserdataProvider.getMe();
-                    },
-                    rootMaterial: function(MaterialProvider) {
-                        return MaterialProvider.getRootMaterial();
-                    },
-                    chapterUserdataArr: function(UserdataProvider) {
-                        return UserdataProvider.getChapterUserdata();
-                    }
-                }
-             })
-             .when('/achievements', {
+             }).
+             when('/achievements', {
                 controller: 'achievementsCtrl',
                 templateUrl: 'resources/partials/achievements.html',
                 resolve: {
@@ -69,8 +54,8 @@ angular.module('SunNavigator', ['SunNavigator.services', 'SunNavigator.controlle
                         return MaterialProvider.getUserinfoMaterial();
                     }
                 }
-             })
-             .when('/achievements/awards/:aid', {
+             }).
+             when('/achievements/awards/:aid', {
                 controller: 'awardsCtrl',
                 templateUrl: 'resources/partials/awards.html',
                 resolve: {
