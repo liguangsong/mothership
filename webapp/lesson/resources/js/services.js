@@ -362,6 +362,13 @@ angular.module('SunLesson.services', [])
             }
 
             var activityUserdata = DataProvider.lessonUserdata.activities[activityId];
+    //Hack for pool_count
+            if(activityUserdata.problems) {
+                activityUserdata.problems = {};
+            }
+            if(activityUserdata.summary) {
+                activityUserdata.summary = {};
+            }
             //console.log('the activityUserdata='+activityId+'     content='+angular.toJson(activityUserdata));
             if (activityData.pool_count) {
                 if (activityUserdata.seed && (activityUserdata.seed.length == 0)) {
