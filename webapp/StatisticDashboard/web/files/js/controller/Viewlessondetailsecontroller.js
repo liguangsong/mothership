@@ -80,7 +80,7 @@ angular.module('lesson-details', ['track.service'])
                     }).then(function(data){
                         $scope.finishCorrectTheFirstTimeCount = Object.keys(peopleWhoDidThisProblemCorrectTheFirstTime).length;
                         var exactRatio = $scope.finishCorrectTheFirstTimeCount/$scope.finishCount * 100;
-                        $scope.correctRatio =  exactRatio.toString().substring(0,exactRatio.toString().indexOf(".")+3);
+                        $scope.correctRatio = Math.round(exactRatio);
                     });
             });
 
