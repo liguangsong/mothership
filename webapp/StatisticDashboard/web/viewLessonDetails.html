@@ -14,6 +14,13 @@
     <script src="files/js/controller/Viewlessondetailsecontroller.js"></script>
 </head>
 <body board ng-controller="Viewlessondetailsecontroller">
+<ul>
+    [Demo] ProblemId: a34edb11-b7ec-4602-9e6c-27f68878fccb; Room: siba73 （room测试时暂时不要从 URL 中取参，因为模拟 tracks 数据源中只有部分班级）
+    <li>a 做完过该题的人数 {{finishCount}}</li>
+    <li>b 做对过该题的人数 {{finishCorrectCount}}</li>
+    <li>c 第一次做对该题的人数 {{finishCorrectTheFirstTimeCount}}</li>
+    <li>该题第一次正确率 {{correctRatio}}% <strong>计算公式 ratio = (c/a *100) %</strong> </li>
+</ul>
 <nav class="navbar navbar-inverse navbar-static-top">
     <div class="container">
         <div class="navbar-header">

@@ -9,6 +9,9 @@ angular.module('lesson-details', ['track.service'])
 
         var finishThisProblemUsersJson;
         var finishThisProblemCorrectUsersJson;
+        var peopleWhoDidThisProblem;
+        var peopleWhoDidThisProblemCorrect;
+        var peopleWhoDidThisProblemCorrectTheFirstTime = [];
 
         /**
         * [eg:]
@@ -17,37 +20,69 @@ angular.module('lesson-details', ['track.service'])
         *
         */
 
-        // 是为了找到有多少人做过这道题，人数 = 第一次做的人数 = 错题率分母
-        var finishProblemAll = {
-            queryString:"$and=[{\"data.properties.UserName\":\"~siba73\"},{\"data.event\":\"FinishProblem\"},{\"data.properties.ProblemId\":\"a34edb11-b7ec-4602-9e6c-27f68878fccb\"}]&sort=data.properties.UserName"
-        }
-        var finishProblemAllUrl = TracksDataProvider.getUrl(finishProblemAll.queryString);
+        var finishProblem = {
+            // 是为了找到有多少人做过这道题，人数 = 第一次做的人数 = 错题率分母
+            allQueryString:"$and=[{\"data.properties.UserName\":\"~siba73\"},{\"data.event\":\"FinishProblem\"},{\"data.properties.ProblemId\":\"a34edb11-b7ec-4602-9e6c-27f68878fccb\"}]&sort=data.properties.UserName",
 
-        $http.get(finishProblemAllUrl)
-            .success(function (data) {
-                finishThisProblemUsersJson = data;
-                console.log("finishThisProblemUsersJson----------->"+JSON.stringify(data));
-            }).error(function (error) {
-                console.log("------>"+error);
-            }).then(function(data){
-               orderResultByUserName(finishThisProblemUsersJson);
-            });
+            // 是为了找出多少人做对过这道题，需要注意的是，这个数字，并不是分子，而是分子的母集。因为可能有些学生并不是第一次作这道题就做对了
+            // 所以，接下来我们要筛选出那些第一次做题的数据，依据的就是数据结构中的 time 这个 field。
+            correctQueryString:"$and=[{\"data.properties.UserName\":\"~siba73\"},{\"data.event\":\"FinishProblem\"},{\"data.properties.ProblemId\":\"a34edb11-b7ec-4602-9e6c-27f68878fccb\"},{\"data.properties.CorrectOrNot\":true}]&sort=data.properties.UserName"
+        };
+        var finishProblemAllUrl = TracksDataProvider.getUrl(finishProblem.allQueryString);
 
-        var orderResultByUserName = function(data){
+        var finishProblemCorrectUrl = TracksDataProvider.getUrl(finishProblem.correctQueryString);
+
+        var orderResultByUserName = function(data,type){
             var mapFinal = {};
             angular.forEach(data,function(userRecord){
                 var username = userRecord.data.properties.UserName;
                 if(mapFinal[username] == undefined){
                     mapFinal[username] = [];
+                    mapFinal[username].push(userRecord);
+                    mapFinal[username].first = new Date(userRecord.headers.time).getTime();
+                    console.log("----------->FIRST=>"+type+" "+mapFinal[username].first);
+                }else{
+                    mapFinal[username].push(userRecord);
+                    mapFinal[username].first = mapFinal[username].first < new Date(userRecord.headers.time).getTime()? mapFinal[username].first:new Date(userRecord.headers.time).getTime();
+                    console.log("----------->FIRST=>"+type+" "+mapFinal[username].first);
                 }
-                mapFinal[username].push(userRecord);
             });
-            console.log("final result----->"+JSON.stringify(mapFinal));
+            //console.log("final result----->"+JSON.stringify(mapFinal));
             return mapFinal;
         };
 
-
-
+        $http.get(finishProblemAllUrl)
+            .success(function (data) {
+                finishThisProblemUsersJson = data;
+                //console.log("finishThisProblemUsersJson----------->"+JSON.stringify(data));
+            }).error(function (error) {
+                console.log("------>"+error);
+            }).then(function(data){
+               peopleWhoDidThisProblem = orderResultByUserName(finishThisProblemUsersJson,"ALL");
+               $scope.finishCount = Object.keys(peopleWhoDidThisProblem).length;
+               console.log("---------------------->"+peopleWhoDidThisProblem);
+            }).then(function(data){
+                $http.get(finishProblemCorrectUrl)
+                    .success(function (data) {
+                        finishThisProblemCorrectUsersJson = data;
+                        //console.log("finishThisProblemUsersJson----------->"+JSON.stringify(data));
+                    }).error(function (error) {
+                        console.log("------>"+error);
+                    }).then(function(data){
+                        peopleWhoDidThisProblemCorrect = orderResultByUserName(finishThisProblemCorrectUsersJson,"CORRECT");
+                        $scope.finishCorrectCount = Object.keys(peopleWhoDidThisProblemCorrect).length;
+                        for(var key in peopleWhoDidThisProblemCorrect){
+                            if(peopleWhoDidThisProblem[key].first == peopleWhoDidThisProblemCorrect[key].first){
+                                console.log("--------------->user: "+key+" ---------->time: "+peopleWhoDidThisProblem[key].first);
+                                peopleWhoDidThisProblemCorrectTheFirstTime.push(key);
+                            }
+                        }
+                    }).then(function(data){
+                        $scope.finishCorrectTheFirstTimeCount = Object.keys(peopleWhoDidThisProblemCorrectTheFirstTime).length;
+                        var exactRatio = $scope.finishCorrectTheFirstTimeCount/$scope.finishCount * 100;
+                        $scope.correctRatio =  exactRatio.toString().substring(0,exactRatio.toString().indexOf(".")+3);
+                    });
+            });
 
         function GetRequest() {
             var url = location.search; //获取url中"?"符后的字串
@@ -76,7 +111,6 @@ angular.module('lesson-details', ['track.service'])
             });
         var url = "/webapp/"+ "/" + Request["ChapterId"] + "/" + Request["LessonId"] + "/lesson.json";
         $http.get(url)
-        //$http.get("/webapp/c844f495-4a66-4cd0-b03c-a7a3155e22db/3a661cb0-ff43-4f8a-aa0c-74ad47b507ff/lesson.json")
             .success(function (lessonData) {
                 $scope.title = lessonData['title'];
                 $scope.data = []
