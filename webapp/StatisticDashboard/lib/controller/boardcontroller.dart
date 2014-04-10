@@ -67,9 +67,7 @@ class BoardController {
     user = userInfo;
     rooms = user['rooms'];
     if(rooms.isEmpty){
-      js.context.alert("对不起，您的个人信息中未包含班级，请联系kefu@ghxz.cn");
-      //js.context.$("#dialog").dialog();
-      //context.callMethod(r'$', ['#dialog']).callMethod('dialog', []);
+      js.context.jQuery('#myModal').modal('show');
       return;
     }
     chapterInfo = new JsonObject.fromJsonString(responseText);
@@ -104,7 +102,7 @@ class BoardController {
 
   void giveParamAndLoadEvents(){
     if(rooms.isEmpty){
-      js.context.alert("对不起，您的个人信息中未包含班级，请联系kefu@ghxz.cn");
+      js.context.jQuery('#myModal').modal('show');
       return;
     }
     js.context.jQuery("#right-panel").fadeOut();
