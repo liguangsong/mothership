@@ -11,6 +11,22 @@
     <script src="files/lib/less-1.5.0.min.js"></script>
 </head>
 <body board>
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">个人信息缺失</h4>
+            </div>
+            <div class="modal-body">
+                <p>对不起，您的个人信息中未检测到班级名称，暂时无法查看学生数据。请联系kefu@ghxz.cn修复个人信息，您可以先体验课程。</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">我知道了</button>
+            </div>
+        </div>
+    </div>
+</div>
 <nav class="navbar navbar-inverse navbar-static-top">
     <div class="container">
         <div class="navbar-header">
@@ -94,8 +110,8 @@
             <tbody>
             <tr class="row_lesson_cards lesson-white-space" ng-repeat="rowLesson in ctrl.rowLessons">
                 <td class="lesson_card" ng-repeat="lesson in rowLesson" ng-click="ctrl.onLessonClick(lesson)">
-                    <!--<button class="btn btn-default btn-sm pull-right" data-toggle="tooltip" data-placement="top"
-                            title="打开提高班" ng-click="ctrl.openLesson($event,lesson)" ng-cloak><span class="glyphicon glyphicon-eye-open"> </span></button>-->
+                    <button class="btn btn-default btn-sm pull-right" data-toggle="tooltip" data-placement="top"
+                            title="查看本节错题率" ng-click="ctrl.openLesson($event,lesson)" ng-cloak><span class="glyphicon glyphicon-eye-open"> </span></button>
                     <h4 class="lesson_title" title="{{lesson['title']}}" ng-cloak>{{lesson['title']}}</h4>
 
                     <div class="event_container">
@@ -162,7 +178,7 @@
 </script>
 
 <script type="application/dart" src="main.dart"></script>
-<script src="files/lib/jquery-1.10.2.min.js"></script>
+<script src="files/lib/jquery/jquery-1.10.2.min.js"></script>
 <script src="files/lib/bootstrap-3.1.1/js/bootstrap.min.js"></script>
 <script src="files/js/utils.js"></script>
 <script src="packages/browser/dart.js"></script>
