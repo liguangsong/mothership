@@ -1,4 +1,4 @@
-var currentEnv = "ONLINE";
+var currentEnv = "OFFLINE";
 
 var UserRelated;
 var LearningRelated;

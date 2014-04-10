@@ -4,7 +4,7 @@
 var mongoose = require('mongoose');
 var Userdata = mongoose.model('Userdata');
 
-exports.readOne = function (req, res) {
+exports.read = function (req, res) {
     if (!req.user) return res.send(401);
     var username = req.user.username
         , appId = req.app.id
@@ -21,25 +21,6 @@ exports.readOne = function (req, res) {
             res.json(200, (userdata) ? userdata.data : {});
         })
 };
-
-exports.readSome = function(req, res) {
-    if(!req.user) return res.send(401);
-    var username = req.user.username,
-           appId = req.app.id;
-    console.log('-=-=-=-=-==username='+username+'   appId='+appId);
-    
-    Userdata.find({
-        userId: username,
-        appId: appId
-    }).exec(function(err, userdatas) {
-        if(err) {
-            return res.send(500, err);
-        }
-        console.log('userdatas='+JSON.stringify(userdatas));
-        res.json(200, userdatas);
-    })
-};
-
 
 exports.write = function (req, res) {
     if (!req.user) return res.send(401);
@@ -90,27 +71,28 @@ exports.editFavorite = function(req, res) {
         var mistakes = updateData[data.cid][data.lid];
         if(mistakes) {
             console.log('got all the mistakes......................');
+
+            mistakes.forEach(function(item, index) {
+                if(item.id == data.pid) {
+                    //data.action=='add'
+                    if(data.action == 'add') {
+                        //item.tag.concat(data.tags);
+                        item.tags = data.tags;
+                        console.log('add--> item.tag='+JSON.stringify(item.tags));
+                    }
+                    //data.action == 'remove'
+                    if(data.action == 'remove') {
+                        item.tags = data.tags;
+                        console.log('remove-->item.tag='+JSON.stringify(item.tags));
+    /*                    data.tags.forEach(function(mtag, index) {
+                            //TODO: splice the tag---absloutely delete
+                            var tagIndex = item.tag.indexOf(mtag);
+                            item.tag.splice(tagIndex, 1);
+                        })*/
+                    }
+                }
+            });
         }
-        mistakes.forEach(function(item, index) {
-            if(item.id == data.pid) {
-                //data.action=='add'  
-                if(data.action == 'add') {
-                    //item.tag.concat(data.tags);  
-                    item.tags = data.tags;
-                    console.log('add--> item.tag='+JSON.stringify(item.tags));                    
-                }
-                //data.action == 'remove'
-                if(data.action == 'remove') {
-                    item.tags = data.tags;
-                    console.log('remove-->item.tag='+JSON.stringify(item.tags));
-/*                    data.tags.forEach(function(mtag, index) {
-                        //TODO: splice the tag---absloutely delete
-                        var tagIndex = item.tag.indexOf(mtag);
-                        item.tag.splice(tagIndex, 1);
-                    })*/
-                }
-            }
-        })
         console.log('begin to update');
         userdata.update({'$set':{'data':updateData}}, function(err) {
             if(err) {
