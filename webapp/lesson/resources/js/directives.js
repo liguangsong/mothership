@@ -240,40 +240,40 @@ angular.module('SunLesson.directives', [])
     })                  //end of directive
 
     .directive("xvideo", function (SandboxProvider, APIProvider, $compile, $routeParams, $rootScope) {
-        var toFullScreen = function (video) {
-            //FullScreen First
-            if (video.requestFullscreen) {
-                video.requestFullscreen();
-            } else if (video.mozRequestFullScreen) {
-                video.mozRequestFullScreen(); // Firefox
-            } else if (video.webkitRequestFullscreen) {
-                video.webkitRequestFullscreen(); // Chrome and Safari
-            }
-        }
+//        var toFullScreen = function (video) {
+//            //FullScreen First
+//            if (video.requestFullscreen) {
+//                video.requestFullscreen();
+//            } else if (video.mozRequestFullScreen) {
+//                video.mozRequestFullScreen(); // Firefox
+//            } else if (video.webkitRequestFullscreen) {
+//                video.webkitRequestFullscreen(); // Chrome and Safari
+//            }
+//        }
 
         //exit fullscreen mode
-        var exitFullScreen = function () {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
-            else if (document.webkitCancelFullScreen) {
-                document.webkitCancelFullScreen();
-            }
-            else if (document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            }
-        }
+//        var exitFullScreen = function () {
+//            if (document.exitFullscreen) {
+//                document.exitFullscreen();
+//            }
+//            else if (document.webkitCancelFullScreen) {
+//                document.webkitCancelFullScreen();
+//            }
+//            else if (document.mozCancelFullScreen) {
+//                document.mozCancelFullScreen();
+//            }
+//        }
 
         return {
             restrict: "E",
             link: function ($scope, $element, $attrs) {
                 var activitySandbox = SandboxProvider.getSandbox();
                 var activityData = activitySandbox.getActivityMaterial($routeParams.aid, null);
-
-                var template = "<div ng-hide='showVideoRating'><video style='display: none' id='video' class='xvideo' src='" +
-                    APIProvider.getAPI("getFileResources", {chapterId: $rootScope.ids.cid, lessonId: $routeParams.lid}, "") + "/" + $attrs.src
+                var src = activityData['video']['url'];
+                var template = "<div ng-hide='showVideoRating'><video id='video' class='xvideo' src='" +
+                    APIProvider.getAPI("getFileResources", {chapterId: $rootScope.ids.cid, lessonId: $routeParams.lid}, "") + "/" + src
                     + "' controls></video><br>" +
-                    "<button class='play-button' ng-click='playVideo()'>{{ playButtonMsg }}</button><br><br></div>" +
+                    "</div>" +
                     "<div ng-show='showVideoRating'>" +
                     "<label>你喜欢这个视频吗？</label><br>" +
                     "<input name='videoRating' type='radio' class='star' value='1' title='很不喜欢'/>" +
@@ -307,24 +307,38 @@ angular.module('SunLesson.directives', [])
                 var currentTime = 0;
                 //get video element and control bar elements
                 var video = $element.contents()[0].childNodes[0];
-                video.addEventListener("webkitfullscreenchange", function () {
-                    if (!document.webkitIsFullScreen) {
-                        currentTime = video.currentTime;
-                        //Mixpanel
-                        LearningRelated.finishVideo($attrs.src, activityData.title, video.duration, currentTime, computeRatio(currentTime / video.duration));
-                        video.pause();
-
-                        if (video.ended) {
-                            $scope.$apply(function () {
-                                $scope.showVideoRating = true;
-                            });
-                        } else {
-                            $scope.$apply(function () {
-                                $scope.playButtonMsg = "继续播放";
-                            });
-                        }
-                    }
+                video.addEventListener('pause', function(){
+                    currentTime = video.currentTime;
+                    $scope.$emit("activityStart");
+                    LearningRelated.finishVideo(src, activityData.title, video.duration, currentTime, computeRatio(currentTime / video.duration));
                 });
+                video.addEventListener('play', function(){
+                    currentTime = video.currentTime;
+                    LearningRelated.enterVideo(src,activityData.title);
+                });
+                video.addEventListener('ended', function(){
+                    $scope.$apply(function () {
+                        $scope.showVideoRating = true;
+                    });
+                });
+//                video.addEventListener("webkitfullscreenchange", function () {
+//                    if (!document.webkitIsFullScreen) {
+//                        currentTime = video.currentTime;
+//                        //Mixpanel
+//                        LearningRelated.finishVideo($attrs.src, activityData.title, video.duration, currentTime, computeRatio(currentTime / video.duration));
+//                        video.pause();
+//
+//                        if (video.ended) {
+//                            $scope.$apply(function () {
+//                                $scope.showVideoRating = true;
+//                            });
+//                        } else {
+//                            $scope.$apply(function () {
+//                                $scope.playButtonMsg = "继续播放";
+//                            });
+//                        }
+//                    }
+//                });
 
                 //Mixpanel
                 var computeRatio = function (ratio) {
@@ -344,45 +358,46 @@ angular.module('SunLesson.directives', [])
                     return ratio;
                 }
 
-                $scope.playButtonMsg = "播放视频";
-                $scope.playVideo = function () {
-                    //Mixpanel
-                    LearningRelated.enterVideo($attrs.src,activityData.title);
-                    if (video.paused == true) {
-                        $scope.playButtonMsg = "暂停播放";
-                        //send the activityStart event to activity to record the start_time
-                        $scope.$emit("activityStart");
+//                $scope.playButtonMsg = "播放视频";
+//                $scope.playVideo = function () {
+//                    //Mixpanel
+//                    LearningRelated.enterVideo($attrs.src,activityData.title);
+//                    if (video.paused == true) {
+//                        $scope.playButtonMsg = "暂停播放";
+//                        //send the activityStart event to activity to record the start_time
+//                        $scope.$emit("activityStart");
+//
+//                        if (!start) {
+//                            toFullScreen(video);
+//                            video.play();
+//
+//                            start = true;
+//                        } else {
+//                            video.src = video.currentSrc;
+//                            video.load();
+//
+//                            toFullScreen(video);
+//                            video.play();
+//                        }
+//                    } else {
+//                        /**
+//                         * useless in fullscreen mode
+//                         */
+//                        video.pause();
+//                        $scope.playButtonMsg = "继续播放";
+//                    }
+//                };
 
-                        if (!start) {
-                            toFullScreen(video);
-                            video.play();
-
-                            start = true;
-                        } else {
-                            video.src = video.currentSrc;
-                            video.load();
-
-                            toFullScreen(video);
-                            video.play();
-                        }
-                    } else {
-                        /**
-                         * useless in fullscreen mode
-                         */
-                        video.pause();
-                        $scope.playButtonMsg = "继续播放";
-                    }
-                };
-
-                $scope.rePlayVideo = function () {
-                    video.pause();
-                    video.currentTime = '0';
-                    toFullScreen(video);
-                    video.play();
-                }
+//                $scope.rePlayVideo = function () {
+//                    video.pause();
+//                    video.currentTime = '0';
+//                    toFullScreen(video);
+//                    video.play();
+//                }
 
                 video.addEventListener("canplay", function () {
                     video.currentTime = currentTime;
+                    video.play();
                 });
             }
         }

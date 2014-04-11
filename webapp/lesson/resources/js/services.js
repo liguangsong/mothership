@@ -880,6 +880,8 @@ angular.module('SunLesson.services', [])
                     })
                 } else {
                     lessonUserdata.current_activity = undefined;
+                    console.log(document.getElementsByTagName('video')[0]);
+                    document.getElementsByTagName('video')[0].remove();
                     if ((typeof lessonUserdata.summary.correct_percent == "undefined")) {
                         lessonUserdata.summary.correct_percent = 100;
                         lessonUserdata.is_complete = true;
