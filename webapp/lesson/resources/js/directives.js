@@ -70,6 +70,7 @@ angular.module('SunLesson.directives', [])
                                 }
 
                                 var correctCount = 0;
+
                                 for (var k = 0; k < activityData.problems.length; k++) {
                                     if (activityUserdata.problems[activityData.problems[k].id].is_correct) {
                                         correctCount++;
@@ -831,6 +832,7 @@ angular.module('SunLesson.directives', [])
                 }
 
                 $scope.submitAnswer = function () {
+                    $scope.current_id = $scope.activityData.problems[$scope.problemIndex].id;
                     if ((currProblem.type != 'singlefilling' && !$scope.madeChoice) || (currProblem.type == 'singlefilling' && (!$scope.answer[currProblem.id] || ($scope.answer[currProblem.id].length == 0)))) {
                         var answer = confirm('还没有做出选择，继续下一道题？');
                         if (!answer) {
@@ -866,6 +868,7 @@ angular.module('SunLesson.directives', [])
                     if ($scope.answer !== null) {
                         if (currProblem.type === "multichoice") {
                             problemUserdata.is_correct = problemSandbox.problemGrader(currProblem, $scope.answer);
+                            activityUserdata['problems'][$scope.current_id]['is_correct'] = problemUserdata.is_correct;
                             if (problemUserdata.is_correct) {
                                 problemSandbox.playSoundEffects("correct");
                             } else {
@@ -881,6 +884,7 @@ angular.module('SunLesson.directives', [])
                         } else {
                             if (typeof $scope.answer[currProblem.id] !== "undefined") {
                                 problemUserdata.is_correct = problemSandbox.problemGrader(currProblem, $scope.answer);
+                                activityUserdata['problems'][$scope.current_id]['is_correct'] = problemUserdata.is_correct;
                                 if (problemUserdata.is_correct) {
                                     problemSandbox.playSoundEffects("correct");
                                 } else {
