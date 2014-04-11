@@ -33,6 +33,7 @@ angular.module('mixpanel.service',[])
 angular.module('track.service',[])
 .value('apiSchema',"/tracks")
 .factory('TracksDataProvider',function(apiSchema){
+        console.log(apiSchema)
     var getUrl = function(queryString){
         var apiUrl = apiSchema + "?" + queryString;
         return apiUrl;
@@ -41,4 +42,70 @@ angular.module('track.service',[])
     return {
         getUrl:getUrl
     }
-});
+})
+angular.module("data.service",[])
+    .factory("global", function ($http, $q) {
+        var defer = $q.defer();
+        var promise = defer.promise;
+        var get_user = function () {
+            $http.get('/me')
+                .success(function (data, status, headers, config) {
+                    defer.resolve(data);
+                }).error(function (data, status, headers, config) {
+                    defer.reject(data);
+                });
+            return promise;
+        }
+        return {get_user: get_user()}
+    })
+
+    .factory("RouteUrl", function ($http, $q) {
+
+        function GetRequest() {
+            var url = location.search; //获取url中"?"符后的字串
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                strs = str.split("&");
+                for (var i = 0; i < strs.length; i++) {
+                    theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+                }
+            }
+            return theRequest;
+        }
+
+        var Request = GetRequest();
+        var defer = $q.defer();
+        var promise = defer.promise;
+        var get_date = function () {
+            var url = "/webapp"+ "/" + Request["ChapterId"] + "/" + Request["LessonId"] + "/lesson.json";
+    $http.get(url)
+//            $http.get("/webapp/c844f495-4a66-4cd0-b03c-a7a3155e22db/3a661cb0-ff43-4f8a-aa0c-74ad47b507ff/lesson.json")
+                .success(function (data, status, headers, config) {
+                    var activity_date = []
+                    var i, j = data["activities"].length;
+                    for (i = 0; i < j; i++) {
+                        if (data["activities"][i].type == "quiz") {
+                            activity_date.push(data["activities"][i])
+                        }
+                    }
+                    var lesson_data = {title: data['title'], data: activity_date}
+                    defer.resolve(lesson_data);
+                }).error(function (data, status, headers, config) {
+                    defer.reject(data);
+                });
+            return promise;
+        }
+
+        return {get_date: get_date(),
+            get_chapterId:Request["ChapterId"],
+            get_lessonId:Request["LessonId"],
+            get_roomId:Request["Room"]
+        }
+    })
+
+
+
+;
+
+
