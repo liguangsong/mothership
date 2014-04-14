@@ -51,7 +51,7 @@
             </div>
             <div class="list-group" >
                 <div ng-repeat='activity in date' id="navigation">
-                    <a class="list-group-item list-group-item-heading " ng-click="show_mistake_of_activity(activity.id)" id="{{activity.id}}"><span>{{activity.title}}<span class="rate pull-right-1" ng-show="activitycorrectRatio[activity.title]">{{activitycorrectRatio[activity.title]}}%</span></span></a>
+                    <a class="list-group-item list-group-item-heading " ng-class="{'selected':activity.id==selectedId}" ng-click="show_mistake_of_activity(activity.id)" id="{{activity.id}}"><span>{{activity.title}}<span class="rate pull-right-1" ng-show="activitycorrectRatio[activity.title]">{{activitycorrectRatio[activity.title]}}%</span></span></a>
                 </div>
             </div>
         </div>

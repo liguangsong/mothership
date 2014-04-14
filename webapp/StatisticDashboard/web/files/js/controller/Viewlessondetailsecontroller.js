@@ -13,8 +13,8 @@ angular.module('lesson-details', ['track.service', 'data.service'])
             $scope.title = lessonData['title'];
             $scope.date = lessonData["data"]
             $scope.quizs = lessonData["data"][0];
+            $scope.selectedId=$scope.date[0].id;
             $scope.problems = RouteUrl.get_body($scope.quizs.problems)
-            console.log($scope.problems)
             $('#lessonLoaderModal').modal('show');
             get_wrong_rate_of_activity();
         }, function () {
@@ -28,6 +28,7 @@ angular.module('lesson-details', ['track.service', 'data.service'])
                     title = $scope.date[i].title;
                     $scope.quizs = $scope.date[i];
                     $scope.problems = RouteUrl.get_body($scope.quizs.problems)
+                    $scope.selectedId=$scope.date[i].id;
                     $('#lessonLoaderModal').modal('show');
                     get_wrong_rate_of_activity($scope.quizs);
                 }
