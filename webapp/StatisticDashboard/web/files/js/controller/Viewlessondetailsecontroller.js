@@ -85,6 +85,7 @@ angular.module('lesson-details', ['track.service','data.service'])
                 }, function (err) {
                     alert(err)
                 })
+
                 }
             }
         }
@@ -104,6 +105,7 @@ angular.module('lesson-details', ['track.service','data.service'])
             for (i = 0; i < j; i++) {
                 var get_quiz_body = getPbody($scope.quizs.problems[i]);
                 $scope.problems.push({pbody: get_quiz_body['pbody'], imgbody: get_quiz_body['imgbody'], choices: $scope.quizs.problems[i]["choices"]})
+
             }
         }
 
