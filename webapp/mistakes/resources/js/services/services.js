@@ -52,7 +52,6 @@ angular.module('Mistakes.services', [])
         var getMe = function() {
             var deferred = $q.defer();
             var mePromise = deferred.promise;
-
             if(DataCache.me && DataCache.me.username) {
                 deferred.resolve(DataCache.me);
                 return mePromise;
