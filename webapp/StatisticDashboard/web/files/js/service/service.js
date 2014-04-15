@@ -1,7 +1,7 @@
 /**
  * Created by solomon on 14-4-2.
  */
-angular.module('mixpanel.service',[])
+/*angular.module('mixpanel.service',[])
 
 .value('apiKey',"1291ff9d8ceb337db6a0069d88079474")
 .value('apiSecret',"05b9aae8d5305855b1cdfec0db2db140")
@@ -28,7 +28,7 @@ angular.module('mixpanel.service',[])
         apiKey: apiKey,
         apiSecret: apiSecret
     }
-});
+});*/
 
 angular.module('track.service',[])
 .value('apiSchema',"/tracks")
@@ -80,8 +80,7 @@ angular.module("data.service",[])
         var promise = defer.promise;
         var get_date = function () {
             var url = "/webapp"+ "/" + Request["ChapterId"] + "/" + Request["LessonId"] + "/lesson.json";
-    $http.get(url)
-//            $http.get("/webapp/c844f495-4a66-4cd0-b03c-a7a3155e22db/3a661cb0-ff43-4f8a-aa0c-74ad47b507ff/lesson.json")
+        $http.get(url)
                 .success(function (data, status, headers, config) {
                     var activity_date = []
                     var i, j = data["activities"].length;
@@ -133,16 +132,6 @@ angular.module("data.service",[])
     })
 
     .factory('getrate',function($http,$q,RouteUrl,TracksDataProvider){
-
-//        var finishProblem
-
-//        var peopleWhoDidThisProblem;
-//        var peopleWhoDidThisProblemCorrect;
-//        var peopleWhoDidThisProblemCorrectTheFirstTime;
-//        var finishProblemAllUrl;
-//        var finishProblemCorrectUrl;
-//        var finishCount;
-//        var Ratio={};
         var orderResultByUserName = function (data, type) {
             var defer = $q.defer();
             var promise = defer.promise;
@@ -153,29 +142,24 @@ angular.module("data.service",[])
                     mapFinal[username] = [];
                     mapFinal[username].push(userRecord);
                     mapFinal[username].first = new Date(userRecord.headers.time).getTime();
-//                        console.log("----------->FIRST=>"+type+" "+mapFinal[username].first);
                     defer.resolve(mapFinal)
                 } else {
                     mapFinal[username].push(userRecord);
                     mapFinal[username].first = mapFinal[username].first < new Date(userRecord.headers.time).getTime() ? mapFinal[username].first : new Date(userRecord.headers.time).getTime();
-//                        console.log("----------->FIRST=>"+type+" "+mapFinal[username].first);
                     defer.resolve(mapFinal)
                 }
             });
-            //console.log("final result----->"+JSON.stringify(mapFinal));
             return promise;
         };
 
         var rate=function get_rate_of_all_wrong_question(problem){
             var correctRatio=[];
-
             var i, j = problem.length, all_problem_rate_of_activity = [];
             var defer = $q.defer();
             var promise = defer.promise;
             for (i = 0; i < j; i++) {
-                var roomid = "~" + RouteUrl.get_roomId;
-//              get_peopleWhoDidThisProblem(roomid, problem[i].id)
-                get_peopleWhoDidThisProblem("~siba73", "a34edb11-b7ec-4602-9e6c-27f68878fccb")
+              var roomid = "~" + RouteUrl.get_roomId;
+              get_peopleWhoDidThisProblem(roomid, problem[i].id)
                     .then(get_exactRatio).then(function (data) {
                         correctRatio.push(data);
                         if ( correctRatio.length == j - 1) {
@@ -201,10 +185,7 @@ angular.module("data.service",[])
         function get_peopleWhoDidThisProblem(roomid, problemid) {
             var finishThisProblemUsersJson;
             var  finishProblem = {
-                // 是为了找到有多少人做过这道题，人数 = 第一次做的人数 = 错题率分母
                 allQueryString: "$and=[{\"data.properties.UserName\":\"" + roomid + "\"},{\"data.event\":\"FinishProblem\"},{\"data.properties.ProblemId\":\"" + problemid + "\"}]&sort=data.properties.UserName",
-                // 是为了找出多少人做对过这道题，需要注意的是，这个数字，并不是分子，而是分子的母集。因为可能有些学生并不是第一次作这道题就做对了
-                // 所以，接下来我们要筛选出那些第一次做题的数据，依据的就是数据结构中的 time 这个 field。
                 correctQueryString: "$and=[{\"data.properties.UserName\":\"" + roomid + "\"},{\"data.event\":\"FinishProblem\"},{\"data.properties.ProblemId\":\"" + problemid + "\"},{\"data.properties.CorrectOrNot\":true}]&sort=data.properties.UserName"
             };
             var finishProblemAllUrl = TracksDataProvider.getUrl(finishProblem.allQueryString);
@@ -213,7 +194,6 @@ angular.module("data.service",[])
             $http.get(finishProblemAllUrl)
                 .success(function (data) {
                     finishThisProblemUsersJson = data;
-                    //console.log("finishThisProblemUsersJson----------->"+JSON.stringify(data));
                 }).error(function (error) {
                     console.log("------>" + error);
                     defer.reject();
@@ -234,13 +214,12 @@ angular.module("data.service",[])
             var finshdate=date;
             var finishThisProblemCorrectUsersJson;
             var finishProblemCorrectUrl = TracksDataProvider.getUrl(date.finishProblem.correctQueryString);
-            var  peopleWhoDidThisProblemCorrectTheFirstTime
+            var  peopleWhoDidThisProblemCorrectTheFirstTime;
             var defer = $q.defer();
             var promise = defer.promise
             $http.get(finishProblemCorrectUrl)
                 .success(function (data) {
                     finishThisProblemCorrectUsersJson = data;
-                    //console.log("finishThisProblemUsersJson----------->"+JSON.stringify(data));
                 }).error(function (error) {
                     console.log("------>" + error);
                 }).then(function (data) {
@@ -250,7 +229,6 @@ angular.module("data.service",[])
                         var finishCorrectCount = Object.keys(peopleWhoDidThisProblemCorrect).length;
                         for (var key in peopleWhoDidThisProblemCorrect) {
                             if (finshdate.peopleWhoDidThisProblem[key].first == peopleWhoDidThisProblemCorrect[key].first) {
-//                                    console.log("--------------->user: "+key+" ---------->time: "+peopleWhoDidThisProblem[key].first);
                                 peopleWhoDidThisProblemCorrectTheFirstTime.push(key);
                             }
                         }
