@@ -40,6 +40,8 @@
     "cloneextend": "0.0.3",
     "qiniu": "6.1.1",
     "node-schedule": "0.1.13",
-    "express-restify-mongoose": "^0.6.7"
+    "express-restify-mongoose": "^0.6.7",
+    "winston":"*",
+    "winston-mongodb":"*"
   }
 }

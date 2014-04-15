@@ -1,1 +1,1 @@
-curl -H "Content-Type:application/json" -d '{"username":"test","password":"123", "usergroup":"teacher","name":"测试用户"}' 127.0.0.1:3000/users
+curl -H "Content-Type:application/json" -d '{"username":"'$1'","password":"'$2'", "usergroup":"'$3'","name":"'$4'"}' 127.0.0.1:3000/users

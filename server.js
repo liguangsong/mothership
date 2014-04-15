@@ -1,5 +1,8 @@
 'use strict';
 
+//Winston logger
+require(__dirname+'/app/services/winston');
+
 /**
  * Module dependencies.
  */
