@@ -8,9 +8,7 @@ require(__dirname+'/app/services/winston');
  */
 var express = require('express'),
     fs = require('fs'),
-    passport = require('passport'),
-    // logger http api
-    logger = require('mean-logger');
+    passport = require('passport');
 
 
 /**
@@ -62,9 +60,6 @@ require('./config/routes')(app, passport, auth);
 var port = process.env.PORT || config.port;
 app.listen(port);
 console.log('Express app started on port ' + port);
-
-//Initializing logger
-logger.init(app, passport, mongoose);
 
 var cron = require('./app/services/import');
 cron.start();
