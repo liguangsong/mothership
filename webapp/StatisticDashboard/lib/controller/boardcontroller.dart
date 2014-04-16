@@ -164,7 +164,8 @@ class BoardController {
         currentChapter['id'];
     window.open(url,"提高班");*/
     String url = "viewLessonDetails.html?ChapterId="+currentChapter['id']+"&LessonId="+lesson['id']+"&Room=$_roomName";
-    window.open(url,"错题率");
+//    window.open(url,"错题率");
+    window.location.href=url;
   }
   
   // Give requirements and load all the data.
