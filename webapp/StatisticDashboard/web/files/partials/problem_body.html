@@ -18,12 +18,13 @@
             <div class="modal-body">
                 <div id='problem{{$index}}'>
                     <div>
-                        <div class="question-content" mathjax-bind="currentProblem.pbody"></div>
-                        <div class="question-image" ng-show="currentProblem.imgbody"><span class="" mathjax-bind="currentProblem.imgbody"></span></div>
-                        <div ng-repeat='choice in currentProblem.choices' class="question-content">
-                            <div class="choice-layout-list-state-default">
+                        <div class="question-content col-md-12" mathjax-bind="currentProblem.pbody"></div>
+                        <div class="question-image col-md-12" ng-show="currentProblem.imgbody"><span class="" mathjax-bind="currentProblem.imgbody"></span></div>
+                        <div ng-repeat='choice in currentProblem.choices' class="question-content" ng-class="{'choices-margin':currentProblem.choices[0].imgbody}">
+                            <div class="choice-layout-list-state-default ">
                                 {{ calcChoiceNum($index) }}&nbsp;&nbsp;
-                                <span class="choice-content" mathjax-bind="choice.body"></span>
+                                <span class="choice-content" mathjax-bind="choice.pbody"></span>
+                                <div class="question-image" ng-show="choice.imgbody"><span class="" mathjax-bind="choice.imgbody"></span></div>
                             </div>
                         </div>
 

@@ -102,11 +102,19 @@ angular.module("data.service",[])
             var i, j = problems.length;
             for (i = 0; i < j; i++) {
                 var get_quiz_body = getPbody(problems[i]);
-                body_of_problems.push({pbody: get_quiz_body['pbody'], imgbody: get_quiz_body['imgbody'], choices: problems[i]["choices"]})
+                var get_choice_body=getCbody(problems[i]["choices"])
+                body_of_problems.push({pbody: get_quiz_body['pbody'], imgbody: get_quiz_body['imgbody'], choices: get_choice_body})
             }
             return body_of_problems
         }
 
+        function getCbody(target){
+            var i= 0,j=target.length,Cbody=[];
+            for(i=0;i<j;i++){
+                Cbody.push(getPbody(target[i]))
+            }
+            return Cbody
+        }
 
         function getPbody(target) {
             var originBody = target.body;

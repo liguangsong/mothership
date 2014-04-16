@@ -15,7 +15,7 @@ angular.module('lesson-details', ['track.service', 'data.service'])
             $scope.quizs = lessonData["data"][0];
             $scope.selectedId=$scope.date[0].id;
             $scope.problems = RouteUrl.get_body($scope.quizs.problems)
-            $('#lessonLoaderModal').modal('show');
+//            $('#lessonLoaderModal').modal('show');
             get_wrong_rate_of_activity();
         }, function () {
             alert('getLessonMap Error');
