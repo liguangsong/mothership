@@ -21,7 +21,6 @@
     "crypto": "0.0.3",
     "passport": "~0.1.18",
     "passport-local": "~0.1.6",
-    "mean-logger": "0.0.1",
     "underscore": "latest",
     "underscore.string": "2.3.3",
     "tar": "0.1.18",

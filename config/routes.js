@@ -23,6 +23,7 @@ module.exports = function (app, passport, auth) {
     var UptrackModel = mongoose.model('Uptrack');
     var TrackModel = mongoose.model('Track');
     var RoomModel = mongoose.model('Room');
+    var LogModel = mongoose.model('Log');
 
     app.get('/', function (req, res) {
         res.redirect('/webapp/login');
@@ -38,6 +39,7 @@ module.exports = function (app, passport, auth) {
     restify.serve(app, UptrackModel, options);
     restify.serve(app, TrackModel, options);
     restify.serve(app, RoomModel, options);
+    restify.serve(app, LogModel, options);
 
     //Setting up the users api
 //    app.get('/users', users.all);
