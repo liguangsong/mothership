@@ -181,12 +181,19 @@ angular.module("data.service",[])
         }
 
         var activitycorrectRatio=function(data,title){
-            var Ratio={};
+            var Ratio={},num=0;
             var i, j = data.length, sum = 0;
             for (i = 0; i < j; i++) {
-                sum = sum + data[i];
+                if(data[i]!="未开始"){
+                    sum = sum + data[i];
+                    num=num+1;
+                }
             }
-            Ratio[title]=sum/j;
+            if(num==0){
+                Ratio[title]="未开始"
+            }else{
+                Ratio[title]=sum/j+"%";
+            }
             return Ratio
         }
 
@@ -206,13 +213,19 @@ angular.module("data.service",[])
                     console.log("------>" + error);
                     defer.reject();
                 }).then(function (data) {
-                    orderResultByUserName(finishThisProblemUsersJson, "ALL").then(function(date){
-                        var peopleWhoDidThisProblem =date;
-                        var finishCount = Object.keys(peopleWhoDidThisProblem).length;
-                        date={peopleWhoDidThisProblem:peopleWhoDidThisProblem,finishCount:finishCount,finishProblem:finishProblem}
-                        defer.resolve(date)
-                    },function(){});
-
+                    if(finishThisProblemUsersJson!=""){
+                        orderResultByUserName(finishThisProblemUsersJson, "ALL").then(function(date){
+                            var peopleWhoDidThisProblem =date;
+                            var finishCount = Object.keys(peopleWhoDidThisProblem).length;
+                            var finish_date={peopleWhoDidThisProblem:peopleWhoDidThisProblem,finishCount:finishCount,finishProblem:finishProblem}
+                            defer.resolve(finish_date)
+                        },function(date){
+                            console.log(date)
+                        });
+                    }else{
+                        var finish_date={peopleWhoDidThisProblem:[],finishCount:0,finishProblem:finishProblem}
+                        defer.resolve(finish_date)
+                    }
                 })
             return promise
         }
@@ -220,33 +233,38 @@ angular.module("data.service",[])
         function get_exactRatio(date) {
             var peopleWhoDidThisProblemCorrect;
             var finshdate=date;
-            var finishThisProblemCorrectUsersJson;
-            var finishProblemCorrectUrl = TracksDataProvider.getUrl(date.finishProblem.correctQueryString);
-            var  peopleWhoDidThisProblemCorrectTheFirstTime;
             var defer = $q.defer();
             var promise = defer.promise
-            $http.get(finishProblemCorrectUrl)
-                .success(function (data) {
-                    finishThisProblemCorrectUsersJson = data;
-                }).error(function (error) {
-                    console.log("------>" + error);
-                }).then(function (data) {
-                    peopleWhoDidThisProblemCorrectTheFirstTime = [];
-                    orderResultByUserName(finishThisProblemCorrectUsersJson, "CORRECT").then(function(date){
-                        peopleWhoDidThisProblemCorrect =date;
-                        var finishCorrectCount = Object.keys(peopleWhoDidThisProblemCorrect).length;
-                        for (var key in peopleWhoDidThisProblemCorrect) {
-                            if (finshdate.peopleWhoDidThisProblem[key].first == peopleWhoDidThisProblemCorrect[key].first) {
-                                peopleWhoDidThisProblemCorrectTheFirstTime.push(key);
+            if(finshdate.finishCount==0){
+                defer.resolve("未开始")
+            }else {
+                var finishThisProblemCorrectUsersJson;
+                var finishProblemCorrectUrl = TracksDataProvider.getUrl(date.finishProblem.correctQueryString);
+                var peopleWhoDidThisProblemCorrectTheFirstTime;
+                $http.get(finishProblemCorrectUrl)
+                    .success(function (data) {
+                        finishThisProblemCorrectUsersJson = data;
+                    }).error(function (error) {
+                        console.log("------>" + error);
+                    }).then(function (data) {
+                        peopleWhoDidThisProblemCorrectTheFirstTime = [];
+                        orderResultByUserName(finishThisProblemCorrectUsersJson, "CORRECT").then(function (date) {
+                            peopleWhoDidThisProblemCorrect = date;
+                            var finishCorrectCount = Object.keys(peopleWhoDidThisProblemCorrect).length;
+                            for (var key in peopleWhoDidThisProblemCorrect) {
+                                if (finshdate.peopleWhoDidThisProblem[key].first == peopleWhoDidThisProblemCorrect[key].first) {
+                                    peopleWhoDidThisProblemCorrectTheFirstTime.push(key);
+                                }
                             }
-                        }
-                    },function(){});
+                        }, function () {
+                        });
 
-                }).then(function (data) {
-                    var finishCorrectTheFirstTimeCount = Object.keys(peopleWhoDidThisProblemCorrectTheFirstTime).length;
-                    var exactRatio = finishCorrectTheFirstTimeCount / finshdate.finishCount * 100;
-                    defer.resolve(Math.round(exactRatio))
-                })
+                    }).then(function (data) {
+                        var finishCorrectTheFirstTimeCount = Object.keys(peopleWhoDidThisProblemCorrectTheFirstTime).length;
+                        var exactRatio = finishCorrectTheFirstTimeCount / finshdate.finishCount * 100;
+                        defer.resolve(Math.round(exactRatio))
+                    })
+            }
             return promise
         }
 
