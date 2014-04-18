@@ -1,5 +1,5 @@
 <li class="list-group-item-1">
-    <span class="rate pull-left-1">{{correctRatio[$index]}}<span ng-show="correctRatio[$index]!='未开始'">%</span></span>
+    <span class="rate pull-left-1">{{correctRatio[mproblem.id]}}<span ng-show="correctRatio[mproblem.id]!='未开始'">%</span></span>
     <a href="" class="quiz-text-1" data-toggle="modal" data-target="#myModal" ng-click="showProblem(mproblem)">
        <div mathjax-bind="mproblem.imgbody" class="quiz-image"></div>
         <span mathjax-bind="mproblem.pbody"></span>

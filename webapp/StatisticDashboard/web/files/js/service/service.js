@@ -103,7 +103,7 @@ angular.module("data.service",[])
             for (i = 0; i < j; i++) {
                 var get_quiz_body = getPbody(problems[i]);
                 var get_choice_body=getCbody(problems[i]["choices"])
-                body_of_problems.push({pbody: get_quiz_body['pbody'], imgbody: get_quiz_body['imgbody'], choices: get_choice_body})
+                body_of_problems.push({pbody: get_quiz_body['pbody'], imgbody: get_quiz_body['imgbody'], choices: get_choice_body,id:problems[i].id})
             }
             return body_of_problems
         }
@@ -161,38 +161,43 @@ angular.module("data.service",[])
         };
 
         var rate=function get_rate_of_all_wrong_question(problem){
-            var correctRatio=[];
-            var i, j = problem.length, all_problem_rate_of_activity = [];
+            var correctRatio={};
+            var i, j = problem.length;
             var defer = $q.defer();
             var promise = defer.promise;
             for (i = 0; i < j; i++) {
               var roomid = "~" + RouteUrl.get_roomId;
               get_peopleWhoDidThisProblem(roomid, problem[i].id)
                     .then(get_exactRatio).then(function (data) {
-                        correctRatio.push(data);
-                        if ( correctRatio.length == j - 1) {
-                            defer.resolve(correctRatio)
-                        }
+                      correctRatio[data.problemId]=data.exactRatio;
+                      if ( Object.getOwnPropertyNames(correctRatio).length == j ) {
+                          defer.resolve(correctRatio)
+                      }
                     }, function (err) {
                         alert(err)
                     })
             }
             return promise
         }
-
-        var activitycorrectRatio=function(data,title){
-            var Ratio={},num=0;
-            var i, j = data.length, sum = 0;
-            for (i = 0; i < j; i++) {
-                if(data[i]!="未开始"){
-                    sum = sum + data[i];
+        var Ratio={}
+        var activitycorrectRatio=function(data,id){
+            var num= 0,sum=0;
+            for(var p in data){
+                if(data[p]!="未开始"){
+                    sum = sum + data[p];
                     num=num+1;
                 }
             }
+
             if(num==0){
-                Ratio[title]="未开始"
+                Ratio[id]="未开始"
             }else{
-                Ratio[title]=sum/j+"%";
+                var rate =(sum/num).toString()
+                var position =rate.indexOf(".");
+                if(position!=-1){
+                    rate=rate.substring(0,position+2)
+                }
+                Ratio[id]=rate+"%"
             }
             return Ratio
         }
@@ -217,13 +222,13 @@ angular.module("data.service",[])
                         orderResultByUserName(finishThisProblemUsersJson, "ALL").then(function(date){
                             var peopleWhoDidThisProblem =date;
                             var finishCount = Object.keys(peopleWhoDidThisProblem).length;
-                            var finish_date={peopleWhoDidThisProblem:peopleWhoDidThisProblem,finishCount:finishCount,finishProblem:finishProblem}
+                            var finish_date={peopleWhoDidThisProblem:peopleWhoDidThisProblem,finishCount:finishCount,finishProblem:finishProblem,problemId:problemid}
                             defer.resolve(finish_date)
                         },function(date){
                             console.log(date)
                         });
                     }else{
-                        var finish_date={peopleWhoDidThisProblem:[],finishCount:0,finishProblem:finishProblem}
+                        var finish_date={peopleWhoDidThisProblem:[],finishCount:0,finishProblem:finishProblem,problemId:problemid}
                         defer.resolve(finish_date)
                     }
                 })
@@ -236,7 +241,7 @@ angular.module("data.service",[])
             var defer = $q.defer();
             var promise = defer.promise
             if(finshdate.finishCount==0){
-                defer.resolve("未开始")
+                defer.resolve({problemId:finshdate.problemId,exactRatio:"未开始"})
             }else {
                 var finishThisProblemCorrectUsersJson;
                 var finishProblemCorrectUrl = TracksDataProvider.getUrl(date.finishProblem.correctQueryString);
@@ -256,13 +261,15 @@ angular.module("data.service",[])
                                     peopleWhoDidThisProblemCorrectTheFirstTime.push(key);
                                 }
                             }
-                        }, function () {
+                        }, function (err) {
+                            alert(err)
                         });
 
                     }).then(function (data) {
                         var finishCorrectTheFirstTimeCount = Object.keys(peopleWhoDidThisProblemCorrectTheFirstTime).length;
                         var exactRatio = finishCorrectTheFirstTimeCount / finshdate.finishCount * 100;
-                        defer.resolve(Math.round(exactRatio))
+                        var rate ={problemId:finshdate.problemId,exactRatio:Math.round(exactRatio)}
+                        defer.resolve(rate)
                     })
             }
             return promise
