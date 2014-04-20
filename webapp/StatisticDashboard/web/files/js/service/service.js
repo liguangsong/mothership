@@ -192,12 +192,7 @@ angular.module("data.service",[])
             if(num==0){
                 Ratio[id]="未开始"
             }else{
-                var rate =(sum/num).toString()
-                var position =rate.indexOf(".");
-                if(position!=-1){
-                    rate=rate.substring(0,position+2)
-                }
-                Ratio[id]=rate+"%"
+                Ratio[id]=Math.round(sum/num)+"%"
             }
             return Ratio
         }
