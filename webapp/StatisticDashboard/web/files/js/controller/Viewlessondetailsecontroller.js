@@ -14,7 +14,7 @@ angular.module('lesson-details', ['track.service', 'data.service'])
             $scope.date = lessonData["data"]
             $scope.quizs = lessonData["data"][0];
             $scope.selectedId=$scope.date[0].id;
-            $scope.problems = RouteUrl.get_body($scope.quizs.problems)
+
             $('#lessonLoaderModal').modal('show');
             get_wrong_rate_of_activity();
         }, function () {
@@ -47,6 +47,7 @@ angular.module('lesson-details', ['track.service', 'data.service'])
         function get_wrong_rate_of_activity(quizs) {
             getrate.wrong_rate($scope.quizs["problems"]).then(function (data) {
                 $scope.correctRatio = data;
+                $scope.problems = RouteUrl.get_body($scope.quizs.problems)
                 $scope.activitycorrectRatio = getrate.activitycorrectRatio(data, $scope.quizs.id)
                 $('#lessonLoaderModal').modal('hide');
             }, function (err) {

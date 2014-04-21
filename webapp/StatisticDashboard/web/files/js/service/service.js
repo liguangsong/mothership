@@ -103,7 +103,7 @@ angular.module("data.service",[])
             for (i = 0; i < j; i++) {
                 var get_quiz_body = getPbody(problems[i]);
                 var get_choice_body=getCbody(problems[i]["choices"])
-                body_of_problems.push({pbody: get_quiz_body['pbody'], imgbody: get_quiz_body['imgbody'], choices: get_choice_body,id:problems[i].id})
+                body_of_problems[problems[i].id]={pbody: get_quiz_body['pbody'], imgbody: get_quiz_body['imgbody'], choices: get_choice_body}
             }
             return body_of_problems
         }
@@ -161,7 +161,7 @@ angular.module("data.service",[])
         };
 
         var rate=function get_rate_of_all_wrong_question(problem){
-            var correctRatio={};
+            var correctRatio=[];
             var i, j = problem.length;
             var defer = $q.defer();
             var promise = defer.promise;
@@ -169,8 +169,11 @@ angular.module("data.service",[])
               var roomid = "~" + RouteUrl.get_roomId;
               get_peopleWhoDidThisProblem(roomid, problem[i].id)
                     .then(get_exactRatio).then(function (data) {
-                      correctRatio[data.problemId]=data.exactRatio;
-                      if ( Object.getOwnPropertyNames(correctRatio).length == j ) {
+                      correctRatio.push(data)
+                      if ( correctRatio.length == j ) {
+                          correctRatio=_.sortBy(correctRatio,function(list){
+                              return list.exactRatio
+                          })
                           defer.resolve(correctRatio)
                       }
                     }, function (err) {
@@ -182,12 +185,12 @@ angular.module("data.service",[])
         var Ratio={}
         var activitycorrectRatio=function(data,id){
             var num= 0,sum=0;
-            for(var p in data){
-                if(data[p]!="未开始"){
-                    sum = sum + data[p];
+            _.each(data,function(list){
+                if(list.exactRatio!="未开始"){
+                    sum = sum + list.exactRatio;
                     num=num+1;
                 }
-            }
+            })
 
             if(num==0){
                 Ratio[id]="未开始"

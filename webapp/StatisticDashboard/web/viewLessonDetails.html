@@ -7,6 +7,7 @@
     <link rel="stylesheet/less" href="css/c-flat-ui.less">
     <link rel="stylesheet" href="css/statisticdashboard.css"/>
     <link rel="stylesheet" href="css/loader.css"/>
+    <script src="files/lib/underscore/underscore-min.js"></script>
     <script src="files/lib/angluar/angular.min.js"></script>
     <script src="files/lib/less-1.5.0.min.js"></script>
     <script src="files/lib/md5.js"></script>
@@ -64,7 +65,7 @@
     <div class="col-lg-9 col-md-9 ">
         <div class="quiz-div">
             <ul class="list-group">
-                <problem ng-repeat="mproblem in problems"></problem>
+                <problem ng-repeat="problem_rate in correctRatio"></problem>
             </ul>
         </div>
     </div>
