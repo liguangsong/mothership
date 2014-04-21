@@ -1,10 +1,9 @@
-<li class="list-group-item-1">
-    <span class="rate pull-left-1">{{problem_rate.exactRatio}}<span ng-show="correctRatio[problem_rate.exactRatio]!='未开始'">%</span></span>
-    <a href="" class="quiz-text-1" data-toggle="modal" data-target="#myModal" ng-click="showProblem(problems[problem_rate.problemId])">
-       <div mathjax-bind="problems[problem_rate.problemId].imgbody" class="quiz-image"></div>
-        <span mathjax-bind="problems[problem_rate.problemId].pbody"></span>
-    </a>
-</li>
+<span class="rate pull-left-1">{{problem_rate.exactRatio}}<span ng-show="correctRatio[problem_rate.id]!='未开始'">%</span></span>
+<a href="" class="quiz-text-1" data-toggle="modal" data-target="#myModal"
+   ng-click="showProblem(problems[problem_rate.problemId])">
+    <div id="imgbody" mathjax-bind="problems[problem_rate.problemId].imgbody" class="quiz-image"></div>
+    <div><span mathjax-bind="problems[problem_rate.problemId].pbody"></span></div>
+</a>
 
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -19,26 +18,36 @@
                 <div id='problem{{$index}}'>
                     <div>
                         <div class="question-content col-md-12" mathjax-bind="currentProblem.pbody"></div>
-                        <div class="question-image col-md-12" ng-show="currentProblem.imgbody"><span class="" mathjax-bind="currentProblem.imgbody"></span></div>
-                        <div ng-repeat='choice in currentProblem.choices' class="question-content" ng-class="{'choices-margin':currentProblem.choices[0].imgbody}">
-                            <div class="choice-layout-list-state-default ">
-                                {{ calcChoiceNum($index) }}&nbsp;&nbsp;
-                                <span class="choice-content" mathjax-bind="choice.pbody"></span>
-                                <div class="question-image" ng-show="choice.imgbody"><span class="" mathjax-bind="choice.imgbody"></span></div>
+                        <div class="question-image col-md-12" ng-show="currentProblem.imgbody"><span class=""
+                                                                                                     mathjax-bind="currentProblem.imgbody"></span>
+                        </div>
+                        <div class="choice-body">
+                            <div ng-repeat='choice in currentProblem.choices' class="question-content"
+                                 ng-class="{'choices-margin':currentProblem.choices[0].imgbody}">
+                                <div class="choice-layout-list-state-default"
+                                     ng-class="{'choice-height':choice.imgbody}">
+                                    {{ calcChoiceNum($index) }}&nbsp;&nbsp;
+                                    <span class="choice-content" mathjax-bind="choice.pbody"></span>
+                                    <div class="question-image" ng-show="choice.imgbody"
+                                         style="display:inline-block;vertical-align: middle;">
+                                        <span class="" mathjax-bind="choice.imgbody"></span>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
 
                         <!--<div class="col-md-12 explanation-container pull-left font-size-small">-->
-                            <!--<div ng-show="showHintBox">-->
-                            <!--<div class="explanation-title"><img src="resources/img/hint.png"/>&nbsp;&nbsp;&nbsp;提示</div>-->
-                            <!--<div class="explanation-content">{{ hint }}</div>-->
-                            <!--</div>-->
-                            <!--<div ng-show='showExplanation'>-->
-                                <!--<div class="explanation-title" ng-show="hasExplanation()">-->
-                                    <!--<img src="resources/img/explanation.png"/>&nbsp;&nbsp;&nbsp;题目解析-->
-                                <!--</div>-->
-                                <!--<div class="explanation-content" mathjax-bind="explanation"></div>-->
-                            <!--</div>-->
+                        <!--<div ng-show="showHintBox">-->
+                        <!--<div class="explanation-title"><img src="resources/img/hint.png"/>&nbsp;&nbsp;&nbsp;提示</div>-->
+                        <!--<div class="explanation-content">{{ hint }}</div>-->
+                        <!--</div>-->
+                        <!--<div ng-show='showExplanation'>-->
+                        <!--<div class="explanation-title" ng-show="hasExplanation()">-->
+                        <!--<img src="resources/img/explanation.png"/>&nbsp;&nbsp;&nbsp;题目解析-->
+                        <!--</div>-->
+                        <!--<div class="explanation-content" mathjax-bind="explanation"></div>-->
+                        <!--</div>-->
                         <!--</div>-->
                     </div>
 
